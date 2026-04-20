@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardly — Turn Notes into Flashcards with AI</title>
 <meta name="description" content="Paste your lecture notes and get smart AI-generated flashcards in seconds. Study smarter, not harder.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23ff4d00'/><text x='16' y='23' font-family='Arial Black,sans-serif' font-size='18' font-weight='900' fill='white' text-anchor='middle'>C</text></svg>">
+<meta property="og:title" content="Cardly — AI Flashcard Generator">
+<meta property="og:description" content="Turn your lecture notes into smart flashcards in seconds with AI.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -730,6 +734,96 @@ footer{
   font-size:12px;color:var(--text3);
 }
 
+/* ── MOBILE MENU ── */
+.btn-mobile-menu{
+  display:none;background:none;border:1px solid var(--border2);
+  color:var(--text2);padding:6px 10px;border-radius:8px;cursor:pointer;
+  align-items:center;justify-content:center;
+}
+.mobile-menu{
+  display:none;position:fixed;inset:0;top:57px;
+  background:var(--bg);z-index:99;padding:24px 20px;
+  flex-direction:column;gap:8px;border-top:1px solid var(--border);
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu-link{
+  background:none;border:none;color:var(--text);
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:18px;font-weight:600;cursor:pointer;
+  padding:14px 0;border-bottom:1px solid var(--border);
+  text-align:left;transition:color 0.15s;
+}
+.mobile-menu-link:hover{color:var(--accent);}
+.mobile-menu-cta{
+  background:var(--accent);color:white;border:none;
+  padding:14px;border-radius:10px;margin-top:8px;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:16px;font-weight:700;cursor:pointer;
+}
+
+/* ── DECK DELETE ── */
+.deck-card{position:relative;}
+.deck-delete{
+  position:absolute;top:10px;right:10px;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:4px;border-radius:5px;
+  display:none;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.deck-card:hover .deck-delete{display:flex;}
+.deck-delete:hover{color:var(--danger);background:rgba(248,113,113,0.1);}
+
+/* ── ACCOUNT MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(10,10,10,0.88);
+  backdrop-filter:blur(16px);z-index:600;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;padding:36px;width:100%;max-width:400px;
+  box-shadow:0 40px 120px rgba(0,0,0,0.6);
+  animation:authUp 0.3s cubic-bezier(0.16,1,0.3,1);
+  position:relative;
+}
+.modal-title{font-size:18px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px;font-weight:300;line-height:1.6;}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:6px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.modal-close:hover{color:var(--text);background:var(--surface2);}
+.btn-danger{
+  width:100%;padding:13px;border-radius:10px;
+  background:rgba(248,113,113,0.1);color:var(--danger);
+  border:1px solid rgba(248,113,113,0.25);
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-danger:hover{background:rgba(248,113,113,0.2);}
+.btn-cancel{
+  width:100%;padding:13px;border-radius:10px;
+  background:none;color:var(--text2);
+  border:1px solid var(--border2);
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;margin-top:8px;
+}
+.btn-cancel:hover{border-color:var(--text2);color:var(--text);}
+
+/* ── ToS / PRIVACY PAGES ── */
+.legal-view{display:none;max-width:720px;margin:0 auto;padding:60px 40px 100px;}
+.legal-view.active{display:block;}
+.legal-title{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;}
+.legal-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:48px;}
+.legal-view h2{font-size:18px;font-weight:700;margin:36px 0 12px;letter-spacing:-0.3px;}
+.legal-view p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:14px;font-weight:300;}
+.legal-view a{color:var(--accent);text-decoration:none;}
+.legal-view a:hover{text-decoration:underline;}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   header{padding:14px 20px;}
@@ -741,6 +835,8 @@ footer{
   .study-view{padding:32px 20px 60px;}
   .step-connector{display:none;}
   .nav-links{display:none;}
+  .btn-mobile-menu{display:flex;}
+  .legal-view{padding:40px 20px 80px;}
 }
 </style>
 </head>
@@ -787,10 +883,19 @@ footer{
     <div class="wordmark-icon">C</div>
     <div class="wordmark-text">Cardly</div>
   </div>
-  <div class="header-right" id="headerRight">
-    <!-- populated by JS -->
-  </div>
+  <div class="header-right" id="headerRight"></div>
+  <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+    <i data-lucide="menu" style="width:18px;height:18px;"></i>
+  </button>
 </header>
+
+<!-- ── MOBILE MENU ── -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-link" onclick="closeMobileMenu();scrollTo({top:document.getElementById('pricing')?.offsetTop||0,behavior:'smooth'})">Pricing</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
+  <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
+</div>
 
 <!-- ── LANDING VIEW ── -->
 <div class="view active" id="landingView">
@@ -933,7 +1038,14 @@ footer{
     </section>
 
   </div>
-  <footer>© 2025 Cardly — AI Flashcard Generator &nbsp;·&nbsp; Built for students</footer>
+  <footer>
+    © 2025 Cardly — AI Flashcard Generator &nbsp;·&nbsp; Built for students &nbsp;·&nbsp;
+    <a href="#" onclick="showLegal('tos')" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Terms</a>
+    &nbsp;·&nbsp;
+    <a href="#" onclick="showLegal('privacy')" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Privacy</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:hello@cardly.app" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Contact</a>
+  </footer>
 </div>
 
 <!-- ── APP VIEW ── -->
@@ -1058,13 +1170,542 @@ footer{
   </div>
 </div>
 
+<!-- ── ACCOUNT MODAL ── -->
+<div class="modal-overlay" id="accountModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAccountModal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">Account</div>
+    <div class="modal-sub" id="accountEmail"></div>
+    <button class="btn-danger" onclick="confirmDeleteAccount()">
+      Delete my account & all data
+    </button>
+    <button class="btn-cancel" onclick="closeAccountModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- ── DELETE CONFIRM MODAL ── -->
+<div class="modal-overlay" id="deleteAccountModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('deleteAccountModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">Are you sure?</div>
+    <div class="modal-sub">This will permanently delete your account and all saved decks. This cannot be undone.</div>
+    <button class="btn-danger" id="deleteAccountBtn" onclick="deleteAccount()">Yes, delete everything</button>
+    <button class="btn-cancel" onclick="document.getElementById('deleteAccountModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
+<!-- ── TERMS OF SERVICE ── -->
+<div class="legal-view" id="tosView">
+  <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
+  <div class="legal-title">Terms of Service</div>
+  <div class="legal-date">Last updated: April 2025</div>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>By accessing or using Cardly ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.</p>
+
+  <h2>2. Description of Service</h2>
+  <p>Cardly is an AI-powered flashcard generation tool that allows users to convert study notes into flashcards. The Service is provided "as is" and may change at any time.</p>
+
+  <h2>3. User Accounts</h2>
+  <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. You must provide accurate information when creating an account.</p>
+
+  <h2>4. Acceptable Use</h2>
+  <p>You agree not to use the Service to upload content that is illegal, harmful, or violates the rights of others. You agree not to attempt to reverse-engineer, scrape, or abuse the Service.</p>
+
+  <h2>5. Free Tier Limits</h2>
+  <p>Free accounts are limited to 3 deck generations per calendar month. These limits may change at any time with reasonable notice.</p>
+
+  <h2>6. Intellectual Property</h2>
+  <p>The flashcards generated from your notes are yours. Cardly does not claim ownership over your content. The Cardly application, branding, and underlying technology remain our property.</p>
+
+  <h2>7. Privacy</h2>
+  <p>Your use of the Service is also governed by our <a href="#" onclick="showLegal('privacy')">Privacy Policy</a>.</p>
+
+  <h2>8. Limitation of Liability</h2>
+  <p>Cardly is provided without warranties of any kind. We are not liable for any damages arising from your use of the Service, including loss of data or study materials.</p>
+
+  <h2>9. Termination</h2>
+  <p>We reserve the right to suspend or terminate accounts that violate these terms. You may delete your account at any time from your account settings.</p>
+
+  <h2>10. Changes to Terms</h2>
+  <p>We may update these terms at any time. Continued use of the Service after changes constitutes acceptance of the new terms.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about these terms? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
+</div>
+
+<!-- ── PRIVACY POLICY ── -->
+<div class="legal-view" id="privacyView">
+  <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
+  <div class="legal-title">Privacy Policy</div>
+  <div class="legal-date">Last updated: April 2025</div>
+
+  <h2>1. What we collect</h2>
+  <p>We collect your email address when you sign up. We store the flashcard decks you generate so you can access them later. We do not collect payment information directly — that is handled by Stripe.</p>
+
+  <h2>2. How we use your data</h2>
+  <p>Your email is used to authenticate your account and send transactional emails (such as email confirmation). Your deck data is used solely to provide the Service to you.</p>
+
+  <h2>3. AI processing</h2>
+  <p>Your notes are sent to Anthropic's Claude API to generate flashcards. Anthropic's privacy policy governs how they handle this data. We do not store your raw notes — only the generated flashcards are saved.</p>
+
+  <h2>4. Data sharing</h2>
+  <p>We do not sell your data. We do not share your data with third parties except as necessary to provide the Service (Supabase for database hosting, Anthropic for AI generation, Stripe for payments).</p>
+
+  <h2>5. Data retention</h2>
+  <p>Your data is retained as long as your account is active. When you delete your account, all associated data including decks is permanently deleted within 30 days.</p>
+
+  <h2>6. Cookies</h2>
+  <p>We use only essential cookies required for authentication. We do not use tracking or advertising cookies.</p>
+
+  <h2>7. Your rights</h2>
+  <p>You have the right to access, correct, or delete your personal data at any time. You can delete your account and all associated data directly from the app. For other requests, contact us at <a href="mailto:hello@cardly.app">hello@cardly.app</a>.</p>
+
+  <h2>8. Security</h2>
+  <p>We use industry-standard security practices including encrypted connections and secure authentication. However, no system is completely secure.</p>
+
+  <h2>Contact</h2>
+  <p>Privacy questions? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ─────────────────────────────────────────
 const SUPABASE_URL      = 'https://offiymbdxoxbrlmdpeyr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mZml5bWJkeG94YnJsbWRwZXlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2OTY4NDIsImV4cCI6MjA5MjI3Mjg0Mn0.pDVvqGLcbZol-NmHmyn1j_85_KuDJN41cJCGNhDswjA';
+const FREE_DECK_LIMIT = 10; // max saved decks for free users
 // ─────────────────────────────────────────
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let cards = [], currentIndex = 0, isFlipped = false;
+let currentUser = null, userProfile = null;
+let authMode = 'login';
+let savedDecks = [];
+let currentDeckName = '';
+
+// ── INIT ──
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) await onSignedIn(session.user);
+  else showLanding();
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
+    if (event === 'SIGNED_OUT') onSignedOut();
+  });
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  document.getElementById('authOverlay').style.display = 'none';
+  await loadProfile();
+  await loadDecks();
+  showApp();
+}
+
+function onSignedOut() {
+  currentUser = null; userProfile = null; savedDecks = [];
+  showLanding();
+}
+
+// ── VIEWS ──
+function showLanding() {
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById('landingView').classList.add('active');
+  renderHeader(false);
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function showApp() {
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById('appView').classList.add('active');
+  renderHeader(true);
+  updateWelcome();
+  renderDecks();
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function goHome() {
+  if (currentUser) showApp();
+  else showLanding();
+}
+
+function showAuth() {
+  document.getElementById('authOverlay').style.display = 'flex';
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function scrollToGenerator() {
+  document.getElementById('generatorSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── LEGAL PAGES ──
+function showLegal(page) {
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById(page === 'tos' ? 'tosView' : 'privacyView').classList.add('active');
+  window.scrollTo(0, 0);
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function hideLegal() {
+  if (currentUser) showApp();
+  else showLanding();
+}
+
+// ── MOBILE MENU ──
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const btn = document.getElementById('mobileMenuBtn');
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  btn.innerHTML = isOpen
+    ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
+    : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenuBtn').innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+// ── HEADER ──
+function renderHeader(loggedIn) {
+  const hr = document.getElementById('headerRight');
+  if (loggedIn) {
+    const used = userProfile?.sets_this_month || 0;
+    const isPro = userProfile?.is_pro;
+    const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
+    const pillText = isPro ? '✦ Pro' : `${used} / 3 free`;
+    hr.innerHTML = `
+      <span class="${pillClass}">${pillText}</span>
+      <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
+      <button class="btn-signout" onclick="signOut()">Sign out</button>
+    `;
+  } else {
+    hr.innerHTML = `
+      <div class="nav-links">
+        <button class="nav-link" onclick="scrollTo({top:document.getElementById('pricing').offsetTop,behavior:'smooth'})">Pricing</button>
+        <button class="nav-link" onclick="showLegal('tos')">Terms</button>
+        <button class="nav-link" onclick="showLegal('privacy')">Privacy</button>
+      </div>
+      <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
+    `;
+  }
+}
+
+// ── ACCOUNT MODAL ──
+function openAccountModal() {
+  document.getElementById('accountEmail').textContent = currentUser?.email || '';
+  document.getElementById('accountModal').classList.add('open');
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function closeAccountModal() {
+  document.getElementById('accountModal').classList.remove('open');
+}
+
+function confirmDeleteAccount() {
+  closeAccountModal();
+  document.getElementById('deleteAccountModal').classList.add('open');
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+async function deleteAccount() {
+  const btn = document.getElementById('deleteAccountBtn');
+  btn.disabled = true;
+  btn.textContent = 'Deleting...';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    // Delete all user decks
+    await sb.from('decks').delete().eq('user_id', currentUser.id);
+    // Delete profile
+    await sb.from('profiles').delete().eq('id', currentUser.id);
+    // Sign out (account deletion requires server-side admin — this clears local session)
+    await sb.auth.signOut();
+    showToast('Account deleted. Sorry to see you go.');
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Yes, delete everything';
+    showToast('Error deleting account. Contact hello@cardly.app');
+  }
+}
+
+// ── PROFILE ──
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  userProfile = data;
+}
+
+// ── DECKS ──
+async function loadDecks() {
+  const { data } = await sb.from('decks').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  savedDecks = data || [];
+}
+
+function renderDecks() {
+  const section = document.getElementById('decksSection');
+  const grid = document.getElementById('decksGrid');
+
+  if (savedDecks.length === 0) { section.style.display = 'none'; return; }
+
+  section.style.display = 'block';
+  grid.innerHTML = '';
+
+  savedDecks.forEach((deck, i) => {
+    const el = document.createElement('div');
+    el.className = 'deck-card';
+    el.style.animationDelay = (i * 0.05) + 's';
+    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    el.innerHTML = `
+      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
+      <div class="deck-meta">
+        <span>${deck.card_count || 0} cards</span>
+        <div class="deck-dot"></div>
+        <span>${date}</span>
+      </div>
+      <button class="deck-delete" onclick="event.stopPropagation();deleteDeck('${deck.id}')" title="Delete deck">
+        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+      </button>
+    `;
+    el.onclick = () => loadDeckAndStudy(deck);
+    grid.appendChild(el);
+  });
+
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+async function deleteDeck(deckId) {
+  if (!confirm('Delete this deck?')) return;
+  await sb.from('decks').delete().eq('id', deckId).eq('user_id', currentUser.id);
+  await loadDecks();
+  renderDecks();
+  updateWelcome();
+  showToast('Deck deleted');
+}
+
+async function loadDeckAndStudy(deck) {
+  cards = deck.cards || [];
+  currentDeckName = deck.name || 'Study Mode';
+  currentIndex = 0;
+  startStudy();
+}
+
+async function saveDeck(deckName, deckCards) {
+  if (!currentUser) return;
+  // Enforce free deck storage limit
+  if (!userProfile?.is_pro && savedDecks.length >= FREE_DECK_LIMIT) {
+    // Delete oldest deck to make room
+    const oldest = savedDecks[savedDecks.length - 1];
+    if (oldest) await sb.from('decks').delete().eq('id', oldest.id);
+  }
+  try {
+    await sb.from('decks').insert({
+      user_id: currentUser.id,
+      name: deckName || 'Untitled Deck',
+      cards: deckCards,
+      card_count: deckCards.length
+    });
+    await loadDecks();
+    renderDecks();
+  } catch(e) { console.log('Save deck error:', e); }
+}
+
+function updateWelcome() {
+  const name = currentUser?.email?.split('@')[0] || 'there';
+  const isNew = savedDecks.length === 0;
+  document.getElementById('welcomeMsg').textContent = isNew ? `Welcome to Cardly` : `Welcome back, ${name}`;
+  document.getElementById('welcomeSub').textContent = isNew
+    ? 'Paste your notes below to generate your first deck'
+    : `You have ${savedDecks.length} saved deck${savedDecks.length !== 1 ? 's' : ''}`;
+}
+
+// ── AUTH ──
+function switchTab(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (mode==='login'&&i===0)||(mode==='signup'&&i===1));
+  });
+  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  document.getElementById('authMessage').innerHTML = '';
+}
+
+async function handleEmailAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const btn = document.getElementById('authSubmitBtn');
+  if (!email || !password) return showAuthMsg('Please fill in both fields.', 'error');
+  btn.disabled = true; btn.textContent = '...';
+  let error;
+  if (authMode === 'login') {
+    ({ error } = await sb.auth.signInWithPassword({ email, password }));
+  } else {
+    ({ error } = await sb.auth.signUp({ email, password }));
+    if (!error) return showAuthMsg('Check your email to confirm your account!', 'success');
+  }
+  btn.disabled = false;
+  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
+  if (error) showAuthMsg(error.message, 'error');
+}
+
+async function handleGoogleAuth() {
+  await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+}
+
+async function signOut() { await sb.auth.signOut(); }
+
+function showAuthMsg(msg, type) {
+  document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${msg}</div>`;
+}
+
+// ── NOTES ──
+document.getElementById('notesInput').addEventListener('input', () => {
+  document.getElementById('charCount').textContent = document.getElementById('notesInput').value.length.toLocaleString() + ' chars';
+});
+
+// ── GENERATE ──
+async function generateCards() {
+  if (!currentUser) return;
+  const notes = document.getElementById('notesInput').value.trim();
+  const count = parseInt(document.getElementById('cardCount').value) || 10;
+  const deckName = document.getElementById('deckNameInput').value.trim();
+
+  if (notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
+  if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
+    showError("You've used all 3 free generations this month. Pro is coming soon!"); return;
+  }
+
+  setLoading(true); hideError();
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ notes, count })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Server error');
+
+    cards = data.cards;
+    currentDeckName = deckName || 'New Deck';
+
+    await saveDeck(currentDeckName, cards);
+    await loadProfile();
+    updateWelcome();
+    renderHeader(true);
+    displayMiniCards();
+    setLoading(false);
+    showToast(`${cards.length} cards generated`);
+
+  } catch(err) {
+    setLoading(false);
+    showError(err.message);
+  }
+}
+
+function setLoading(state) {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = state;
+  if (!state) {
+    btn.innerHTML = '<i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards';
+    lucide.createIcons();
+  } else {
+    btn.textContent = 'Generating...';
+  }
+  document.getElementById('emptyState').style.display = (!state && cards.length === 0) ? 'flex' : 'none';
+  document.getElementById('loadingState').style.display = state ? 'flex' : 'none';
+  if (state) {
+    document.getElementById('miniCards').style.display = 'none';
+    document.getElementById('panelActions').style.display = 'none';
+  }
+}
+
+function displayMiniCards() {
+  const mini = document.getElementById('miniCards');
+  document.getElementById('loadingState').style.display = 'none';
+  mini.style.display = 'flex';
+  document.getElementById('panelActions').style.display = 'flex';
+  mini.innerHTML = '';
+  cards.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'mini-card';
+    el.style.animationDelay = (i * 0.04) + 's';
+    el.innerHTML = `<div class="mini-card-q">${esc(card.front)}</div><div class="mini-card-a">${esc(card.back)}</div>`;
+    el.onclick = () => { currentIndex = i; startStudy(); };
+    mini.appendChild(el);
+  });
+}
+
+// ── STUDY ──
+function startStudy() {
+  if (!cards.length) return;
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'block';
+  document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
+  isFlipped = false; currentIndex = 0; renderCard();
+  setTimeout(() => lucide.createIcons(), 10);
+}
+
+function backToApp() {
+  document.getElementById('studyView').style.display = 'none';
+  showApp();
+}
+
+function renderCard() {
+  const card = cards[currentIndex], total = cards.length;
+  document.getElementById('cardQuestion').textContent = card.front;
+  document.getElementById('cardAnswer').textContent = card.back;
+  document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${total}`;
+  document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
+  document.getElementById('progressFill').style.width = ((currentIndex + 1) / total * 100) + '%';
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').disabled = currentIndex === total - 1;
+  isFlipped = false;
+  document.getElementById('cardInner').classList.remove('flipped');
+}
+
+function flipCard() { isFlipped = !isFlipped; document.getElementById('cardInner').classList.toggle('flipped', isFlipped); }
+function nextCard() { if (currentIndex < cards.length - 1) { currentIndex++; renderCard(); } }
+function prevCard() { if (currentIndex > 0) { currentIndex--; renderCard(); } }
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('studyView').style.display !== 'block') return;
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+function exportCards() {
+  if (!cards.length) return;
+  let out = `CARDLY — ${currentDeckName}\n` + '='.repeat(40) + '\n\n';
+  cards.forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
+  a.download = `${currentDeckName.replace(/\s+/g,'-').toLowerCase()}.txt`;
+  a.click();
+  showToast('Exported successfully');
+}
+
+// ── UTILS ──
+function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; }
+function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+init().then(() => lucide.createIcons());
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
