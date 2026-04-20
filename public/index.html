@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 :root {
   --bg: #0a0a0a;
@@ -911,10 +911,8 @@ footer{
       </h1>
       <p class="hero-sub">Paste any lecture notes, textbook excerpt, or study material — Cardly generates smart flashcards in seconds.</p>
       <div class="hero-cta">
-        <button class="btn-primary" onclick="showAuth()">
-          <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Started Free
-        </button>
-        <button class="btn-secondary" onclick="scrollTo({top:document.getElementById('pricing').offsetTop,behavior:'smooth'})">See Pricing</button>
+        <button class="btn-primary" onclick="showAuth()">✦ Get Started Free</button>
+        <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
       </div>
 
       <!-- Demo -->
@@ -1058,9 +1056,7 @@ footer{
         <h2 id="welcomeMsg">Welcome to Cardly</h2>
         <p id="welcomeSub">Paste your notes below to generate your first deck</p>
       </div>
-      <button class="btn-new-deck" onclick="scrollToGenerator()">
-        <i data-lucide="plus" style="width:15px;height:15px;"></i> New Deck
-      </button>
+      <button class="btn-new-deck" onclick="scrollToGenerator()">+ New Deck</button>
     </div>
 
     <!-- Saved decks -->
@@ -1087,9 +1083,7 @@ footer{
             </div>
             <span class="char-count" id="charCount">0 chars</span>
           </div>
-          <button class="btn-generate" id="generateBtn" onclick="generateCards()">
-            <i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards
-          </button>
+          <button class="btn-generate" id="generateBtn" onclick="generateCards()">✦ Generate Flashcards</button>
           <div class="error-msg" id="errorMsg"></div>
         </div>
 
@@ -1111,12 +1105,8 @@ footer{
             <div class="mini-cards" id="miniCards"></div>
           </div>
           <div class="panel-actions" id="panelActions" style="display:none;">
-            <button class="btn-sm" onclick="startStudy()">
-              <i data-lucide="play" style="width:13px;height:13px;"></i> Study Now
-            </button>
-            <button class="btn-sm" onclick="exportCards()">
-              <i data-lucide="download" style="width:13px;height:13px;"></i> Export
-            </button>
+            <button class="btn-sm" onclick="startStudy()">▶ Study Now</button>
+            <button class="btn-sm" onclick="exportCards()">↓ Export</button>
           </div>
         </div>
       </div>
@@ -1152,9 +1142,9 @@ footer{
   </div>
 
   <div class="card-nav">
-    <button class="btn-nav" id="prevBtn" onclick="prevCard()"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
+    <button class="btn-nav" id="prevBtn" onclick="prevCard()">←</button>
     <span class="card-counter" id="cardCounter">1 / 10</span>
-    <button class="btn-nav" id="nextBtn" onclick="nextCard()"><i data-lucide="arrow-right" style="width:18px;height:18px;"></i></button>
+    <button class="btn-nav" id="nextBtn" onclick="nextCard()">→</button>
   </div>
 
   <div class="kb-hints">
@@ -1164,9 +1154,7 @@ footer{
   </div>
 
   <div style="display:flex;justify-content:center;">
-    <button class="btn-back" onclick="backToApp()">
-      <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Dashboard
-    </button>
+    <button class="btn-back" onclick="backToApp()">← Back to Dashboard</button>
   </div>
 </div>
 
@@ -1317,7 +1305,7 @@ function showLanding() {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function showApp() {
@@ -1327,7 +1315,7 @@ function showApp() {
   renderHeader(true);
   updateWelcome();
   renderDecks();
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function goHome() {
@@ -1337,7 +1325,7 @@ function goHome() {
 
 function showAuth() {
   document.getElementById('authOverlay').style.display = 'flex';
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function scrollToGenerator() {
@@ -1350,7 +1338,7 @@ function showLegal(page) {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById(page === 'tos' ? 'tosView' : 'privacyView').classList.add('active');
   window.scrollTo(0, 0);
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function hideLegal() {
@@ -1367,13 +1355,13 @@ function toggleMobileMenu() {
   btn.innerHTML = isOpen
     ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
     : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function closeMobileMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
   document.getElementById('mobileMenuBtn').innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 // ── HEADER ──
@@ -1392,7 +1380,7 @@ function renderHeader(loggedIn) {
   } else {
     hr.innerHTML = `
       <div class="nav-links">
-        <button class="nav-link" onclick="scrollTo({top:document.getElementById('pricing').offsetTop,behavior:'smooth'})">Pricing</button>
+        <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
         <button class="nav-link" onclick="showLegal('tos')">Terms</button>
         <button class="nav-link" onclick="showLegal('privacy')">Privacy</button>
       </div>
@@ -1405,7 +1393,7 @@ function renderHeader(loggedIn) {
 function openAccountModal() {
   document.getElementById('accountEmail').textContent = currentUser?.email || '';
   document.getElementById('accountModal').classList.add('open');
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function closeAccountModal() {
@@ -1415,7 +1403,7 @@ function closeAccountModal() {
 function confirmDeleteAccount() {
   closeAccountModal();
   document.getElementById('deleteAccountModal').classList.add('open');
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 async function deleteAccount() {
@@ -1479,7 +1467,7 @@ function renderDecks() {
     grid.appendChild(el);
   });
 
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 async function deleteDeck(deckId) {
@@ -1615,12 +1603,7 @@ async function generateCards() {
 function setLoading(state) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = state;
-  if (!state) {
-    btn.innerHTML = '<i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards';
-    lucide.createIcons();
-  } else {
-    btn.textContent = 'Generating...';
-  }
+  btn.textContent = state ? 'Generating...' : '✦ Generate Flashcards';
   document.getElementById('emptyState').style.display = (!state && cards.length === 0) ? 'flex' : 'none';
   document.getElementById('loadingState').style.display = state ? 'flex' : 'none';
   if (state) {
@@ -1652,7 +1635,7 @@ function startStudy() {
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
   isFlipped = false; currentIndex = 0; renderCard();
-  setTimeout(() => lucide.createIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 10);
 }
 
 function backToApp() {
@@ -1705,350 +1688,14 @@ function showToast(msg) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-init().then(() => lucide.createIcons());
-
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-let cards = [], currentIndex = 0, isFlipped = false;
-let currentUser = null, userProfile = null;
-let authMode = 'login';
-let savedDecks = [];
-let currentDeckName = '';
-
-// ── INIT ──
-async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) await onSignedIn(session.user);
-  else showLanding();
-
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
-    if (event === 'SIGNED_OUT') onSignedOut();
-  });
+function safeCreateIcons() {
+  try { if (window.lucide) safeCreateIcons(); } catch(e) {}
 }
 
-async function onSignedIn(user) {
-  currentUser = user;
-  document.getElementById('authOverlay').style.display = 'none';
-  await loadProfile();
-  await loadDecks();
-  showApp();
-}
-
-function onSignedOut() {
-  currentUser = null; userProfile = null; savedDecks = [];
-  showLanding();
-}
-
-// ── VIEWS ──
-function showLanding() {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('studyView').style.display = 'none';
-  document.getElementById('landingView').classList.add('active');
-  renderHeader(false);
-  setTimeout(() => lucide.createIcons(), 10);
-}
-
-function showApp() {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('studyView').style.display = 'none';
-  document.getElementById('appView').classList.add('active');
-  renderHeader(true);
-  updateWelcome();
-  renderDecks();
-  setTimeout(() => lucide.createIcons(), 10);
-}
-
-function goHome() {
-  if (currentUser) showApp();
-  else showLanding();
-}
-
-function showAuth() {
-  document.getElementById('authOverlay').style.display = 'flex';
-  setTimeout(() => lucide.createIcons(), 10);
-}
-
-function scrollToGenerator() {
-  document.getElementById('generatorSection').scrollIntoView({ behavior: 'smooth' });
-}
-
-// ── HEADER ──
-function renderHeader(loggedIn) {
-  const hr = document.getElementById('headerRight');
-  if (loggedIn) {
-    const used = userProfile?.sets_this_month || 0;
-    const isPro = userProfile?.is_pro;
-    const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
-    const pillText = isPro ? '✦ Pro' : `${used} / 3 free`;
-    hr.innerHTML = `
-      <span style="font-size:12px;color:var(--text2);">${currentUser.email}</span>
-      <span class="${pillClass}">${pillText}</span>
-      <button class="btn-signout" onclick="signOut()">Sign out</button>
-    `;
-  } else {
-    hr.innerHTML = `
-      <div class="nav-links">
-        <button class="nav-link" onclick="scrollTo({top:document.getElementById('pricing').offsetTop,behavior:'smooth'})">Pricing</button>
-      </div>
-      <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
-    `;
-  }
-}
-
-// ── PROFILE ──
-async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  userProfile = data;
-}
-
-// ── DECKS ──
-async function loadDecks() {
-  const { data } = await sb.from('decks').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-  savedDecks = data || [];
-}
-
-function renderDecks() {
-  const section = document.getElementById('decksSection');
-  const grid = document.getElementById('decksGrid');
-
-  if (savedDecks.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-
-  section.style.display = 'block';
-  grid.innerHTML = '';
-
-  savedDecks.forEach((deck, i) => {
-    const el = document.createElement('div');
-    el.className = 'deck-card';
-    el.style.animationDelay = (i * 0.05) + 's';
-    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    el.innerHTML = `
-      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
-      <div class="deck-meta">
-        <span>${deck.card_count || 0} cards</span>
-        <div class="deck-dot"></div>
-        <span>${date}</span>
-      </div>
-    `;
-    el.onclick = () => loadDeckAndStudy(deck);
-    grid.appendChild(el);
-  });
-}
-
-async function loadDeckAndStudy(deck) {
-  cards = deck.cards || [];
-  currentDeckName = deck.name || 'Study Mode';
-  currentIndex = 0;
-  startStudy();
-}
-
-async function saveDeck(deckName, deckCards) {
-  if (!currentUser) return;
-  try {
-    await sb.from('decks').insert({
-      user_id: currentUser.id,
-      name: deckName || 'Untitled Deck',
-      cards: deckCards,
-      card_count: deckCards.length
-    });
-    await loadDecks();
-    renderDecks();
-  } catch(e) { console.log('Save deck error:', e); }
-}
-
-function updateWelcome() {
-  const name = currentUser?.email?.split('@')[0] || 'there';
-  const isNew = savedDecks.length === 0;
-  document.getElementById('welcomeMsg').textContent = isNew ? `Welcome to Cardly` : `Welcome back, ${name}`;
-  document.getElementById('welcomeSub').textContent = isNew
-    ? 'Paste your notes below to generate your first deck'
-    : `You have ${savedDecks.length} saved deck${savedDecks.length !== 1 ? 's' : ''}`;
-}
-
-// ── AUTH ──
-function switchTab(mode) {
-  authMode = mode;
-  document.querySelectorAll('.auth-tab').forEach((t, i) => {
-    t.classList.toggle('active', (mode==='login'&&i===0)||(mode==='signup'&&i===1));
-  });
-  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
-  document.getElementById('authMessage').innerHTML = '';
-}
-
-async function handleEmailAuth() {
-  const email = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const btn = document.getElementById('authSubmitBtn');
-  if (!email || !password) return showAuthMsg('Please fill in both fields.', 'error');
-  btn.disabled = true; btn.textContent = '...';
-  let error;
-  if (authMode === 'login') {
-    ({ error } = await sb.auth.signInWithPassword({ email, password }));
-  } else {
-    ({ error } = await sb.auth.signUp({ email, password }));
-    if (!error) return showAuthMsg('Check your email to confirm your account!', 'success');
-  }
-  btn.disabled = false;
-  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
-  if (error) showAuthMsg(error.message, 'error');
-}
-
-async function handleGoogleAuth() {
-  await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
-}
-
-async function signOut() { await sb.auth.signOut(); }
-
-function showAuthMsg(msg, type) {
-  document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${msg}</div>`;
-}
-
-// ── NOTES ──
-document.getElementById('notesInput').addEventListener('input', () => {
-  document.getElementById('charCount').textContent = document.getElementById('notesInput').value.length.toLocaleString() + ' chars';
+document.addEventListener('DOMContentLoaded', () => {
+  init().then(() => safeCreateIcons());
 });
 
-// ── GENERATE ──
-async function generateCards() {
-  if (!currentUser) return;
-  const notes = document.getElementById('notesInput').value.trim();
-  const count = parseInt(document.getElementById('cardCount').value) || 10;
-  const deckName = document.getElementById('deckNameInput').value.trim();
-
-  if (notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
-  if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
-    showError("You've used all 3 free decks this month. Pro is coming soon!"); return;
-  }
-
-  setLoading(true); hideError();
-
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ notes, count })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Server error');
-
-    cards = data.cards;
-    currentDeckName = deckName || 'New Deck';
-
-    // Save deck + refresh profile
-    await saveDeck(currentDeckName, cards);
-    await loadProfile();
-    updateWelcome();
-    renderHeader(true);
-
-    displayMiniCards();
-    setLoading(false);
-    showToast(`${cards.length} cards generated`);
-
-  } catch(err) {
-    setLoading(false);
-    showError(err.message);
-  }
-}
-
-function setLoading(state) {
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = state;
-  btn.textContent = state ? 'Generating...' : ''
-  if (!state) {
-    btn.innerHTML = '<i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards';
-    lucide.createIcons();
-  }
-  document.getElementById('emptyState').style.display = (!state && cards.length === 0) ? 'flex' : 'none';
-  document.getElementById('loadingState').style.display = state ? 'flex' : 'none';
-  if (state) {
-    document.getElementById('miniCards').style.display = 'none';
-    document.getElementById('panelActions').style.display = 'none';
-  }
-}
-
-function displayMiniCards() {
-  const mini = document.getElementById('miniCards');
-  document.getElementById('loadingState').style.display = 'none';
-  mini.style.display = 'flex';
-  document.getElementById('panelActions').style.display = 'flex';
-  mini.innerHTML = '';
-  cards.forEach((card, i) => {
-    const el = document.createElement('div');
-    el.className = 'mini-card';
-    el.style.animationDelay = (i * 0.04) + 's';
-    el.innerHTML = `<div class="mini-card-q">${esc(card.front)}</div><div class="mini-card-a">${esc(card.back)}</div>`;
-    el.onclick = () => { currentIndex = i; startStudy(); };
-    mini.appendChild(el);
-  });
-}
-
-// ── STUDY ──
-function startStudy() {
-  if (!cards.length) return;
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('studyView').style.display = 'block';
-  document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
-  isFlipped = false; currentIndex = 0; renderCard();
-  setTimeout(() => lucide.createIcons(), 10);
-}
-
-function backToApp() {
-  document.getElementById('studyView').style.display = 'none';
-  showApp();
-}
-
-function renderCard() {
-  const card = cards[currentIndex], total = cards.length;
-  document.getElementById('cardQuestion').textContent = card.front;
-  document.getElementById('cardAnswer').textContent = card.back;
-  document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${total}`;
-  document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
-  document.getElementById('progressFill').style.width = ((currentIndex + 1) / total * 100) + '%';
-  document.getElementById('prevBtn').disabled = currentIndex === 0;
-  document.getElementById('nextBtn').disabled = currentIndex === total - 1;
-  isFlipped = false;
-  document.getElementById('cardInner').classList.remove('flipped');
-}
-
-function flipCard() { isFlipped = !isFlipped; document.getElementById('cardInner').classList.toggle('flipped', isFlipped); }
-function nextCard() { if (currentIndex < cards.length - 1) { currentIndex++; renderCard(); } }
-function prevCard() { if (currentIndex > 0) { currentIndex--; renderCard(); } }
-
-document.addEventListener('keydown', e => {
-  if (document.getElementById('studyView').style.display !== 'block') return;
-  if (e.key === 'ArrowRight') nextCard();
-  if (e.key === 'ArrowLeft') prevCard();
-  if (e.key === ' ') { e.preventDefault(); flipCard(); }
-});
-
-function exportCards() {
-  if (!cards.length) return;
-  let out = `CARDLY — ${currentDeckName}\n` + '='.repeat(40) + '\n\n';
-  cards.forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
-  a.download = `${currentDeckName.replace(/\s+/g,'-').toLowerCase()}.txt`;
-  a.click();
-  showToast('Exported successfully');
-}
-
-// ── UTILS ──
-function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; }
-function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-init().then(() => lucide.createIcons());
 </script>
 </body>
 </html>
