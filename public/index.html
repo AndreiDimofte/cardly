@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 :root {
   --bg: #0a0a0a;
@@ -145,7 +146,16 @@ body::after {
 }
 .auth-google:hover{border-color:var(--text2);}
 
-.auth-error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--danger);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;line-height:1.5;}
+.auth-close{
+  position:absolute;top:16px;right:16px;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:6px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.auth-close:hover{color:var(--text);background:var(--surface2);}
+
+.auth-box{position:relative;}
 .auth-success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--success);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;}
 
 /* ════════════════════════════════════
@@ -739,6 +749,9 @@ footer{
 <!-- ── AUTH MODAL ── -->
 <div class="auth-overlay" id="authOverlay" style="display:none;">
   <div class="auth-box">
+    <button class="auth-close" onclick="document.getElementById('authOverlay').style.display='none'" title="Close">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </button>
     <div class="auth-wordmark">
       <div class="auth-icon">C</div>
       <div class="auth-brand">Cardly</div>
@@ -793,7 +806,9 @@ footer{
       </h1>
       <p class="hero-sub">Paste any lecture notes, textbook excerpt, or study material — Cardly generates smart flashcards in seconds.</p>
       <div class="hero-cta">
-        <button class="btn-primary" onclick="showAuth()">✦ Get Started Free</button>
+        <button class="btn-primary" onclick="showAuth()">
+          <i data-lucide="sparkles" style="width:16px;height:16px;"></i> Get Started Free
+        </button>
         <button class="btn-secondary" onclick="scrollTo({top:document.getElementById('pricing').offsetTop,behavior:'smooth'})">See Pricing</button>
       </div>
 
@@ -823,32 +838,32 @@ footer{
       <div class="section-title">Everything you need<br>to study smarter</div>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">⚡</div>
+          <div class="feature-icon"><i data-lucide="zap" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Instant generation</div>
           <div class="feature-desc">Paste your notes and get a full deck of flashcards in under 10 seconds. No formatting, no fuss.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🧠</div>
+          <div class="feature-icon"><i data-lucide="brain" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Actually smart cards</div>
           <div class="feature-desc">Powered by Claude AI — cards test real understanding with specific, testable questions. Not just definitions.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📚</div>
+          <div class="feature-icon"><i data-lucide="library" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Saved decks</div>
           <div class="feature-desc">All your decks saved automatically. Come back anytime and pick up where you left off.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🎴</div>
+          <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Beautiful study mode</div>
           <div class="feature-desc">Smooth flip animations, keyboard shortcuts, and a progress tracker keep you focused.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📤</div>
+          <div class="feature-icon"><i data-lucide="upload" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Export anywhere</div>
           <div class="feature-desc">Export your cards as a .txt file and import into Anki, Notion, or any study app.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🔒</div>
+          <div class="feature-icon"><i data-lucide="lock" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Private & secure</div>
           <div class="feature-desc">Your notes and cards are private to your account. We never train on your content.</div>
         </div>
@@ -928,10 +943,12 @@ footer{
     <!-- Welcome banner -->
     <div class="welcome-banner" id="welcomeBanner">
       <div class="welcome-text">
-        <h2 id="welcomeMsg">Welcome to Cardly 👋</h2>
+        <h2 id="welcomeMsg">Welcome to Cardly</h2>
         <p id="welcomeSub">Paste your notes below to generate your first deck</p>
       </div>
-      <button class="btn-new-deck" onclick="scrollToGenerator()">+ New Deck</button>
+      <button class="btn-new-deck" onclick="scrollToGenerator()">
+        <i data-lucide="plus" style="width:15px;height:15px;"></i> New Deck
+      </button>
     </div>
 
     <!-- Saved decks -->
@@ -958,7 +975,9 @@ footer{
             </div>
             <span class="char-count" id="charCount">0 chars</span>
           </div>
-          <button class="btn-generate" id="generateBtn" onclick="generateCards()">✦ Generate Flashcards</button>
+          <button class="btn-generate" id="generateBtn" onclick="generateCards()">
+            <i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards
+          </button>
           <div class="error-msg" id="errorMsg"></div>
         </div>
 
@@ -966,7 +985,7 @@ footer{
           <div class="panel-label">Generated Cards</div>
           <div class="cards-area">
             <div class="empty-state" id="emptyState">
-              <div class="empty-icon">🃏</div>
+              <div class="empty-icon"><i data-lucide="layers" style="width:28px;height:28px;"></i></div>
               <p>Your flashcards will appear here after generation</p>
             </div>
             <div class="loading-state" id="loadingState">
@@ -980,8 +999,12 @@ footer{
             <div class="mini-cards" id="miniCards"></div>
           </div>
           <div class="panel-actions" id="panelActions" style="display:none;">
-            <button class="btn-sm" onclick="startStudy()">▶ Study Now</button>
-            <button class="btn-sm" onclick="exportCards()">↓ Export</button>
+            <button class="btn-sm" onclick="startStudy()">
+              <i data-lucide="play" style="width:13px;height:13px;"></i> Study Now
+            </button>
+            <button class="btn-sm" onclick="exportCards()">
+              <i data-lucide="download" style="width:13px;height:13px;"></i> Export
+            </button>
           </div>
         </div>
       </div>
@@ -1017,9 +1040,9 @@ footer{
   </div>
 
   <div class="card-nav">
-    <button class="btn-nav" id="prevBtn" onclick="prevCard()">←</button>
+    <button class="btn-nav" id="prevBtn" onclick="prevCard()"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
     <span class="card-counter" id="cardCounter">1 / 10</span>
-    <button class="btn-nav" id="nextBtn" onclick="nextCard()">→</button>
+    <button class="btn-nav" id="nextBtn" onclick="nextCard()"><i data-lucide="arrow-right" style="width:18px;height:18px;"></i></button>
   </div>
 
   <div class="kb-hints">
@@ -1029,7 +1052,9 @@ footer{
   </div>
 
   <div style="display:flex;justify-content:center;">
-    <button class="btn-back" onclick="backToApp()">← Back to Dashboard</button>
+    <button class="btn-back" onclick="backToApp()">
+      <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Dashboard
+    </button>
   </div>
 </div>
 
@@ -1081,6 +1106,7 @@ function showLanding() {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
+  setTimeout(() => lucide.createIcons(), 10);
 }
 
 function showApp() {
@@ -1090,6 +1116,7 @@ function showApp() {
   renderHeader(true);
   updateWelcome();
   renderDecks();
+  setTimeout(() => lucide.createIcons(), 10);
 }
 
 function goHome() {
@@ -1099,6 +1126,7 @@ function goHome() {
 
 function showAuth() {
   document.getElementById('authOverlay').style.display = 'flex';
+  setTimeout(() => lucide.createIcons(), 10);
 }
 
 function scrollToGenerator() {
@@ -1194,7 +1222,7 @@ async function saveDeck(deckName, deckCards) {
 function updateWelcome() {
   const name = currentUser?.email?.split('@')[0] || 'there';
   const isNew = savedDecks.length === 0;
-  document.getElementById('welcomeMsg').textContent = isNew ? `Welcome to Cardly 👋` : `Welcome back, ${name}`;
+  document.getElementById('welcomeMsg').textContent = isNew ? `Welcome to Cardly` : `Welcome back, ${name}`;
   document.getElementById('welcomeSub').textContent = isNew
     ? 'Paste your notes below to generate your first deck'
     : `You have ${savedDecks.length} saved deck${savedDecks.length !== 1 ? 's' : ''}`;
@@ -1279,7 +1307,7 @@ async function generateCards() {
 
     displayMiniCards();
     setLoading(false);
-    showToast(`✦ ${cards.length} cards generated`);
+    showToast(`${cards.length} cards generated`);
 
   } catch(err) {
     setLoading(false);
@@ -1290,7 +1318,11 @@ async function generateCards() {
 function setLoading(state) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = state;
-  btn.textContent = state ? '◌ Generating...' : '✦ Generate Flashcards';
+  btn.textContent = state ? 'Generating...' : ''
+  if (!state) {
+    btn.innerHTML = '<i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards';
+    lucide.createIcons();
+  }
   document.getElementById('emptyState').style.display = (!state && cards.length === 0) ? 'flex' : 'none';
   document.getElementById('loadingState').style.display = state ? 'flex' : 'none';
   if (state) {
@@ -1322,6 +1354,7 @@ function startStudy() {
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
   isFlipped = false; currentIndex = 0; renderCard();
+  setTimeout(() => lucide.createIcons(), 10);
 }
 
 function backToApp() {
@@ -1374,7 +1407,7 @@ function showToast(msg) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-init();
+init().then(() => lucide.createIcons());
 </script>
 </body>
 </html>
