@@ -1276,6 +1276,13 @@ let currentDeckName = '';
 
 // ── INIT ──
 async function init() {
+  // Handle OAuth redirect — exchange hash token first
+  if (window.location.hash.includes('access_token')) {
+    // Wait for Supabase to process the hash
+    await new Promise(resolve => setTimeout(resolve, 500));
+    window.history.replaceState(null, '', window.location.pathname);
+  }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) await onSignedIn(session.user);
   else showLanding();
@@ -1305,7 +1312,7 @@ function showLanding() {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function showApp() {
@@ -1315,7 +1322,7 @@ function showApp() {
   renderHeader(true);
   updateWelcome();
   renderDecks();
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function goHome() {
@@ -1325,7 +1332,7 @@ function goHome() {
 
 function showAuth() {
   document.getElementById('authOverlay').style.display = 'flex';
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function scrollToGenerator() {
@@ -1338,7 +1345,7 @@ function showLegal(page) {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById(page === 'tos' ? 'tosView' : 'privacyView').classList.add('active');
   window.scrollTo(0, 0);
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function hideLegal() {
@@ -1355,13 +1362,13 @@ function toggleMobileMenu() {
   btn.innerHTML = isOpen
     ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
     : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function closeMobileMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
   document.getElementById('mobileMenuBtn').innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 // ── HEADER ──
@@ -1393,7 +1400,7 @@ function renderHeader(loggedIn) {
 function openAccountModal() {
   document.getElementById('accountEmail').textContent = currentUser?.email || '';
   document.getElementById('accountModal').classList.add('open');
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function closeAccountModal() {
@@ -1403,7 +1410,7 @@ function closeAccountModal() {
 function confirmDeleteAccount() {
   closeAccountModal();
   document.getElementById('deleteAccountModal').classList.add('open');
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 async function deleteAccount() {
@@ -1467,7 +1474,7 @@ function renderDecks() {
     grid.appendChild(el);
   });
 
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 async function deleteDeck(deckId) {
@@ -1635,7 +1642,7 @@ function startStudy() {
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
   isFlipped = false; currentIndex = 0; renderCard();
-  setTimeout(() => safeCreateIcons(), 10);
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function backToApp() {
@@ -1689,11 +1696,13 @@ function showToast(msg) {
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function safeCreateIcons() {
-  try { if (window.lucide) safeCreateIcons(); } catch(e) {}
+  try { if (window.lucide) lucide.createIcons(); } catch(e) {}
 }
 
+window.addEventListener('load', () => safeCreateIcons());
+
 document.addEventListener('DOMContentLoaded', () => {
-  init().then(() => safeCreateIcons());
+  init().then(() => setTimeout(() => safeCreateIcons(), 200));
 });
 
 </script>
