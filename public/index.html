@@ -1152,7 +1152,7 @@ footer{
             <li>Export to .txt</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn-pricing btn-pricing-pro" onclick="showAuth()">Coming soon</button>
+          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $7/mo</button>
         </div>
       </div>
     </section>
@@ -1488,6 +1488,7 @@ async function onSignedIn(user) {
   await loadProfile();
   await loadDecks();
   showApp();
+  handleCheckoutReturn();
 }
 
 function onSignedOut() {
@@ -1980,7 +1981,54 @@ function exportCards() {
   showToast('Exported successfully');
 }
 
-// ── UTILS ──
+// ── STRIPE ──
+async function startCheckout() {
+  if (!currentUser) { showAuth(); return; }
+  if (userProfile?.is_pro) { showToast('You are already on Pro!'); return; }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Redirecting...';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      }
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Checkout failed');
+
+    // Redirect to Stripe
+    window.location.href = data.url;
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Upgrade to Pro — $7/mo';
+    showToast('Error: ' + e.message);
+  }
+}
+
+// Handle returning from Stripe checkout
+function handleCheckoutReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const checkout = params.get('checkout');
+  if (!checkout) return;
+
+  // Clean URL
+  window.history.replaceState(null, '', window.location.pathname);
+
+  if (checkout === 'success') {
+    showToast('Welcome to Pro! Your account has been upgraded.');
+    // Reload profile to get updated is_pro status
+    if (currentUser) loadProfile().then(() => renderHeader(true));
+  } else if (checkout === 'cancelled') {
+    showToast('Checkout cancelled — you have not been charged.');
+  }
+}
 function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; }
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 function showToast(msg) {
