@@ -1341,9 +1341,11 @@ footer{
 
 <!-- ── MOBILE MENU ── -->
 <div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-link" onclick="closeMobileMenu();scrollTo({top:document.getElementById('pricing')?.offsetTop||0,behavior:'smooth'})">Pricing</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('features')?.scrollIntoView({behavior:'smooth'})">Features</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('how')?.scrollIntoView({behavior:'smooth'})">How it works</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})">Pricing</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showAuth()">Sign In</button>
   <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
 </div>
 
@@ -1386,7 +1388,7 @@ footer{
     </section>
 
     <!-- FEATURES -->
-    <section class="features">
+    <section class="features" id="features">
       <div class="section-label reveal">Why Cardly</div>
       <div class="section-title reveal reveal-delay-1">Everything you need<br>to study smarter</div>
       <div class="features-grid">
@@ -1424,7 +1426,7 @@ footer{
     </section>
 
     <!-- HOW IT WORKS -->
-    <section class="how">
+    <section class="how" id="how">
       <div class="section-label reveal">How it works</div>
       <div class="section-title reveal reveal-delay-1">Three steps to<br>a full deck</div>
       <div class="steps">
@@ -1517,6 +1519,7 @@ footer{
         <div class="footer-col-links">
           <button onclick="showLegal('tos')">Terms of Service</button>
           <button onclick="showLegal('privacy')">Privacy Policy</button>
+          <button onclick="showAbout()">About</button>
         </div>
       </div>
       <div class="footer-col">
@@ -1899,6 +1902,53 @@ footer{
   <p>Privacy questions? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
 </div>
 
+</div>
+
+<!-- ── ABOUT VIEW ── -->
+<div class="legal-view" id="aboutView">
+<div class="legal-wrap">
+  <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
+
+  <div style="margin-bottom:48px;">
+    <div class="section-label" style="margin-bottom:12px;">About</div>
+    <div class="legal-title" style="font-size:clamp(36px,5vw,56px);line-height:1.05;margin-bottom:0;">Built by students,<br>for students.</div>
+  </div>
+
+  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:24px;font-weight:300;">
+    Cardly started as a personal project — we were tired of spending hours turning lecture notes into flashcards by hand. So we built a tool that does it in seconds.
+  </p>
+  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:24px;font-weight:300;">
+    We're a small team of engineering students who wanted a smarter way to study. Cardly is the tool we wished existed when we were cramming for exams.
+  </p>
+  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:48px;font-weight:300;">
+    We built it lean, kept it simple, and made it affordable. No bloat, no unnecessary features — just paste your notes and get to studying.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:560px;margin-bottom:56px;">
+    <div style="background:var(--surface);padding:28px 20px;text-align:center;">
+      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">∞</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Cards generated</div>
+    </div>
+    <div style="background:var(--surface);padding:28px 20px;text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border);">
+      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">AI</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Powered</div>
+    </div>
+    <div style="background:var(--surface);padding:28px 20px;text-align:center;">
+      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">$5</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Per month Pro</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:36px;max-width:580px;">
+    <div style="font-size:13px;font-weight:700;letter-spacing:-.1px;margin-bottom:8px;">Get in touch</div>
+    <p style="font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;">
+      Questions, feedback, or just want to say hi — we're always happy to hear from fellow students.<br>
+      <a href="mailto:hello@cardly.app" style="color:var(--accent);text-decoration:none;font-weight:600;">hello@cardly.app</a>
+    </p>
+  </div>
+</div>
+</div>
+
 <!-- ── RENAME DECK MODAL ── -->
 <div class="modal-overlay" id="renameDeckModal">
   <div class="modal-box">
@@ -2131,6 +2181,13 @@ function showLegal(page) {
   setTimeout(() => safeCreateIcons(), 200);
 }
 
+function showAbout() {
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById('aboutView').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
 function hideLegal() {
   if (currentUser) showApp();
   else showLanding();
@@ -2171,10 +2228,12 @@ function renderHeader(loggedIn) {
   } else {
     hr.innerHTML = `
       <div class="nav-links">
+        <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
+        <button class="nav-link" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
         <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
-        <button class="nav-link" onclick="showLegal('tos')">Terms</button>
-        <button class="nav-link" onclick="showLegal('privacy')">Privacy</button>
+        <button class="nav-link" onclick="showAbout()">About</button>
       </div>
+      <button class="nav-link" onclick="showAuth()" style="margin-right:4px;">Sign In</button>
       <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
     `;
   }
