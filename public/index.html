@@ -1398,7 +1398,7 @@ footer{
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="brain" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Actually smart cards</div>
-          <div class="feature-desc">Powered by Claude AI — cards test real understanding with specific, testable questions. Not just definitions.</div>
+          <div class="feature-desc">Powered by advanced AI — cards test real understanding with specific, testable questions. Not just definitions.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="library" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1471,7 +1471,7 @@ footer{
         <div class="pricing-card featured reveal reveal-delay-3">
           <div class="pricing-badge">Most Popular</div>
           <div class="pricing-plan">Pro</div>
-          <div class="pricing-price">$7<span>/month</span></div>
+          <div class="pricing-price">$5<span>/month</span></div>
           <div class="pricing-desc">For serious students</div>
           <ul class="pricing-features">
             <li>Unlimited deck generations</li>
@@ -1481,7 +1481,7 @@ footer{
             <li>Export to .txt</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $7/mo</button>
+          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $5/mo</button>
         </div>
       </div>
     </section>
@@ -1528,7 +1528,7 @@ footer{
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2025 Cardly. All rights reserved.</span>
+      <span>© 2026 Cardly. All rights reserved.</span>
     </div>
   </footer>
 </div>
@@ -1730,7 +1730,7 @@ footer{
           </svg>
           Cardly
         </div>
-        <span class="app-footer-copy">© 2025 Cardly</span>
+        <span class="app-footer-copy">© 2026 Cardly</span>
       </div>
       <div class="app-footer-links">
         <button class="app-footer-link" onclick="showLegal('tos')">Terms</button>
@@ -1829,7 +1829,7 @@ footer{
 <div class="legal-view" id="tosView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Terms of Service</div>
-  <div class="legal-date">Last updated: April 2025</div>
+  <div class="legal-date">Last updated: January 2026</div>
 
   <h2>1. Acceptance of Terms</h2>
   <p>By accessing or using Cardly ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.</p>
@@ -1869,7 +1869,7 @@ footer{
 <div class="legal-view" id="privacyView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Privacy Policy</div>
-  <div class="legal-date">Last updated: April 2025</div>
+  <div class="legal-date">Last updated: January 2026</div>
 
   <h2>1. What we collect</h2>
   <p>We collect your email address when you sign up. We store the flashcard decks you generate so you can access them later. We do not collect payment information directly — that is handled by Stripe.</p>
@@ -1878,10 +1878,10 @@ footer{
   <p>Your email is used to authenticate your account and send transactional emails (such as email confirmation). Your deck data is used solely to provide the Service to you.</p>
 
   <h2>3. AI processing</h2>
-  <p>Your notes are sent to Anthropic's Claude API to generate flashcards. Anthropic's privacy policy governs how they handle this data. We do not store your raw notes — only the generated flashcards are saved.</p>
+  <p>Your notes are sent to an AI API to generate flashcards. We do not store your raw notes — only the generated flashcards are saved.</p>
 
   <h2>4. Data sharing</h2>
-  <p>We do not sell your data. We do not share your data with third parties except as necessary to provide the Service (Supabase for database hosting, Anthropic for AI generation, Stripe for payments).</p>
+  <p>We do not sell your data. We do not share your data with third parties except as necessary to provide the Service (Supabase for database hosting, Stripe for payments).</p>
 
   <h2>5. Data retention</h2>
   <p>Your data is retained as long as your account is active. When you delete your account, all associated data including decks is permanently deleted within 30 days.</p>
@@ -2659,7 +2659,7 @@ async function startCheckout() {
     window.location.href = data.url;
   } catch(e) {
     btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro — $7/mo';
+    btn.textContent = 'Upgrade to Pro — $5/mo';
     showToast('Error: ' + e.message);
   }
 }
