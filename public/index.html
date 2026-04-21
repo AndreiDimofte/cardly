@@ -166,13 +166,17 @@ body::after {
    HEADER
 ════════════════════════════════════ */
 header{
-  display:flex;align-items:center;justify-content:space-between;
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;
   padding:16px 40px;
   border-bottom:1px solid var(--border);
   background:rgba(10,10,10,0.85);
   backdrop-filter:blur(16px);
   position:sticky;top:0;z-index:100;
 }
+
+.header-nav{display:flex;align-items:center;gap:4px;justify-content:center;}
+.header-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
 
 .wordmark{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .wordmark-icon{
@@ -182,8 +186,6 @@ header{
   box-shadow:0 2px 12px var(--accent-glow);
 }
 .wordmark-text{font-weight:800;font-size:19px;letter-spacing:-0.5px;}
-
-.header-right{display:flex;align-items:center;gap:12px;}
 
 .nav-links{display:flex;gap:4px;}
 .nav-link{
@@ -1236,7 +1238,8 @@ footer{
 
 /* RESPONSIVE FOOTER */
 @media(max-width:768px){
-  header{padding:14px 20px;}
+  header{padding:14px 20px;grid-template-columns:1fr auto;}
+  #headerNav{display:none;}
   .landing,.app{padding-left:20px;padding-right:20px;}
   .hero{padding:60px 0 50px;}
   .hero h1{letter-spacing:-2px;}
@@ -1333,6 +1336,7 @@ footer{
     </svg>
     <div class="wordmark-text">Cardly</div>
   </div>
+  <div class="header-nav" id="headerNav"></div>
   <div class="header-right" id="headerRight"></div>
   <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
     <i data-lucide="menu" style="width:18px;height:18px;"></i>
@@ -2214,8 +2218,10 @@ function closeMobileMenu() {
 
 // ── HEADER ──
 function renderHeader(loggedIn) {
+  const hn = document.getElementById('headerNav');
   const hr = document.getElementById('headerRight');
   if (loggedIn) {
+    hn.innerHTML = '';
     const used = userProfile?.sets_this_month || 0;
     const isPro = userProfile?.is_pro;
     const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
@@ -2227,14 +2233,14 @@ function renderHeader(loggedIn) {
       <button class="btn-signout" onclick="signOut()">Sign out</button>
     `;
   } else {
+    hn.innerHTML = `
+      <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
+      <button class="nav-link" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
+      <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
+      <button class="nav-link" onclick="showAbout()">About</button>
+    `;
     hr.innerHTML = `
-      <div class="nav-links">
-        <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
-        <button class="nav-link" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
-        <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
-        <button class="nav-link" onclick="showAbout()">About</button>
-      </div>
-      <button class="nav-link" onclick="showAuth()" style="margin-right:4px;">Sign In</button>
+      <button class="nav-link" onclick="showAuth()">Sign In</button>
       <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
     `;
   }
