@@ -1587,6 +1587,7 @@ function renderHeader(loggedIn) {
     const pillText = isPro ? '✦ Pro' : `${used} / 3 free`;
     hr.innerHTML = `
       <span class="${pillClass}">${pillText}</span>
+      ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout()" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
       <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
       <button class="btn-signout" onclick="signOut()">Sign out</button>
     `;
