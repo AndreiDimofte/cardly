@@ -917,21 +917,53 @@ footer{
 }
 .btn-shuffle:hover{border-color:var(--accent);color:var(--accent);}
 
-/* ── PDF UPLOAD ── */
-.pdf-upload-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.btn-pdf{
-  display:inline-flex;align-items:center;gap:7px;
-  background:var(--surface2);border:1.5px solid var(--border2);
-  color:var(--text2);padding:8px 14px;border-radius:8px;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
+/* ── INPUT MODE TABS ── */
+.input-tabs{
+  display:flex;gap:0;margin-bottom:12px;
+  background:var(--surface2);border-radius:8px;padding:3px;border:1px solid var(--border);
 }
-.btn-pdf:hover{border-color:var(--accent);color:var(--accent);}
-.btn-pdf:disabled{opacity:.45;cursor:not-allowed;}
-.pdf-status{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
-.pdf-status.ok{color:var(--success);}
-.pdf-status.err{color:var(--danger);}
+.input-tab{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:7px 12px;border-radius:6px;border:none;background:none;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
+  color:var(--text3);cursor:pointer;transition:all .18s;
+}
+.input-tab.active{
+  background:var(--surface);color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,.18);
+}
+.input-tab:not(.active):hover{color:var(--text2);}
+
+/* ── PDF DROP ZONE ── */
 #pdfFileInput{display:none;}
+.pdf-drop-zone{
+  height:190px;border:2px dashed var(--border2);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;cursor:pointer;transition:all .2s;background:var(--surface);
+}
+.pdf-drop-zone:hover{border-color:var(--accent);background:rgba(255,77,0,.03);}
+.pdf-drop-zone.drag-over{border-color:var(--accent);background:rgba(255,77,0,.06);transform:scale(1.01);}
+.pdf-drop-icon{margin-bottom:4px;}
+.pdf-drop-title{font-size:14px;font-weight:700;color:var(--text);}
+.pdf-drop-sub{font-size:12px;color:var(--text2);}
+.pdf-drop-hint{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:4px;}
+
+/* ── PDF LOADED STATE ── */
+.pdf-loaded{
+  height:190px;border:2px solid var(--success);border-radius:12px;background:rgba(74,222,128,.06);
+  display:flex;align-items:center;justify-content:center;gap:14px;padding:20px;
+}
+.pdf-loaded-icon{flex-shrink:0;}
+.pdf-loaded-info{flex:1;min-width:0;}
+.pdf-loaded-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pdf-loaded-meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:3px;}
+.pdf-loaded-clear{
+  background:var(--surface2);border:1px solid var(--border2);color:var(--text3);
+  width:28px;height:28px;border-radius:7px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.pdf-loaded-clear:hover{background:var(--danger);border-color:var(--danger);color:white;}
+
 .limit-warning{
   background:rgba(255,77,0,0.06);border:1px solid rgba(255,77,0,0.2);
   border-radius:10px;padding:12px 16px;margin-bottom:16px;
@@ -1416,24 +1448,53 @@ footer{
         <div class="panel">
           <div class="panel-label">Your Notes</div>
 
-          <!-- Onboarding tooltip -->
-          <div class="onboarding-tooltip" id="onboardingTooltip">
-            <div class="tooltip-bubble">
-              <span>Start here — paste your lecture notes or textbook text</span>
-              <button class="tooltip-close" onclick="dismissTooltip()">×</button>
-            </div>
-          </div>
-
-          <div class="pdf-upload-row">
-            <input type="file" id="pdfFileInput" accept=".pdf" onchange="handlePdfUpload(this)">
-            <button class="btn-pdf" id="pdfBtn" onclick="document.getElementById('pdfFileInput').click()">
+          <!-- Input mode tabs -->
+          <div class="input-tabs">
+            <button class="input-tab active" id="tabText" onclick="switchInputMode('text')">
+              <i data-lucide="pencil-line" style="width:13px;height:13px;"></i>
+              Paste Text
+            </button>
+            <button class="input-tab" id="tabPdf" onclick="switchInputMode('pdf')">
               <i data-lucide="file-text" style="width:13px;height:13px;"></i>
               Upload PDF
             </button>
-            <span class="pdf-status" id="pdfStatus"></span>
           </div>
 
-          <textarea id="notesInput" placeholder="Paste your lecture notes, textbook excerpts, or any study material here...&#10;&#10;Example: The mitochondria produces ATP through cellular respiration. There are three stages: glycolysis, the Krebs cycle, and the electron transport chain..."></textarea>
+          <!-- TEXT MODE -->
+          <div id="modeText">
+            <div class="onboarding-tooltip" id="onboardingTooltip">
+              <div class="tooltip-bubble">
+                <span>Start here — paste your lecture notes or textbook text</span>
+                <button class="tooltip-close" onclick="dismissTooltip()">×</button>
+              </div>
+            </div>
+            <textarea id="notesInput" placeholder="Paste your lecture notes, textbook excerpts, or any study material here...&#10;&#10;Example: The mitochondria produces ATP through cellular respiration. There are three stages: glycolysis, the Krebs cycle, and the electron transport chain..."></textarea>
+          </div>
+
+          <!-- PDF MODE -->
+          <div id="modePdf" style="display:none;">
+            <input type="file" id="pdfFileInput" accept=".pdf" onchange="handlePdfUpload(this)">
+            <div class="pdf-drop-zone" id="pdfDropZone" onclick="document.getElementById('pdfFileInput').click()">
+              <div class="pdf-drop-icon">
+                <i data-lucide="file-text" style="width:32px;height:32px;color:var(--accent);"></i>
+              </div>
+              <div class="pdf-drop-title">Drop your PDF here</div>
+              <div class="pdf-drop-sub">or click to browse</div>
+              <div class="pdf-drop-hint">Text-based PDFs only · Max ~50 pages</div>
+            </div>
+            <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
+              <div class="pdf-loaded-icon">
+                <i data-lucide="check-circle" style="width:20px;height:20px;color:var(--success);"></i>
+              </div>
+              <div class="pdf-loaded-info">
+                <div class="pdf-loaded-name" id="pdfLoadedName">document.pdf</div>
+                <div class="pdf-loaded-meta" id="pdfLoadedMeta">3 pages · 4,200 chars</div>
+              </div>
+              <button class="pdf-loaded-clear" onclick="clearPdf()" title="Remove PDF">
+                <i data-lucide="x" style="width:14px;height:14px;"></i>
+              </button>
+            </div>
+          </div>
           <input type="text" class="deck-name-input" id="deckNameInput" placeholder="Deck name (optional — e.g. Biology Ch.4)"/>
           <div class="controls">
             <div class="count-control">
@@ -2437,7 +2498,7 @@ function initScrollReveal() {
 // ── ONBOARDING TOOLTIP ──
 function showOnboardingTooltip() {
   const seen = localStorage.getItem('cardly_tooltip_seen');
-  if (!seen && savedDecks.length === 0) {
+  if (!seen && savedDecks.length === 0 && currentInputMode === 'text') {
     document.getElementById('onboardingTooltip').classList.add('show');
   }
 }
@@ -2468,6 +2529,49 @@ document.getElementById('cardCount').addEventListener('change', () => {
   input.value = val;
 });
 
+// ── INPUT MODE SWITCHER ──
+let currentInputMode = 'text';
+
+function switchInputMode(mode) {
+  currentInputMode = mode;
+  document.getElementById('tabText').classList.toggle('active', mode === 'text');
+  document.getElementById('tabPdf').classList.toggle('active', mode === 'pdf');
+  document.getElementById('modeText').style.display = mode === 'text' ? 'block' : 'none';
+  document.getElementById('modePdf').style.display = mode === 'pdf' ? 'block' : 'none';
+  // Clear the other mode's data when switching
+  if (mode === 'text') {
+    clearPdf();
+  } else {
+    document.getElementById('notesInput').value = '';
+    document.getElementById('charCount').textContent = '0 chars';
+  }
+  setTimeout(() => safeCreateIcons(), 100);
+}
+
+function clearPdf() {
+  document.getElementById('pdfLoaded').style.display = 'none';
+  document.getElementById('pdfDropZone').style.display = 'flex';
+  document.getElementById('pdfFileInput').value = '';
+  document.getElementById('notesInput').value = '';
+  document.getElementById('charCount').textContent = '0 chars';
+  document.getElementById('deckNameInput').value = '';
+}
+
+// Drag and drop support
+(function initDragDrop() {
+  const zone = document.getElementById('pdfDropZone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') processPdf(file);
+    else showToast('Please drop a PDF file');
+  });
+})();
+
 // ── PDF EXTRACTION — PDF.js loaded lazily on first use ──
 async function loadPdfJs() {
   if (window.pdfjsLib) return true;
@@ -2483,22 +2587,24 @@ async function loadPdfJs() {
   });
 }
 
-async function handlePdfUpload(input) {
+function handlePdfUpload(input) {
   const file = input.files[0];
-  if (!file) return;
+  if (file) processPdf(file);
+}
 
-  const btn = document.getElementById('pdfBtn');
-  const status = document.getElementById('pdfStatus');
+async function processPdf(file) {
+  const zone = document.getElementById('pdfDropZone');
+  const loaded = document.getElementById('pdfLoaded');
 
-  btn.disabled = true;
-  status.className = 'pdf-status';
-  status.textContent = 'Loading PDF reader...';
+  zone.style.display = 'none';
+  loaded.style.display = 'flex';
+  document.getElementById('pdfLoadedName').textContent = file.name;
+  document.getElementById('pdfLoadedMeta').textContent = 'Reading...';
 
   try {
-    const loaded = await loadPdfJs();
-    if (!loaded) throw new Error('Could not load PDF reader — check your connection');
+    const ok = await loadPdfJs();
+    if (!ok) throw new Error('Could not load PDF reader — check your connection');
 
-    status.textContent = 'Reading PDF...';
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const totalPages = pdf.numPages;
@@ -2507,40 +2613,36 @@ async function handlePdfUpload(input) {
     for (let i = 1; i <= totalPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const pageText = content.items.map(item => item.str).join(' ');
-      fullText += pageText + '\n\n';
+      fullText += content.items.map(item => item.str).join(' ') + '\n\n';
     }
 
     fullText = fullText.trim();
+    if (!fullText || fullText.length < 50) throw new Error('No readable text — PDF may be scanned or image-based');
 
-    if (!fullText || fullText.length < 50) {
-      throw new Error('No readable text found — PDF may be scanned or image-based');
-    }
+    const trimmed = fullText.length > 12000;
+    if (trimmed) fullText = fullText.slice(0, 12000);
 
-    if (fullText.length > 12000) {
-      fullText = fullText.slice(0, 12000);
-      status.textContent = `${file.name} (trimmed to 12k chars)`;
-    } else {
-      status.textContent = `${file.name} — ${totalPages} page${totalPages !== 1 ? 's' : ''}`;
-    }
-    status.className = 'pdf-status ok';
-
-    const textarea = document.getElementById('notesInput');
-    textarea.value = fullText;
+    // Store extracted text in the hidden textarea
+    document.getElementById('notesInput').value = fullText;
     document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
     dismissTooltip();
 
+    // Auto-fill deck name
     const nameInput = document.getElementById('deckNameInput');
     if (!nameInput.value.trim()) {
       nameInput.value = file.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
     }
-  } catch (e) {
-    status.className = 'pdf-status err';
-    status.textContent = e.message || 'Failed to read PDF';
-  } finally {
-    btn.disabled = false;
-    input.value = '';
+
+    document.getElementById('pdfLoadedMeta').textContent =
+      `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars${trimmed ? ' (trimmed)' : ''}`;
+
     setTimeout(() => safeCreateIcons(), 100);
+  } catch(e) {
+    // Show error and reset to drop zone
+    zone.style.display = 'flex';
+    loaded.style.display = 'none';
+    document.getElementById('pdfFileInput').value = '';
+    showToast('PDF error: ' + e.message);
   }
 }
 
