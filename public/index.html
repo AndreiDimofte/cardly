@@ -2011,11 +2011,14 @@ let renameDeckId = null;
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
     try {
-      const { error } = await sb.from('decks')
+      console.log('saving rename:', { renameDeckId, userId: currentUser?.id, newName });
+      const { data, error } = await sb.from('decks')
         .update({ name: newName })
         .eq('id', renameDeckId)
-        .eq('user_id', currentUser.id);
+        .select();
+      console.log('rename result:', { data, error });
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error('No rows updated — deck not found');
       closeModal();
       await loadDecks();
       renderDecks();
