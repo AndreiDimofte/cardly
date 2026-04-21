@@ -928,7 +928,165 @@ footer{
 .limit-warning.show{display:flex;}
 .limit-warning strong{color:var(--accent);}
 
-/* RESPONSIVE */
+/* ── PAGE TRANSITIONS ── */
+.view, .legal-view, .study-view {
+  animation: none;
+}
+.view.active, .legal-view.active {
+  animation: pageIn 0.25s ease forwards;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ANIMATED HERO DEMO ── */
+.demo-card {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.demo-card.visible {
+  animation: demoIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes demoIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.demo-typing {
+  display: inline;
+}
+.demo-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+/* ── FOOTER REDESIGN ── */
+.site-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+  margin-top: 0;
+}
+.footer-grid {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+.footer-brand-col {}
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.footer-logo-icon {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; color: white;
+}
+.footer-logo-text {
+  font-weight: 800; font-size: 17px; letter-spacing: -0.5px;
+}
+.footer-tagline {
+  font-size: 13px; color: var(--text2); line-height: 1.7;
+  font-weight: 300; max-width: 240px; margin-bottom: 16px;
+}
+.footer-contact {
+  font-size: 12px; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.footer-contact a {
+  color: var(--text2); text-decoration: none; transition: color 0.15s;
+}
+.footer-contact a:hover { color: var(--accent); }
+.footer-col-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 16px;
+}
+.footer-col-links {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer-col-links a, .footer-col-links button {
+  font-size: 13px; color: var(--text2); text-decoration: none;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 300; text-align: left; transition: color 0.15s;
+  padding: 0;
+}
+.footer-col-links a:hover, .footer-col-links button:hover { color: var(--accent); }
+.footer-bottom {
+  max-width: 1060px; margin: 0 auto;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-powered {
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── EMPTY STATE SVG ── */
+.empty-state-svg {
+  width: 80px; height: 80px; margin-bottom: 4px; opacity: 0.5;
+}
+
+/* ── ONBOARDING TOOLTIP ── */
+.onboarding-tooltip {
+  position: relative;
+  display: none;
+}
+.onboarding-tooltip.show { display: block; }
+.tooltip-bubble {
+  background: var(--accent);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  animation: tooltipIn 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 24px;
+  width: 12px; height: 12px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+.tooltip-close {
+  background: none; border: none; color: rgba(255,255,255,0.7);
+  cursor: pointer; font-size: 16px; padding: 0; line-height: 1;
+  flex-shrink: 0;
+}
+.tooltip-close:hover { color: white; }
+
+/* RESPONSIVE FOOTER */
 @media(max-width:768px){
   header{padding:14px 20px;}
   .landing,.app{padding-left:20px;padding-right:20px;}
@@ -941,6 +1099,8 @@ footer{
   .nav-links{display:none;}
   .btn-mobile-menu{display:flex;}
   .legal-view{padding:40px 20px 80px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .site-footer{padding:40px 20px 32px;}
 }
 </style>
 </head>
@@ -1039,18 +1199,18 @@ footer{
       <!-- Demo -->
       <div class="hero-demo">
         <div class="demo-label">Example output — TCP/IP notes</div>
-        <div class="demo-cards">
-          <div class="demo-card">
-            <div class="demo-q">What does TCP stand for and what makes it unique?</div>
-            <div class="demo-a">Transmission Control Protocol — it's connection-oriented and guarantees delivery via three-way handshake (SYN, SYN-ACK, ACK).</div>
+        <div class="demo-cards" id="demoCards">
+          <div class="demo-card" id="demoCard1">
+            <div class="demo-q" id="demoQ1"></div>
+            <div class="demo-a" id="demoA1"></div>
           </div>
-          <div class="demo-card">
-            <div class="demo-q">How does IPv4 differ from IPv6 in address size?</div>
-            <div class="demo-a">IPv4 uses 32-bit addresses (~4 billion unique), while IPv6 uses 128-bit addresses, enabling a vastly larger address space.</div>
+          <div class="demo-card" id="demoCard2">
+            <div class="demo-q" id="demoQ2"></div>
+            <div class="demo-a" id="demoA2"></div>
           </div>
-          <div class="demo-card">
-            <div class="demo-q">What is the role of DNS in a network?</div>
-            <div class="demo-a">DNS (Domain Name System) translates human-readable domain names into IP addresses that computers use to communicate.</div>
+          <div class="demo-card" id="demoCard3">
+            <div class="demo-q" id="demoQ3"></div>
+            <div class="demo-a" id="demoA3"></div>
           </div>
         </div>
       </div>
@@ -1158,13 +1318,46 @@ footer{
     </section>
 
   </div>
-  <footer>
-    © 2025 Cardly — AI Flashcard Generator &nbsp;·&nbsp; Built for students &nbsp;·&nbsp;
-    <a href="#" onclick="showLegal('tos')" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Terms</a>
-    &nbsp;·&nbsp;
-    <a href="#" onclick="showLegal('privacy')" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Privacy</a>
-    &nbsp;·&nbsp;
-    <a href="mailto:hello@cardly.app" style="color:var(--text3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">Contact</a>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">C</div>
+          <div class="footer-logo-text">Cardly</div>
+        </div>
+        <div class="footer-tagline">AI-powered flashcard generator. Turn your lecture notes into study-ready cards in seconds.</div>
+        <div class="footer-contact">Questions? <a href="mailto:hello@cardly.app">hello@cardly.app</a></div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <div class="footer-col-links">
+          <button onclick="showAuth()">Get Started</button>
+          <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
+          <button onclick="showAuth()">Sign In</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-col-links">
+          <button onclick="showLegal('tos')">Terms of Service</button>
+          <button onclick="showLegal('privacy')">Privacy Policy</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <div class="footer-col-links">
+          <a href="mailto:hello@cardly.app">Contact Us</a>
+          <a href="mailto:hello@cardly.app">Report a Bug</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Cardly. All rights reserved.</span>
+      <div class="footer-powered">
+        <span>Powered by</span>
+        <span style="color:var(--text2);">Anthropic Claude · Supabase · Stripe</span>
+      </div>
+    </div>
   </footer>
 </div>
 
@@ -1201,13 +1394,22 @@ footer{
       <div class="generator">
         <div class="panel">
           <div class="panel-label">Your Notes</div>
+
+          <!-- Onboarding tooltip -->
+          <div class="onboarding-tooltip" id="onboardingTooltip">
+            <div class="tooltip-bubble">
+              <span>Start here — paste your lecture notes or textbook text</span>
+              <button class="tooltip-close" onclick="dismissTooltip()">×</button>
+            </div>
+          </div>
+
           <textarea id="notesInput" placeholder="Paste your lecture notes, textbook excerpts, or any study material here...&#10;&#10;Example: The mitochondria produces ATP through cellular respiration. There are three stages: glycolysis, the Krebs cycle, and the electron transport chain..."></textarea>
           <input type="text" class="deck-name-input" id="deckNameInput" placeholder="Deck name (optional — e.g. Biology Ch.4)"/>
           <div class="controls">
             <div class="count-control">
               <span>Generate</span>
               <input type="number" class="count-input" id="cardCount" value="10" min="3" max="25">
-              <span>cards</span>
+              <span>cards <span style="font-size:10px;color:var(--text3);">(max 25)</span></span>
             </div>
             <span class="char-count" id="charCount">0 chars</span>
           </div>
@@ -1219,7 +1421,14 @@ footer{
           <div class="panel-label">Generated Cards</div>
           <div class="cards-area">
             <div class="empty-state" id="emptyState">
-              <div class="empty-icon"><i data-lucide="layers" style="width:28px;height:28px;"></i></div>
+              <svg class="empty-state-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="20" width="48" height="36" rx="6" fill="#2a2a2a" stroke="#333" stroke-width="1.5"/>
+                <rect x="18" y="28" width="48" height="36" rx="6" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="1.5"/>
+                <rect x="28" y="14" width="44" height="36" rx="6" fill="#161616" stroke="#333" stroke-width="1.5"/>
+                <line x1="36" y1="26" x2="64" y2="26" stroke="#ff4d00" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                <line x1="36" y1="33" x2="60" y2="33" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="36" y1="39" x2="56" y2="39" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
               <p>Your flashcards will appear here after generation</p>
             </div>
             <div class="loading-state" id="loadingState">
@@ -1508,7 +1717,7 @@ function showLanding() {
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
   hideLoader();
-  setTimeout(() => safeCreateIcons(), 200);
+  setTimeout(() => { safeCreateIcons(); animateDemo(); }, 300);
 }
 
 function showApp() {
@@ -1520,7 +1729,7 @@ function showApp() {
   renderDecks();
   updateLimitWarning();
   hideLoader();
-  setTimeout(() => safeCreateIcons(), 200);
+  setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
 }
 
 function updateLimitWarning() {
@@ -2066,6 +2275,72 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── ANIMATED HERO DEMO ──
+const demoData = [
+  { q: "What does TCP stand for and what makes it unique?", a: "Transmission Control Protocol — connection-oriented, guarantees delivery via three-way handshake." },
+  { q: "How does IPv4 differ from IPv6 in address size?", a: "IPv4 uses 32-bit addresses (~4 billion unique). IPv6 uses 128-bit — a vastly larger address space." },
+  { q: "What is the role of DNS in a network?", a: "DNS translates human-readable domain names into IP addresses computers use to communicate." }
+];
+
+let demoTimeout = null;
+
+function typeText(el, text, speed, callback) {
+  let i = 0; el.textContent = '';
+  function type() {
+    if (i < text.length) { el.textContent += text[i++]; setTimeout(type, speed); }
+    else if (callback) callback();
+  }
+  type();
+}
+
+function animateDemo() {
+  let delay = 300;
+  demoData.forEach((data, idx) => {
+    const card = document.getElementById(`demoCard${idx+1}`);
+    const qEl = document.getElementById(`demoQ${idx+1}`);
+    const aEl = document.getElementById(`demoA${idx+1}`);
+    if (!card || !qEl || !aEl) return;
+    setTimeout(() => {
+      card.classList.add('visible');
+      typeText(qEl, data.q, 16, () => setTimeout(() => typeText(aEl, data.a, 10), 150));
+    }, delay);
+    delay += 1600;
+  });
+  demoTimeout = setTimeout(() => {
+    demoData.forEach((_, i) => {
+      const card = document.getElementById(`demoCard${i+1}`);
+      const qEl = document.getElementById(`demoQ${i+1}`);
+      const aEl = document.getElementById(`demoA${i+1}`);
+      if (card) { card.classList.remove('visible'); card.style.opacity='0'; }
+      if (qEl) qEl.textContent = '';
+      if (aEl) aEl.textContent = '';
+    });
+    setTimeout(animateDemo, 600);
+  }, delay + 1800);
+}
+
+// ── ONBOARDING TOOLTIP ──
+function showOnboardingTooltip() {
+  const seen = localStorage.getItem('cardly_tooltip_seen');
+  if (!seen && savedDecks.length === 0) {
+    document.getElementById('onboardingTooltip').classList.add('show');
+  }
+}
+
+function dismissTooltip() {
+  document.getElementById('onboardingTooltip').classList.remove('show');
+  try { localStorage.setItem('cardly_tooltip_seen', '1'); } catch(e) {}
+}
+
+// ── CARD COUNT ENFORCEMENT ──
+document.getElementById('cardCount').addEventListener('change', () => {
+  const input = document.getElementById('cardCount');
+  let val = parseInt(input.value) || 10;
+  if (val < 3) val = 3;
+  if (val > 25) val = 25;
+  input.value = val;
+});
 
 function safeCreateIcons() {
   try { if (window.lucide) lucide.createIcons(); } catch(e) {}
