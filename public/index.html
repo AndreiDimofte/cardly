@@ -928,7 +928,21 @@ footer{
 .limit-warning.show{display:flex;}
 .limit-warning strong{color:var(--accent);}
 
-/* ── PAGE TRANSITIONS ── */
+/* ── SCROLL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
 .view, .legal-view, .study-view {
   animation: none;
 }
@@ -977,11 +991,12 @@ footer{
   max-width: 1060px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 48px;
   margin-bottom: 48px;
+  align-items: start;
 }
-.footer-brand-col {}
+.footer-brand-col { text-align: left; }
 .footer-logo {
   display: flex;
   align-items: center;
@@ -994,6 +1009,7 @@ footer{
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 13px; color: white;
+  flex-shrink: 0;
 }
 .footer-logo-text {
   font-weight: 800; font-size: 17px; letter-spacing: -0.5px;
@@ -1017,7 +1033,7 @@ footer{
   margin-bottom: 16px;
 }
 .footer-col-links {
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 10px; align-items: flex-start;
 }
 .footer-col-links a, .footer-col-links button {
   font-size: 13px; color: var(--text2); text-decoration: none;
@@ -1031,18 +1047,23 @@ footer{
   max-width: 1060px; margin: 0 auto;
   border-top: 1px solid var(--border);
   padding-top: 24px;
-  display: flex; align-items: center; justify-content: space-between;
   font-size: 11px; color: var(--text3);
   font-family: 'JetBrains Mono', monospace;
-  flex-wrap: wrap; gap: 8px;
-}
-.footer-powered {
-  display: flex; align-items: center; gap: 6px;
 }
 
 /* ── EMPTY STATE SVG ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 240px;
+  gap: 10px;
+  color: var(--text3);
+}
 .empty-state-svg {
-  width: 80px; height: 80px; margin-bottom: 4px; opacity: 0.5;
+  width: 72px; height: 72px; opacity: 0.45; display: block; margin: 0 auto 4px;
 }
 
 /* ── ONBOARDING TOOLTIP ── */
@@ -1218,35 +1239,35 @@ footer{
 
     <!-- FEATURES -->
     <section class="features">
-      <div class="section-label">Why Cardly</div>
-      <div class="section-title">Everything you need<br>to study smarter</div>
+      <div class="section-label reveal">Why Cardly</div>
+      <div class="section-title reveal reveal-delay-1">Everything you need<br>to study smarter</div>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="zap" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Instant generation</div>
           <div class="feature-desc">Paste your notes and get a full deck of flashcards in under 10 seconds. No formatting, no fuss.</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="brain" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Actually smart cards</div>
           <div class="feature-desc">Powered by Claude AI — cards test real understanding with specific, testable questions. Not just definitions.</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="library" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Saved decks</div>
           <div class="feature-desc">All your decks saved automatically. Come back anytime and pick up where you left off.</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Beautiful study mode</div>
           <div class="feature-desc">Smooth flip animations, keyboard shortcuts, and a progress tracker keep you focused.</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="upload" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Export anywhere</div>
           <div class="feature-desc">Export your cards as a .txt file and import into Anki, Notion, or any study app.</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="lock" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Private & secure</div>
           <div class="feature-desc">Your notes and cards are private to your account. We never train on your content.</div>
@@ -1256,22 +1277,22 @@ footer{
 
     <!-- HOW IT WORKS -->
     <section class="how">
-      <div class="section-label">How it works</div>
-      <div class="section-title">Three steps to<br>a full deck</div>
+      <div class="section-label reveal">How it works</div>
+      <div class="section-title reveal reveal-delay-1">Three steps to<br>a full deck</div>
       <div class="steps">
-        <div class="step">
+        <div class="step reveal reveal-delay-1">
           <div class="step-num">01 —</div>
           <div class="step-title">Paste your notes</div>
           <div class="step-desc">Copy from your lecture slides, textbook, or anywhere. Cardly works with any subject.</div>
           <div class="step-connector"></div>
         </div>
-        <div class="step">
+        <div class="step reveal reveal-delay-2">
           <div class="step-num">02 —</div>
           <div class="step-title">Generate cards</div>
           <div class="step-desc">Choose how many cards you want and hit Generate. AI does the rest in seconds.</div>
           <div class="step-connector"></div>
         </div>
-        <div class="step">
+        <div class="step reveal reveal-delay-3">
           <div class="step-num">03 —</div>
           <div class="step-title">Study & remember</div>
           <div class="step-desc">Flip through your deck in study mode. Your cards are saved for next time.</div>
@@ -1281,10 +1302,10 @@ footer{
 
     <!-- PRICING -->
     <section class="pricing" id="pricing">
-      <div class="section-label">Pricing</div>
-      <div class="section-title" style="text-align:center;">Simple, honest pricing</div>
+      <div class="section-label reveal">Pricing</div>
+      <div class="section-title reveal reveal-delay-1" style="text-align:center;">Simple, honest pricing</div>
       <div class="pricing-grid">
-        <div class="pricing-card">
+        <div class="pricing-card reveal reveal-delay-2">
           <div class="pricing-plan">Free</div>
           <div class="pricing-price">$0<span>/month</span></div>
           <div class="pricing-desc">Perfect for trying it out</div>
@@ -1299,7 +1320,7 @@ footer{
           </ul>
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
-        <div class="pricing-card featured">
+        <div class="pricing-card featured reveal reveal-delay-3">
           <div class="pricing-badge">Most Popular</div>
           <div class="pricing-plan">Pro</div>
           <div class="pricing-price">$7<span>/month</span></div>
@@ -1353,10 +1374,6 @@ footer{
     </div>
     <div class="footer-bottom">
       <span>© 2025 Cardly. All rights reserved.</span>
-      <div class="footer-powered">
-        <span>Powered by</span>
-        <span style="color:var(--text2);">Anthropic Claude · Supabase · Stripe</span>
-      </div>
     </div>
   </footer>
 </div>
@@ -1409,7 +1426,7 @@ footer{
             <div class="count-control">
               <span>Generate</span>
               <input type="number" class="count-input" id="cardCount" value="10" min="3" max="25">
-              <span>cards <span style="font-size:10px;color:var(--text3);">(max 25)</span></span>
+              <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 10)</span></span>
             </div>
             <span class="char-count" id="charCount">0 chars</span>
           </div>
@@ -1717,7 +1734,7 @@ function showLanding() {
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
   hideLoader();
-  setTimeout(() => { safeCreateIcons(); animateDemo(); }, 300);
+  setTimeout(() => { safeCreateIcons(); animateDemo(); initScrollReveal(); }, 300);
 }
 
 function showApp() {
@@ -1728,6 +1745,7 @@ function showApp() {
   updateWelcome();
   renderDecks();
   updateLimitWarning();
+  enforceCardCountLimit();
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
 }
@@ -1911,13 +1929,22 @@ function renderDecks() {
         <div class="deck-dot"></div>
         <span>${date}</span>
       </div>
-      <button class="deck-delete" onclick="event.stopPropagation();openRenameDeck('${deck.id}', '${esc(deck.name || 'Untitled Deck')}')" title="Rename" style="right:36px;">
+      <button class="deck-delete" data-deck-id="${deck.id}" data-deck-name="${esc(deck.name || 'Untitled Deck')}" title="Rename" style="right:36px;">
         <i data-lucide="pencil" style="width:12px;height:12px;"></i>
       </button>
-      <button class="deck-delete" onclick="event.stopPropagation();deleteDeck('${deck.id}')" title="Delete deck">
+      <button class="deck-delete" data-delete-id="${deck.id}" title="Delete deck">
         <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
       </button>
     `;
+    el.querySelector('[data-deck-id]').addEventListener('click', e => {
+      e.stopPropagation();
+      const btn = e.currentTarget;
+      openRenameDeck(btn.dataset.deckId, btn.dataset.deckName);
+    });
+    el.querySelector('[data-delete-id]').addEventListener('click', e => {
+      e.stopPropagation();
+      deleteDeck(e.currentTarget.dataset.deleteId);
+    });
     el.onclick = () => openDeckPreview(deck);
     grid.appendChild(el);
   });
@@ -2276,14 +2303,35 @@ function showToast(msg) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── ANIMATED HERO DEMO ──
-const demoData = [
-  { q: "What does TCP stand for and what makes it unique?", a: "Transmission Control Protocol — connection-oriented, guarantees delivery via three-way handshake." },
-  { q: "How does IPv4 differ from IPv6 in address size?", a: "IPv4 uses 32-bit addresses (~4 billion unique). IPv6 uses 128-bit — a vastly larger address space." },
-  { q: "What is the role of DNS in a network?", a: "DNS translates human-readable domain names into IP addresses computers use to communicate." }
+// ── ANIMATED HERO DEMO — types once, cycles subjects ──
+const demoSets = [
+  {
+    label: 'Example output — TCP/IP notes',
+    cards: [
+      { q: "What does TCP stand for and what makes it unique?", a: "Transmission Control Protocol — connection-oriented, guarantees delivery via three-way handshake." },
+      { q: "How does IPv4 differ from IPv6 in address size?", a: "IPv4 uses 32-bit addresses. IPv6 uses 128-bit — a vastly larger address space." },
+      { q: "What is the role of DNS in a network?", a: "DNS translates domain names into IP addresses computers use to communicate." }
+    ]
+  },
+  {
+    label: 'Example output — Cell Biology notes',
+    cards: [
+      { q: "What is the function of the mitochondria?", a: "The mitochondria produces ATP through cellular respiration — it is the powerhouse of the cell." },
+      { q: "What are the three stages of cellular respiration?", a: "Glycolysis (cytoplasm), the Krebs cycle (mitochondrial matrix), and the electron transport chain." },
+      { q: "What happens during anaerobic respiration?", a: "Without oxygen, cells switch to lactic acid fermentation (animals) or alcoholic fermentation (yeast)." }
+    ]
+  },
+  {
+    label: 'Example output — Psychology notes',
+    cards: [
+      { q: "What is confirmation bias?", a: "The tendency to search for and favour information that confirms one's existing beliefs." },
+      { q: "What does the Dunning-Kruger effect describe?", a: "People with limited knowledge in a domain tend to overestimate their own competence." },
+      { q: "What is cognitive dissonance?", a: "The psychological discomfort felt when holding two contradictory beliefs or values simultaneously." }
+    ]
+  }
 ];
 
-let demoTimeout = null;
+let demoSetIndex = 0;
 
 function typeText(el, text, speed, callback) {
   let i = 0; el.textContent = '';
@@ -2295,29 +2343,49 @@ function typeText(el, text, speed, callback) {
 }
 
 function animateDemo() {
-  let delay = 300;
-  demoData.forEach((data, idx) => {
+  const set = demoSets[demoSetIndex % demoSets.length];
+  demoSetIndex++;
+
+  // Update label
+  const labelEl = document.querySelector('.demo-label');
+  if (labelEl) labelEl.textContent = set.label;
+
+  // Reset cards
+  for (let i = 1; i <= 3; i++) {
+    const card = document.getElementById(`demoCard${i}`);
+    const qEl = document.getElementById(`demoQ${i}`);
+    const aEl = document.getElementById(`demoA${i}`);
+    if (card) { card.classList.remove('visible'); card.style.opacity = '0'; }
+    if (qEl) qEl.textContent = '';
+    if (aEl) aEl.textContent = '';
+  }
+
+  // Type cards one by one — no looping, just show each once
+  let delay = 200;
+  set.cards.forEach((data, idx) => {
     const card = document.getElementById(`demoCard${idx+1}`);
     const qEl = document.getElementById(`demoQ${idx+1}`);
     const aEl = document.getElementById(`demoA${idx+1}`);
     if (!card || !qEl || !aEl) return;
     setTimeout(() => {
       card.classList.add('visible');
-      typeText(qEl, data.q, 16, () => setTimeout(() => typeText(aEl, data.a, 10), 150));
+      typeText(qEl, data.q, 14, () => setTimeout(() => typeText(aEl, data.a, 8), 120));
     }, delay);
-    delay += 1600;
+    delay += 1400;
   });
-  demoTimeout = setTimeout(() => {
-    demoData.forEach((_, i) => {
-      const card = document.getElementById(`demoCard${i+1}`);
-      const qEl = document.getElementById(`demoQ${i+1}`);
-      const aEl = document.getElementById(`demoA${i+1}`);
-      if (card) { card.classList.remove('visible'); card.style.opacity='0'; }
-      if (qEl) qEl.textContent = '';
-      if (aEl) aEl.textContent = '';
-    });
-    setTimeout(animateDemo, 600);
-  }, delay + 1800);
+
+  // After all cards shown, wait then switch to next subject
+  setTimeout(() => animateDemo(), delay + 4000);
+}
+
+// ── SCROLL REVEAL OBSERVER ──
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => observer.observe(el));
 }
 
 // ── ONBOARDING TOOLTIP ──
@@ -2333,12 +2401,24 @@ function dismissTooltip() {
   try { localStorage.setItem('cardly_tooltip_seen', '1'); } catch(e) {}
 }
 
-// ── CARD COUNT ENFORCEMENT ──
+// ── CARD COUNT ENFORCEMENT (free = max 10, pro = max 25) ──
+function enforceCardCountLimit() {
+  const input = document.getElementById('cardCount');
+  const max = userProfile?.is_pro ? 25 : 10;
+  input.max = max;
+  let val = parseInt(input.value) || 10;
+  if (val > max) { val = max; input.value = val; }
+  // Update label
+  const label = document.querySelector('.count-max-label');
+  if (label) label.textContent = `(max ${max})`;
+}
+
 document.getElementById('cardCount').addEventListener('change', () => {
   const input = document.getElementById('cardCount');
+  const max = userProfile?.is_pro ? 25 : 10;
   let val = parseInt(input.value) || 10;
   if (val < 3) val = 3;
-  if (val > 25) val = 25;
+  if (val > max) val = max;
   input.value = val;
 });
 

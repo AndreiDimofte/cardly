@@ -42,8 +42,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Notes too short — paste at least a paragraph.' });
   }
 
+  // Enforce card count limits (free = max 10, pro = max 25)
+  const maxCards = profile?.is_pro ? 25 : 10;
+  const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
+
   // 4. Call Anthropic
-  const prompt = `You are a study assistant. Given the following notes, generate exactly ${count} flashcards.
+  const prompt = `You are a study assistant. Given the following notes, generate exactly ${cardCount} flashcards.
 
 Rules:
 - Questions must be specific and testable
