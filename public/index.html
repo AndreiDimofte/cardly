@@ -824,6 +824,110 @@ footer{
 .legal-view a{color:var(--accent);text-decoration:none;}
 .legal-view a:hover{text-decoration:underline;}
 
+/* ── APP LOADING SPINNER ── */
+.app-loader{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;z-index:9999;transition:opacity 0.3s ease;
+}
+.app-loader.hidden{opacity:0;pointer-events:none;}
+.app-loader-logo{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:800;font-size:28px;letter-spacing:-1px;color:var(--text);
+  display:flex;align-items:center;gap:10px;
+}
+.app-loader-icon{
+  width:36px;height:36px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;color:white;
+}
+.app-loader-spinner{
+  width:28px;height:28px;border:2px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── ERROR BOUNDARY ── */
+.error-boundary{
+  display:none;position:fixed;inset:0;background:var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;z-index:9990;text-align:center;padding:40px;
+}
+.error-boundary.show{display:flex;}
+.error-boundary-icon{font-size:40px;margin-bottom:8px;}
+.error-boundary h2{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.error-boundary p{font-size:14px;color:var(--text2);max-width:400px;line-height:1.7;font-weight:300;}
+.btn-retry{
+  background:var(--accent);color:white;border:none;
+  padding:12px 28px;border-radius:10px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;margin-top:8px;
+}
+.btn-retry:hover{background:#e04400;}
+
+/* ── RENAME DECK ── */
+.rename-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);padding:11px 14px;border-radius:8px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;
+  margin-bottom:12px;transition:border-color 0.2s;
+}
+.rename-input:focus{outline:none;border-color:var(--accent);}
+.btn-save{
+  width:100%;padding:13px;border-radius:10px;
+  background:var(--accent);color:white;border:none;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px var(--accent-glow);
+}
+.btn-save:hover{background:#e04400;}
+
+/* ── DECK PREVIEW ── */
+.deck-preview-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text3);margin-bottom:12px;
+}
+
+/* ── STUDY COMPLETE ── */
+.study-complete{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;min-height:300px;gap:16px;text-align:center;
+}
+.study-complete-icon{
+  width:64px;height:64px;background:var(--accent-dim);
+  border:1px solid rgba(255,77,0,0.2);border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin-bottom:8px;
+}
+.study-complete h3{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.study-complete p{font-size:14px;color:var(--text2);font-weight:300;}
+.study-complete-actions{display:flex;gap:10px;margin-top:8px;}
+.btn-restart{
+  padding:11px 22px;border-radius:10px;
+  background:var(--accent);color:white;border:none;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-restart:hover{background:#e04400;}
+.btn-shuffle{
+  padding:11px 22px;border-radius:10px;
+  background:var(--surface2);color:var(--text);border:1px solid var(--border2);
+  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-shuffle:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── LIMIT WARNING ── */
+.limit-warning{
+  background:rgba(255,77,0,0.06);border:1px solid rgba(255,77,0,0.2);
+  border-radius:10px;padding:12px 16px;margin-bottom:16px;
+  display:none;align-items:center;gap:10px;
+  font-size:13px;color:var(--text2);
+}
+.limit-warning.show{display:flex;}
+.limit-warning strong{color:var(--accent);}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   header{padding:14px 20px;}
@@ -841,6 +945,23 @@ footer{
 </style>
 </head>
 <body>
+
+<!-- ── APP LOADER ── -->
+<div class="app-loader" id="appLoader">
+  <div class="app-loader-logo">
+    <div class="app-loader-icon">C</div>
+    Cardly
+  </div>
+  <div class="app-loader-spinner"></div>
+</div>
+
+<!-- ── ERROR BOUNDARY ── -->
+<div class="error-boundary" id="errorBoundary">
+  <div class="error-boundary-icon">⚠</div>
+  <h2>Something went wrong</h2>
+  <p id="errorBoundaryMsg">We couldn't load Cardly. Check your connection and try again.</p>
+  <button class="btn-retry" onclick="window.location.reload()">Try Again</button>
+</div>
 
 <!-- ── AUTH MODAL ── -->
 <div class="auth-overlay" id="authOverlay" style="display:none;">
@@ -904,14 +1025,14 @@ footer{
     <!-- HERO -->
     <section class="hero">
       <div class="hero-glow"></div>
-      <div class="hero-badge">✦ AI-Powered Flashcards</div>
+      <div class="hero-badge">AI-Powered Flashcards</div>
       <h1>
         Notes in.
         <span class="line2">Knowledge out.</span>
       </h1>
       <p class="hero-sub">Paste any lecture notes, textbook excerpt, or study material — Cardly generates smart flashcards in seconds.</p>
       <div class="hero-cta">
-        <button class="btn-primary" onclick="showAuth()">✦ Get Started Free</button>
+        <button class="btn-primary" onclick="showAuth()">Get Started Free</button>
         <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
       </div>
 
@@ -1008,12 +1129,13 @@ footer{
           <div class="pricing-price">$0<span>/month</span></div>
           <div class="pricing-desc">Perfect for trying it out</div>
           <ul class="pricing-features">
-            <li>3 decks per month</li>
+            <li>3 deck generations per month</li>
+            <li>Up to 10 saved decks</li>
             <li>Up to 25 cards per deck</li>
-            <li>Study mode</li>
+            <li>Study mode with flip cards</li>
             <li>Export to .txt</li>
-            <li class="muted">Saved deck history</li>
-            <li class="muted">Unlimited decks</li>
+            <li class="muted">Unlimited generations</li>
+            <li class="muted">Unlimited saved decks</li>
           </ul>
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
@@ -1023,11 +1145,11 @@ footer{
           <div class="pricing-price">$7<span>/month</span></div>
           <div class="pricing-desc">For serious students</div>
           <ul class="pricing-features">
-            <li>Unlimited decks</li>
+            <li>Unlimited deck generations</li>
+            <li>Unlimited saved decks</li>
             <li>Up to 25 cards per deck</li>
-            <li>Study mode</li>
+            <li>Study mode with flip cards</li>
             <li>Export to .txt</li>
-            <li>Saved deck history</li>
             <li>Priority support</li>
           </ul>
           <button class="btn-pricing btn-pricing-pro" onclick="showAuth()">Coming soon</button>
@@ -1070,6 +1192,12 @@ footer{
     <!-- Generator -->
     <div class="generator-section" id="generatorSection">
       <div class="gen-title">Generate New Deck</div>
+
+      <!-- Limit warning -->
+      <div class="limit-warning" id="limitWarning">
+        <i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--accent);flex-shrink:0;"></i>
+        <span>You've used <strong id="limitUsed">2</strong> of 3 free generations this month. <strong>1 remaining.</strong></span>
+      </div>
       <div class="generator">
         <div class="panel">
           <div class="panel-label">Your Notes</div>
@@ -1145,6 +1273,19 @@ footer{
     <button class="btn-nav" id="prevBtn" onclick="prevCard()">←</button>
     <span class="card-counter" id="cardCounter">1 / 10</span>
     <button class="btn-nav" id="nextBtn" onclick="nextCard()">→</button>
+  </div>
+
+  <!-- Study complete -->
+  <div class="study-complete" id="studyComplete">
+    <div class="study-complete-icon">
+      <i data-lucide="check-circle" style="width:32px;height:32px;color:var(--accent);"></i>
+    </div>
+    <h3>Deck complete!</h3>
+    <p>You've gone through all the cards. Want to go again?</p>
+    <div class="study-complete-actions">
+      <button class="btn-restart" onclick="restartDeck()">Restart</button>
+      <button class="btn-shuffle" onclick="shuffleDeck()">Shuffle & Restart</button>
+    </div>
   </div>
 
   <div class="kb-hints">
@@ -1256,6 +1397,37 @@ footer{
   <p>Privacy questions? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
 </div>
 
+<!-- ── RENAME DECK MODAL ── -->
+<div class="modal-overlay" id="renameDeckModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('renameDeckModal').classList.remove('open')">
+      <i data-lucide="x" style="width:16px;height:16px;"></i>
+    </button>
+    <div class="modal-title">Rename Deck</div>
+    <div class="modal-sub">Give your deck a new name.</div>
+    <input type="text" class="rename-input" id="renameInput" placeholder="Deck name..." maxlength="60"/>
+    <button class="btn-save" onclick="saveRename()">Save</button>
+    <button class="btn-cancel" onclick="document.getElementById('renameDeckModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
+<!-- ── DECK PREVIEW MODAL ── -->
+<div class="modal-overlay" id="deckPreviewModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">
+      <i data-lucide="x" style="width:16px;height:16px;"></i>
+    </button>
+    <div class="modal-title" id="previewDeckName">Deck Name</div>
+    <div class="deck-preview-badge">
+      <i data-lucide="layers" style="width:12px;height:12px;"></i>
+      <span id="previewCardCount">0 cards</span>
+    </div>
+    <div id="previewCardsList" style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;"></div>
+    <button class="btn-save" onclick="startStudyFromPreview()">Study this deck</button>
+    <button class="btn-cancel" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">Close</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1274,23 +1446,40 @@ let authMode = 'login';
 let savedDecks = [];
 let currentDeckName = '';
 
+// ── LOADER ──
+function hideLoader() {
+  const loader = document.getElementById('appLoader');
+  loader.classList.add('hidden');
+  setTimeout(() => loader.style.display = 'none', 300);
+}
+
+function showErrorBoundary(msg) {
+  hideLoader();
+  if (msg) document.getElementById('errorBoundaryMsg').textContent = msg;
+  document.getElementById('errorBoundary').classList.add('show');
+}
+
 // ── INIT ──
 async function init() {
-  // Handle OAuth redirect — exchange hash token first
-  if (window.location.hash.includes('access_token')) {
-    // Wait for Supabase to process the hash
-    await new Promise(resolve => setTimeout(resolve, 500));
-    window.history.replaceState(null, '', window.location.pathname);
+  try {
+    if (window.location.hash.includes('access_token')) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) throw error;
+
+    if (session) await onSignedIn(session.user);
+    else { showLanding(); hideLoader(); }
+
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
+      if (event === 'SIGNED_OUT') onSignedOut();
+    });
+  } catch(e) {
+    showErrorBoundary('Could not connect to Cardly. Check your internet and try again.');
   }
-
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) await onSignedIn(session.user);
-  else showLanding();
-
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
-    if (event === 'SIGNED_OUT') onSignedOut();
-  });
 }
 
 async function onSignedIn(user) {
@@ -1312,6 +1501,7 @@ function showLanding() {
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
   renderHeader(false);
+  hideLoader();
   setTimeout(() => safeCreateIcons(), 200);
 }
 
@@ -1322,7 +1512,22 @@ function showApp() {
   renderHeader(true);
   updateWelcome();
   renderDecks();
+  updateLimitWarning();
+  hideLoader();
   setTimeout(() => safeCreateIcons(), 200);
+}
+
+function updateLimitWarning() {
+  if (!userProfile) return;
+  const used = userProfile.sets_this_month || 0;
+  const isPro = userProfile.is_pro;
+  const warning = document.getElementById('limitWarning');
+  if (!isPro && used === 2) {
+    document.getElementById('limitUsed').textContent = used;
+    warning.classList.add('show');
+  } else {
+    warning.classList.remove('show');
+  }
 }
 
 function goHome() {
@@ -1467,11 +1672,14 @@ function renderDecks() {
         <div class="deck-dot"></div>
         <span>${date}</span>
       </div>
+      <button class="deck-delete" onclick="event.stopPropagation();openRenameDeck('${deck.id}', '${esc(deck.name || 'Untitled Deck')}')" title="Rename" style="right:36px;">
+        <i data-lucide="pencil" style="width:12px;height:12px;"></i>
+      </button>
       <button class="deck-delete" onclick="event.stopPropagation();deleteDeck('${deck.id}')" title="Delete deck">
-        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+        <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
       </button>
     `;
-    el.onclick = () => loadDeckAndStudy(deck);
+    el.onclick = () => openDeckPreview(deck);
     grid.appendChild(el);
   });
 
@@ -1493,6 +1701,59 @@ async function loadDeckAndStudy(deck) {
   currentIndex = 0;
   startStudy();
 }
+
+// ── DECK PREVIEW ──
+let previewDeck = null;
+
+function openDeckPreview(deck) {
+  previewDeck = deck;
+  document.getElementById('previewDeckName').textContent = deck.name || 'Untitled Deck';
+  document.getElementById('previewCardCount').textContent = `${deck.card_count || 0} cards`;
+  const list = document.getElementById('previewCardsList');
+  list.innerHTML = '';
+  (deck.cards || []).forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'mini-card';
+    el.style.animationDelay = (i * 0.03) + 's';
+    el.style.cursor = 'default';
+    el.innerHTML = `<div class="mini-card-q">${esc(card.front)}</div>`;
+    list.appendChild(el);
+  });
+  document.getElementById('deckPreviewModal').classList.add('open');
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+function startStudyFromPreview() {
+  document.getElementById('deckPreviewModal').classList.remove('open');
+  if (previewDeck) loadDeckAndStudy(previewDeck);
+}
+
+// ── RENAME DECK ──
+let renameDeckId = null;
+
+function openRenameDeck(deckId, currentName) {
+  renameDeckId = deckId;
+  document.getElementById('renameInput').value = currentName;
+  document.getElementById('renameDeckModal').classList.add('open');
+  setTimeout(() => document.getElementById('renameInput').focus(), 100);
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+async function saveRename() {
+  const newName = document.getElementById('renameInput').value.trim();
+  if (!newName || !renameDeckId) return;
+  await sb.from('decks').update({ name: newName }).eq('id', renameDeckId).eq('user_id', currentUser.id);
+  document.getElementById('renameDeckModal').classList.remove('open');
+  await loadDecks();
+  renderDecks();
+  updateWelcome();
+  showToast('Deck renamed');
+}
+
+// Allow Enter key to save rename
+document.getElementById('renameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveRename();
+});
 
 async function saveDeck(deckName, deckCards) {
   if (!currentUser) return;
@@ -1597,6 +1858,7 @@ async function generateCards() {
     await saveDeck(currentDeckName, cards);
     await loadProfile();
     updateWelcome();
+    updateLimitWarning();
     renderHeader(true);
     displayMiniCards();
     setLoading(false);
@@ -1642,6 +1904,10 @@ function startStudy() {
   document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
+  document.getElementById('studyComplete').style.display = 'none';
+  document.querySelector('.card-scene').style.opacity = '1';
+  document.querySelector('.card-nav').style.display = 'flex';
+  document.querySelector('.kb-hints').style.display = 'flex';
   isFlipped = false; currentIndex = 0; renderCard();
   setTimeout(() => safeCreateIcons(), 200);
 }
@@ -1665,8 +1931,36 @@ function renderCard() {
 }
 
 function flipCard() { isFlipped = !isFlipped; document.getElementById('cardInner').classList.toggle('flipped', isFlipped); }
-function nextCard() { if (currentIndex < cards.length - 1) { currentIndex++; renderCard(); } }
+
+function nextCard() {
+  if (currentIndex < cards.length - 1) {
+    currentIndex++;
+    renderCard();
+  } else {
+    document.querySelector('.card-scene').style.opacity = '0.3';
+    document.querySelector('.card-nav').style.display = 'none';
+    document.querySelector('.kb-hints').style.display = 'none';
+    document.getElementById('studyComplete').style.display = 'flex';
+    setTimeout(() => safeCreateIcons(), 200);
+  }
+}
+
 function prevCard() { if (currentIndex > 0) { currentIndex--; renderCard(); } }
+
+function restartDeck() {
+  currentIndex = 0;
+  document.querySelector('.card-scene').style.opacity = '1';
+  document.querySelector('.card-nav').style.display = 'flex';
+  document.querySelector('.kb-hints').style.display = 'flex';
+  document.getElementById('studyComplete').style.display = 'none';
+  renderCard();
+}
+
+function shuffleDeck() {
+  cards = [...cards].sort(() => Math.random() - 0.5);
+  restartDeck();
+  showToast('Cards shuffled');
+}
 
 document.addEventListener('keydown', e => {
   if (document.getElementById('studyView').style.display !== 'block') return;
