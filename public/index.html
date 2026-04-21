@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cardly — Turn Notes into Flashcards with AI</title>
 <meta name="description" content="Paste your lecture notes and get smart AI-generated flashcards in seconds. Study smarter, not harder.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23ff4d00'/><text x='16' y='23' font-family='Arial Black,sans-serif' font-size='18' font-weight='900' fill='white' text-anchor='middle'>C</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='6' width='22' height='16' rx='4' fill='%23b83a00'/><rect x='3' y='3' width='22' height='16' rx='4' fill='%23cc4300'/><rect x='0' y='0' width='22' height='16' rx='4' fill='%23ff4d00'/><line x1='4' y1='5' x2='18' y2='5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round'/><line x1='4' y1='9' x2='18' y2='9' stroke='rgba(255,255,255,0.9)' stroke-width='1.5' stroke-linecap='round'/><line x1='4' y1='13' x2='13' y2='13' stroke='rgba(255,255,255,0.9)' stroke-width='1.5' stroke-linecap='round'/></svg>">
 <meta property="og:title" content="Cardly — AI Flashcard Generator">
 <meta property="og:description" content="Turn your lecture notes into smart flashcards in seconds with AI.">
 <meta property="og:type" content="website">
@@ -833,12 +833,7 @@ footer{
 .app-loader-logo{
   font-family:'Bricolage Grotesque',sans-serif;
   font-weight:800;font-size:28px;letter-spacing:-1px;color:var(--text);
-  display:flex;align-items:center;gap:10px;
-}
-.app-loader-icon{
-  width:36px;height:36px;background:var(--accent);border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:16px;color:white;
+  display:flex;align-items:center;gap:12px;
 }
 .app-loader-spinner{
   width:28px;height:28px;border:2px solid var(--border2);
@@ -1166,7 +1161,14 @@ footer{
 <!-- ── APP LOADER ── -->
 <div class="app-loader" id="appLoader">
   <div class="app-loader-logo">
-    <div class="app-loader-icon">C</div>
+    <svg width="44" height="32" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+      <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+      <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+      <line x1="8" y1="10" x2="34" y2="10" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="18" x2="34" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="26" x2="24" y2="26" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
     Cardly
   </div>
   <div class="app-loader-spinner"></div>
@@ -1187,7 +1189,14 @@ footer{
       <i data-lucide="x" style="width:18px;height:18px;"></i>
     </button>
     <div class="auth-wordmark">
-      <div class="auth-icon">C</div>
+      <svg width="28" height="20" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+        <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+        <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+        <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+        <line x1="8" y1="10" x2="34" y2="10" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="8" y1="18" x2="34" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="8" y1="26" x2="24" y2="26" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
       <div class="auth-brand">Cardly</div>
     </div>
     <div class="auth-subtitle">Turn your notes into flashcards with AI</div>
@@ -1218,7 +1227,14 @@ footer{
 <!-- ── HEADER ── -->
 <header>
   <div class="wordmark" onclick="goHome()">
-    <div class="wordmark-icon">C</div>
+    <svg width="26" height="18" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+      <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+      <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+      <line x1="8" y1="10" x2="34" y2="10" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="18" x2="34" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="8" y1="26" x2="24" y2="26" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
     <div class="wordmark-text">Cardly</div>
   </div>
   <div class="header-right" id="headerRight"></div>
@@ -1379,7 +1395,14 @@ footer{
     <div class="footer-grid">
       <div class="footer-brand-col">
         <div class="footer-logo">
-          <div class="footer-logo-icon">C</div>
+          <svg width="24" height="17" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+            <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+            <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+            <line x1="8" y1="10" x2="34" y2="10" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="8" y1="18" x2="34" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="8" y1="26" x2="24" y2="26" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
           <div class="footer-logo-text">Cardly</div>
         </div>
         <div class="footer-tagline">AI-powered flashcard generator. Turn your lecture notes into study-ready cards in seconds.</div>
@@ -1766,10 +1789,6 @@ function showErrorBoundary(msg) {
 
 // ── INIT ──
 async function init() {
-  // Show landing immediately — don't wait for auth
-  showLanding();
-
-  // Race auth check against a 5s timeout so slow connections never hang
   try {
     if (window.location.hash.includes('access_token')) {
       await new Promise(r => setTimeout(r, 500));
@@ -1778,21 +1797,22 @@ async function init() {
 
     const sessionResult = await Promise.race([
       sb.auth.getSession(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
     ]);
 
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
     if (session) await onSignedIn(session.user);
+    else { showLanding(); }
 
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
       if (event === 'SIGNED_OUT') onSignedOut();
     });
   } catch(e) {
-    // On timeout or error just stay on landing — user can still sign in manually
     console.warn('Auth init failed:', e.message);
+    showLanding(); // fallback — show landing after timeout
   }
 }
 
