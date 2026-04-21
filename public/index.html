@@ -1926,18 +1926,19 @@ function renderDecks() {
         <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
       </button>
     `;
-    // Store raw name on the element to avoid HTML entity issues
     el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
     el.querySelector('[data-deck-id]').addEventListener('click', e => {
       e.stopPropagation();
+      e.preventDefault();
       const btn = e.currentTarget;
       openRenameDeck(btn.dataset.deckId, btn._deckName);
     });
     el.querySelector('[data-delete-id]').addEventListener('click', e => {
       e.stopPropagation();
+      e.preventDefault();
       deleteDeck(e.currentTarget.dataset.deleteId);
     });
-    el.onclick = () => openDeckPreview(deck);
+    el.addEventListener('click', () => openDeckPreview(deck));
     grid.appendChild(el);
   });
 
@@ -1989,14 +1990,12 @@ function startStudyFromPreview() {
 // ── RENAME DECK ──
 let renameDeckId = null;
 
-function openRenameDeck(deckId, currentName) {
+function openRenameDeck(deckId, deckName) {
   renameDeckId = deckId;
-  // Decode HTML entities that may have been introduced by esc()
-  const txt = document.createElement('textarea');
-  txt.innerHTML = currentName;
-  document.getElementById('renameInput').value = txt.value;
+  document.getElementById('renameInput').value = deckName;
+  document.getElementById('renameDeckModal').style.display = 'flex';
   document.getElementById('renameDeckModal').classList.add('open');
-  setTimeout(() => document.getElementById('renameInput').focus(), 100);
+  setTimeout(() => document.getElementById('renameInput').focus(), 150);
   setTimeout(() => safeCreateIcons(), 200);
 }
 
@@ -2298,7 +2297,7 @@ function showToast(msg) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── ANIMATED HERO DEMO — types once, cycles subjects ──
+// ── ANIMATED HERO DEMO — plays once, random subject per page load ──
 const demoSets = [
   {
     label: 'Example output — TCP/IP notes',
@@ -2311,7 +2310,7 @@ const demoSets = [
   {
     label: 'Example output — Cell Biology notes',
     cards: [
-      { q: "What is the function of the mitochondria?", a: "The mitochondria produces ATP through cellular respiration — it is the powerhouse of the cell." },
+      { q: "What is the function of the mitochondria?", a: "The mitochondria produces ATP through cellular respiration — the powerhouse of the cell." },
       { q: "What are the three stages of cellular respiration?", a: "Glycolysis (cytoplasm), the Krebs cycle (mitochondrial matrix), and the electron transport chain." },
       { q: "What happens during anaerobic respiration?", a: "Without oxygen, cells switch to lactic acid fermentation (animals) or alcoholic fermentation (yeast)." }
     ]
@@ -2319,14 +2318,15 @@ const demoSets = [
   {
     label: 'Example output — Psychology notes',
     cards: [
-      { q: "What is confirmation bias?", a: "The tendency to search for and favour information that confirms one's existing beliefs." },
+      { q: "What is confirmation bias?", a: "The tendency to search for information that confirms one's existing beliefs." },
       { q: "What does the Dunning-Kruger effect describe?", a: "People with limited knowledge in a domain tend to overestimate their own competence." },
-      { q: "What is cognitive dissonance?", a: "The psychological discomfort felt when holding two contradictory beliefs or values simultaneously." }
+      { q: "What is cognitive dissonance?", a: "The discomfort felt when holding two contradictory beliefs or values simultaneously." }
     ]
   }
 ];
 
-let demoSetIndex = 0;
+// Random set chosen once per page load — changes on refresh
+const demoSet = demoSets[Math.floor(Math.random() * demoSets.length)];
 
 function typeText(el, text, speed, callback) {
   let i = 0; el.textContent = '';
@@ -2338,39 +2338,25 @@ function typeText(el, text, speed, callback) {
 }
 
 function animateDemo() {
-  const set = demoSets[demoSetIndex % demoSets.length];
-  demoSetIndex++;
-
-  // Update label
+  // Set label
   const labelEl = document.querySelector('.demo-label');
-  if (labelEl) labelEl.textContent = set.label;
+  if (labelEl) labelEl.textContent = demoSet.label;
 
-  // Reset cards
-  for (let i = 1; i <= 3; i++) {
-    const card = document.getElementById(`demoCard${i}`);
-    const qEl = document.getElementById(`demoQ${i}`);
-    const aEl = document.getElementById(`demoA${i}`);
-    if (card) { card.classList.remove('visible'); card.style.opacity = '0'; }
-    if (qEl) qEl.textContent = '';
-    if (aEl) aEl.textContent = '';
-  }
-
-  // Type cards one by one — no looping, just show each once
+  // Type each card once — no loop at end
   let delay = 200;
-  set.cards.forEach((data, idx) => {
-    const card = document.getElementById(`demoCard${idx+1}`);
-    const qEl = document.getElementById(`demoQ${idx+1}`);
-    const aEl = document.getElementById(`demoA${idx+1}`);
+  demoSet.cards.forEach((data, idx) => {
+    const card = document.getElementById(`demoCard${idx + 1}`);
+    const qEl = document.getElementById(`demoQ${idx + 1}`);
+    const aEl = document.getElementById(`demoA${idx + 1}`);
     if (!card || !qEl || !aEl) return;
     setTimeout(() => {
       card.classList.add('visible');
-      typeText(qEl, data.q, 14, () => setTimeout(() => typeText(aEl, data.a, 8), 120));
+      typeText(qEl, data.q, 14, () => {
+        setTimeout(() => typeText(aEl, data.a, 8), 120);
+      });
     }, delay);
     delay += 1400;
   });
-
-  // After all cards shown, wait then switch to next subject
-  setTimeout(() => animateDemo(), delay + 4000);
 }
 
 // ── SCROLL REVEAL OBSERVER ──
