@@ -1621,14 +1621,14 @@ footer{
 <!-- ── RENAME DECK MODAL ── -->
 <div class="modal-overlay" id="renameDeckModal">
   <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('renameDeckModal').classList.remove('open')">
+    <button class="modal-close" id="renameCloseBtn">
       <i data-lucide="x" style="width:16px;height:16px;"></i>
     </button>
     <div class="modal-title">Rename Deck</div>
     <div class="modal-sub">Give your deck a new name.</div>
     <input type="text" class="rename-input" id="renameInput" placeholder="Deck name..." maxlength="60"/>
-    <button class="btn-save" onclick="saveRename()">Save</button>
-    <button class="btn-cancel" onclick="document.getElementById('renameDeckModal').classList.remove('open')">Cancel</button>
+    <button class="btn-save" id="renameSaveBtn">Save</button>
+    <button class="btn-cancel" id="renameCancelBtn">Cancel</button>
   </div>
 </div>
 
@@ -1990,30 +1990,61 @@ function startStudyFromPreview() {
 // ── RENAME DECK ──
 let renameDeckId = null;
 
+// ── RENAME DECK — self-contained, all listeners bound once at startup ──
+(function() {
+  const modal     = document.getElementById('renameDeckModal');
+  const input     = document.getElementById('renameInput');
+  const saveBtn   = document.getElementById('renameSaveBtn');
+  const cancelBtn = document.getElementById('renameCancelBtn');
+  const closeBtn  = document.getElementById('renameCloseBtn');
+
+  function closeModal() {
+    modal.style.display = 'none';
+    modal.classList.remove('open');
+    renameDeckId = null;
+    input.value = '';
+  }
+
+  async function doSave() {
+    const newName = input.value.trim();
+    if (!newName || !renameDeckId) return;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    try {
+      const { error } = await sb.from('decks')
+        .update({ name: newName })
+        .eq('id', renameDeckId)
+        .eq('user_id', currentUser.id);
+      if (error) throw error;
+      closeModal();
+      await loadDecks();
+      renderDecks();
+      updateWelcome();
+      showToast('Deck renamed');
+    } catch(e) {
+      showToast('Error: ' + e.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save';
+    }
+  }
+
+  saveBtn.addEventListener('click', doSave);
+  cancelBtn.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+})();
+
 function openRenameDeck(deckId, deckName) {
   renameDeckId = deckId;
-  document.getElementById('renameInput').value = deckName;
-  document.getElementById('renameDeckModal').style.display = 'flex';
-  document.getElementById('renameDeckModal').classList.add('open');
-  setTimeout(() => document.getElementById('renameInput').focus(), 150);
-  setTimeout(() => safeCreateIcons(), 200);
+  const modal = document.getElementById('renameDeckModal');
+  const input = document.getElementById('renameInput');
+  input.value = deckName;
+  modal.style.display = 'flex';
+  modal.classList.add('open');
+  setTimeout(() => { input.focus(); input.select(); }, 100);
 }
-
-async function saveRename() {
-  const newName = document.getElementById('renameInput').value.trim();
-  if (!newName || !renameDeckId) return;
-  await sb.from('decks').update({ name: newName }).eq('id', renameDeckId).eq('user_id', currentUser.id);
-  document.getElementById('renameDeckModal').classList.remove('open');
-  await loadDecks();
-  renderDecks();
-  updateWelcome();
-  showToast('Deck renamed');
-}
-
-// Allow Enter key to save rename
-document.getElementById('renameInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') saveRename();
-});
 
 async function saveDeck(deckName, deckCards) {
   if (!currentUser) return;
