@@ -575,12 +575,11 @@ textarea::placeholder{color:var(--text3);}
 }
 
 /* Right panel */
-.cards-area{display:flex;flex-direction:column;}
-
+.cards-area{display:flex;flex-direction:column;flex:1;}
 .empty-state{
   display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:240px;gap:10px;
-  text-align:center;color:var(--text3);
+  justify-content:center;flex:1;min-height:240px;gap:10px;
+  text-align:center;color:var(--text3);width:100%;
 }
 .empty-icon{font-size:32px;opacity:0.4;margin-bottom:4px;}
 .empty-state p{font-size:12px;max-width:180px;line-height:1.7;}
@@ -997,6 +996,7 @@ footer{
   align-items: start;
 }
 .footer-brand-col { text-align: left; }
+.footer-col { text-align: left; }
 .footer-logo {
   display: flex;
   align-items: center;
@@ -1052,16 +1052,6 @@ footer{
 }
 
 /* ── EMPTY STATE SVG ── */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 240px;
-  gap: 10px;
-  color: var(--text3);
-}
 .empty-state-svg {
   width: 72px; height: 72px; opacity: 0.45; display: block; margin: 0 auto 4px;
 }
@@ -1349,7 +1339,7 @@ footer{
         <div class="footer-tagline">AI-powered flashcard generator. Turn your lecture notes into study-ready cards in seconds.</div>
         <div class="footer-contact">Questions? <a href="mailto:hello@cardly.app">hello@cardly.app</a></div>
       </div>
-      <div>
+      <div class="footer-col">
         <div class="footer-col-title">Product</div>
         <div class="footer-col-links">
           <button onclick="showAuth()">Get Started</button>
@@ -1357,14 +1347,14 @@ footer{
           <button onclick="showAuth()">Sign In</button>
         </div>
       </div>
-      <div>
+      <div class="footer-col">
         <div class="footer-col-title">Legal</div>
         <div class="footer-col-links">
           <button onclick="showLegal('tos')">Terms of Service</button>
           <button onclick="showLegal('privacy')">Privacy Policy</button>
         </div>
       </div>
-      <div>
+      <div class="footer-col">
         <div class="footer-col-title">Support</div>
         <div class="footer-col-links">
           <a href="mailto:hello@cardly.app">Contact Us</a>
@@ -1929,17 +1919,19 @@ function renderDecks() {
         <div class="deck-dot"></div>
         <span>${date}</span>
       </div>
-      <button class="deck-delete" data-deck-id="${deck.id}" data-deck-name="${esc(deck.name || 'Untitled Deck')}" title="Rename" style="right:36px;">
+      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;">
         <i data-lucide="pencil" style="width:12px;height:12px;"></i>
       </button>
       <button class="deck-delete" data-delete-id="${deck.id}" title="Delete deck">
         <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
       </button>
     `;
+    // Store raw name on the element to avoid HTML entity issues
+    el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
     el.querySelector('[data-deck-id]').addEventListener('click', e => {
       e.stopPropagation();
       const btn = e.currentTarget;
-      openRenameDeck(btn.dataset.deckId, btn.dataset.deckName);
+      openRenameDeck(btn.dataset.deckId, btn._deckName);
     });
     el.querySelector('[data-delete-id]').addEventListener('click', e => {
       e.stopPropagation();
@@ -1999,7 +1991,10 @@ let renameDeckId = null;
 
 function openRenameDeck(deckId, currentName) {
   renameDeckId = deckId;
-  document.getElementById('renameInput').value = currentName;
+  // Decode HTML entities that may have been introduced by esc()
+  const txt = document.createElement('textarea');
+  txt.innerHTML = currentName;
+  document.getElementById('renameInput').value = txt.value;
   document.getElementById('renameDeckModal').classList.add('open');
   setTimeout(() => document.getElementById('renameInput').focus(), 100);
   setTimeout(() => safeCreateIcons(), 200);
