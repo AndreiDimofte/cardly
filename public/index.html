@@ -959,6 +959,102 @@ footer{
 }
 .pdf-loaded-clear:hover{background:var(--danger);border-color:var(--danger);color:white;}
 
+/* ── USAGE BAR ── */
+.usage-bar-section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px 22px;margin-bottom:24px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.usage-bar-left{flex:1;min-width:160px;}
+.usage-bar-label{font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.usage-bar-label strong{color:var(--text);font-weight:700;}
+.usage-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.usage-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease;}
+.usage-fill.full{background:var(--danger);}
+.usage-fill.warn{background:var(--yellow, #d97706);}
+.usage-bar-right{display:flex;gap:8px;flex-shrink:0;}
+.btn-upgrade-inline{
+  background:var(--accent);color:white;border:none;
+  padding:8px 16px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.btn-upgrade-inline:hover{opacity:.85;}
+.usage-pro-badge{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;color:var(--accent);
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ── QUICK ACTIONS ── */
+.quick-actions{
+  display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;
+}
+.quick-action-btn{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);padding:10px 16px;border-radius:10px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .18s;
+}
+.quick-action-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--surface);}
+.quick-action-btn i{flex-shrink:0;}
+
+/* ── EMPTY STATE (app) ── */
+.app-empty-state{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:48px 32px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;gap:12px;margin-bottom:28px;
+}
+.app-empty-icon{
+  width:56px;height:56px;background:var(--accent-dim);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:4px;
+}
+.app-empty-title{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+.app-empty-sub{font-size:13px;color:var(--text2);max-width:320px;line-height:1.7;font-weight:300;}
+.app-empty-steps{
+  display:flex;gap:0;margin-top:8px;border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;width:100%;max-width:480px;
+}
+.app-empty-step{
+  flex:1;padding:14px 10px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;border-right:1px solid var(--border);
+  font-size:12px;color:var(--text2);
+}
+.app-empty-step:last-child{border-right:none;}
+.app-empty-step-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--accent);color:white;
+  font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.app-empty-step-label{font-weight:600;color:var(--text);font-size:12px;}
+.btn-start-now{
+  background:var(--accent);color:white;border:none;
+  padding:12px 28px;border-radius:9px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .2s;margin-top:4px;
+}
+.btn-start-now:hover{opacity:.85;transform:translateY(-1px);}
+
+/* ── APP FOOTER ── */
+.app-footer{
+  border-top:1px solid var(--border);margin-top:60px;
+  padding:28px 0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.app-footer-left{display:flex;align-items:center;gap:16px;}
+.app-footer-logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;letter-spacing:-.3px;color:var(--text2);}
+.app-footer-copy{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+.app-footer-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.app-footer-link{
+  font-size:12px;color:var(--text3);background:none;border:none;
+  cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:500;
+  transition:color .15s;padding:0;
+}
+.app-footer-link:hover{color:var(--accent);}
+
 .limit-warning{
   background:rgba(255,77,0,0.06);border:1px solid rgba(255,77,0,0.2);
   border-radius:10px;padding:12px 16px;margin-bottom:16px;
@@ -1450,12 +1546,69 @@ footer{
       <button class="btn-new-deck" onclick="scrollToGenerator()">+ New Deck</button>
     </div>
 
+    <!-- Usage bar -->
+    <div class="usage-bar-section" id="usageBarSection">
+      <div class="usage-bar-left">
+        <div class="usage-bar-label">
+          <span id="usageBarLabel">Generations this month</span>
+          <strong id="usageBarCount">0 / 3</strong>
+        </div>
+        <div class="usage-track">
+          <div class="usage-fill" id="usageFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="usage-bar-right" id="usageBarRight"></div>
+    </div>
+
+    <!-- Quick actions (only when decks exist) -->
+    <div class="quick-actions" id="quickActions" style="display:none;">
+      <button class="quick-action-btn" onclick="studyRandomDeck()">
+        <i data-lucide="shuffle" style="width:14px;height:14px;"></i>
+        Study a random deck
+      </button>
+      <button class="quick-action-btn" onclick="exportAllDecks()">
+        <i data-lucide="download" style="width:14px;height:14px;"></i>
+        Export all decks
+      </button>
+      <button class="quick-action-btn" onclick="scrollToGenerator()">
+        <i data-lucide="plus" style="width:14px;height:14px;"></i>
+        New deck
+      </button>
+    </div>
+
     <!-- Saved decks -->
     <div class="decks-section" id="decksSection" style="display:none;">
       <div class="decks-header">
         <div class="decks-title">Your Decks</div>
       </div>
       <div class="decks-grid" id="decksGrid"></div>
+    </div>
+
+    <!-- Empty state (only when no decks) -->
+    <div class="app-empty-state" id="appEmptyState" style="display:none;">
+      <div class="app-empty-icon">
+        <i data-lucide="layers" style="width:26px;height:26px;color:var(--accent);"></i>
+      </div>
+      <div class="app-empty-title">Create your first deck</div>
+      <div class="app-empty-sub">Paste any lecture notes, textbook excerpt, or study material below and get smart flashcards in seconds.</div>
+      <div class="app-empty-steps">
+        <div class="app-empty-step">
+          <div class="app-empty-step-num">1</div>
+          <div class="app-empty-step-label">Paste notes</div>
+          <div>or upload a PDF</div>
+        </div>
+        <div class="app-empty-step">
+          <div class="app-empty-step-num">2</div>
+          <div class="app-empty-step-label">Generate</div>
+          <div>AI makes the cards</div>
+        </div>
+        <div class="app-empty-step">
+          <div class="app-empty-step-num">3</div>
+          <div class="app-empty-step-label">Study</div>
+          <div>flip & remember</div>
+        </div>
+      </div>
+      <button class="btn-start-now" onclick="scrollToGenerator()">Get Started ↓</button>
     </div>
 
     <!-- Generator -->
@@ -1563,10 +1716,31 @@ footer{
       </div>
     </div>
 
+    <!-- App footer -->
+    <footer class="app-footer">
+      <div class="app-footer-left">
+        <div class="app-footer-logo">
+          <svg width="18" height="13" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+            <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+            <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+            <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          Cardly
+        </div>
+        <span class="app-footer-copy">© 2025 Cardly</span>
+      </div>
+      <div class="app-footer-links">
+        <button class="app-footer-link" onclick="showLegal('tos')">Terms</button>
+        <button class="app-footer-link" onclick="showLegal('privacy')">Privacy</button>
+        <a class="app-footer-link" href="mailto:hello@cardly.app">hello@cardly.app</a>
+      </div>
+    </footer>
+
   </div>
 </div>
-
-<!-- ── STUDY VIEW ── -->
 <div class="study-view" id="studyView">
   <div class="study-header">
     <div class="study-title" id="studyDeckName">Study Mode</div>
@@ -1847,9 +2021,78 @@ function showApp() {
   updateWelcome();
   renderDecks();
   updateLimitWarning();
+  updateUsageBar();
+  updateQuickActions();
+  updateEmptyState();
   enforceCardCountLimit();
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
+}
+
+function updateUsageBar() {
+  if (!userProfile) return;
+  const used = userProfile.sets_this_month || 0;
+  const isPro = userProfile.is_pro;
+  const fill = document.getElementById('usageFill');
+  const count = document.getElementById('usageBarCount');
+  const label = document.getElementById('usageBarLabel');
+  const right = document.getElementById('usageBarRight');
+
+  if (isPro) {
+    label.textContent = 'Pro plan — unlimited generations';
+    count.textContent = `${used} used`;
+    fill.style.width = '100%';
+    fill.className = 'usage-fill';
+    fill.style.background = 'var(--accent)';
+    fill.style.opacity = '0.3';
+    right.innerHTML = `<div class="usage-pro-badge"><i data-lucide="zap" style="width:13px;height:13px;"></i> Pro</div>`;
+  } else {
+    const pct = Math.min((used / 3) * 100, 100);
+    label.textContent = 'Free plan — generations this month';
+    count.textContent = `${used} / 3`;
+    fill.style.width = pct + '%';
+    fill.style.opacity = '1';
+    fill.className = 'usage-fill' + (used >= 3 ? ' full' : used === 2 ? ' warn' : '');
+    right.innerHTML = used < 3
+      ? `<button class="btn-upgrade-inline" onclick="startCheckout()">Upgrade to Pro</button>`
+      : `<button class="btn-upgrade-inline" onclick="startCheckout()">Limit reached — Upgrade</button>`;
+  }
+  setTimeout(() => safeCreateIcons(), 100);
+}
+
+function updateQuickActions() {
+  const el = document.getElementById('quickActions');
+  el.style.display = savedDecks.length > 0 ? 'flex' : 'none';
+}
+
+function updateEmptyState() {
+  const el = document.getElementById('appEmptyState');
+  el.style.display = savedDecks.length === 0 ? 'flex' : 'none';
+  setTimeout(() => safeCreateIcons(), 100);
+}
+
+function studyRandomDeck() {
+  if (!savedDecks.length) return;
+  const deck = savedDecks[Math.floor(Math.random() * savedDecks.length)];
+  cards = deck.cards || [];
+  currentDeckName = deck.name || 'Study Mode';
+  if (cards.length) startStudy();
+  else showToast('That deck has no cards');
+}
+
+function exportAllDecks() {
+  if (!savedDecks.length) return;
+  let out = `CARDLY — All Decks Export\n${'='.repeat(40)}\n\n`;
+  savedDecks.forEach(deck => {
+    out += `DECK: ${deck.name || 'Untitled'}\n${'-'.repeat(30)}\n`;
+    (deck.cards || []).forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
+    out += '\n';
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
+  a.download = 'cardly-all-decks.txt';
+  a.click();
+  showToast(`Exported ${savedDecks.length} decks`);
 }
 
 function updateLimitWarning() {
@@ -2014,9 +2257,13 @@ function renderDecks() {
   const section = document.getElementById('decksSection');
   const grid = document.getElementById('decksGrid');
 
-  if (savedDecks.length === 0) { section.style.display = 'none'; return; }
-
+  if (savedDecks.length === 0) {
+    section.style.display = 'none';
+    if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
+    return;
+  }
   section.style.display = 'block';
+  if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
   grid.innerHTML = '';
 
   savedDecks.forEach((deck, i) => {
