@@ -1,5 +1,5 @@
 // api/delete-account.js
-// Deletes the authenticated user's account completely including auth record
+// Deletes the authenticated user's account and records their email to prevent re-signup abuse
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -10,11 +10,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Verify the user's session
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
-  // Use anon client to verify the token and get the user
   const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
@@ -24,6 +22,12 @@ export default async function handler(req, res) {
   if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
   try {
+    // Record email BEFORE deleting so we can block re-signup
+    await supabase.from('deleted_accounts').upsert({
+      email: user.email.toLowerCase(),
+      deleted_at: new Date().toISOString()
+    });
+
     // Delete all user decks
     await supabase.from('decks').delete().eq('user_id', user.id);
 

@@ -25,6 +25,17 @@ export default async function handler(req, res) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
+  // 1b. Check if this email previously deleted an account (abuse prevention)
+  const { data: deleted } = await supabase
+    .from('deleted_accounts')
+    .select('email')
+    .eq('email', user.email.toLowerCase())
+    .single();
+
+  if (deleted) {
+    return res.status(403).json({ error: 'This account is not eligible for free generations. Please upgrade to Pro.' });
+  }
+
   // 2. Check usage limit for free users
   const { data: profile } = await supabase
     .from('profiles')
