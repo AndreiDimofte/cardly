@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root {
   --bg: #0a0a0a;
@@ -1730,8 +1729,7 @@ async function init() {
 async function onSignedIn(user) {
   currentUser = user;
   document.getElementById('authOverlay').style.display = 'none';
-  await loadProfile();
-  await loadDecks();
+  await Promise.all([loadProfile(), loadDecks()]);
   showApp();
   handleCheckoutReturn();
 }
@@ -2461,8 +2459,20 @@ document.getElementById('cardCount').addEventListener('change', () => {
   input.value = val;
 });
 
-// ── PDF EXTRACTION ──
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// ── PDF EXTRACTION — PDF.js loaded lazily on first use ──
+async function loadPdfJs() {
+  if (window.pdfjsLib) return true;
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    script.onload = () => {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      resolve(true);
+    };
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+}
 
 async function handlePdfUpload(input) {
   const file = input.files[0];
@@ -2473,9 +2483,13 @@ async function handlePdfUpload(input) {
 
   btn.disabled = true;
   status.className = 'pdf-status';
-  status.textContent = 'Reading PDF...';
+  status.textContent = 'Loading PDF reader...';
 
   try {
+    const loaded = await loadPdfJs();
+    if (!loaded) throw new Error('Could not load PDF reader — check your connection');
+
+    status.textContent = 'Reading PDF...';
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const totalPages = pdf.numPages;
@@ -2494,7 +2508,6 @@ async function handlePdfUpload(input) {
       throw new Error('No readable text found — PDF may be scanned or image-based');
     }
 
-    // Trim to ~12000 chars to stay within API limits
     if (fullText.length > 12000) {
       fullText = fullText.slice(0, 12000);
       status.textContent = `${file.name} (trimmed to 12k chars)`;
@@ -2508,7 +2521,6 @@ async function handlePdfUpload(input) {
     document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
     dismissTooltip();
 
-    // Auto-fill deck name from filename if empty
     const nameInput = document.getElementById('deckNameInput');
     if (!nameInput.value.trim()) {
       nameInput.value = file.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
@@ -2518,7 +2530,7 @@ async function handlePdfUpload(input) {
     status.textContent = e.message || 'Failed to read PDF';
   } finally {
     btn.disabled = false;
-    input.value = ''; // reset so same file can be re-uploaded
+    input.value = '';
     setTimeout(() => safeCreateIcons(), 100);
   }
 }
