@@ -1305,6 +1305,11 @@ footer{
     <button class="modal-close" onclick="closeAccountModal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     <div class="modal-title">Account</div>
     <div class="modal-sub" id="accountEmail"></div>
+    <div id="manageSubBtn" style="display:none;margin-bottom:10px;">
+      <button class="btn-save" onclick="openBillingPortal()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:none;">
+        Manage Subscription
+      </button>
+    </div>
     <button class="btn-danger" onclick="confirmDeleteAccount()">
       Delete my account & all data
     </button>
@@ -1606,8 +1611,31 @@ function renderHeader(loggedIn) {
 // ── ACCOUNT MODAL ──
 function openAccountModal() {
   document.getElementById('accountEmail').textContent = currentUser?.email || '';
+  // Show manage subscription button only for Pro users
+  document.getElementById('manageSubBtn').style.display = userProfile?.is_pro ? 'block' : 'none';
   document.getElementById('accountModal').classList.add('open');
   setTimeout(() => safeCreateIcons(), 200);
+}
+
+async function openBillingPortal() {
+  const btn = document.querySelector('#manageSubBtn button');
+  btn.disabled = true;
+  btn.textContent = 'Opening...';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('/api/create-portal', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${session.access_token}` }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+    window.location.href = data.url;
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Manage Subscription';
+    showToast('Error: ' + e.message);
+  }
 }
 
 function closeAccountModal() {
