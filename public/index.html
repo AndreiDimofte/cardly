@@ -763,9 +763,11 @@ footer{
 .mobile-menu{
   display:none;position:fixed;inset:0;top:57px;
   background:var(--bg);z-index:99;padding:24px 20px;
-  flex-direction:column;gap:8px;border-top:1px solid var(--border);
+  flex-direction:column;gap:0;border-top:1px solid var(--border);
+  overflow-y:auto;
 }
 .mobile-menu.open{display:flex;}
+#mobileMenuContent{display:flex;flex-direction:column;width:100%;gap:0;}
 .mobile-menu-link{
   background:none;border:none;color:var(--text);
   font-family:'Bricolage Grotesque',sans-serif;
@@ -2326,21 +2328,29 @@ async function init() {
   try {
     document.getElementById('appLoader').style.display = 'flex';
 
-    if (window.location.hash.includes('access_token')) {
-      await new Promise(r => setTimeout(r, 600));
+    // Detect OAuth return (hash token or code param) — keep loader up
+    const isOAuthReturn = window.location.hash.includes('access_token') ||
+                          window.location.search.includes('code=');
+    if (isOAuthReturn) {
+      signingIn = true;
+      await new Promise(r => setTimeout(r, 800));
       window.history.replaceState(null, '', window.location.pathname);
     }
 
     const sessionResult = await Promise.race([
       sb.auth.getSession(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000))
     ]);
 
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
-    if (session) await onSignedIn(session.user);
-    else showLanding();
+    if (session) {
+      await onSignedIn(session.user);
+    } else {
+      signingIn = false;
+      showLanding();
+    }
 
     initDone = true;
 
@@ -2350,6 +2360,7 @@ async function init() {
     });
   } catch(e) {
     console.warn('Auth init failed:', e.message);
+    signingIn = false;
     initDone = true;
     showLanding();
   }
@@ -2913,15 +2924,20 @@ async function handleEmailAuth() {
 }
 
 async function signOut() {
-  try {
-    await sb.auth.signOut();
-  } catch(e) {
-    console.warn('SignOut error:', e);
-  } finally {
-    currentUser = null; userProfile = null; savedDecks = [];
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
-    showLanding();
-  }
+  try { await sb.auth.signOut(); } catch(e) { console.warn('signOut error:', e); }
+  signingIn = false;
+  currentUser = null; userProfile = null; savedDecks = [];
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  document.getElementById('mobileMenu').classList.remove('open');
+  // Force show landing — bypass all guards
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById('landingView').classList.add('active');
+  renderHeader(false);
+  const loader = document.getElementById('appLoader');
+  loader.classList.add('hidden');
+  setTimeout(() => { loader.style.display = 'none'; loader.classList.remove('hidden'); }, 300);
+  setTimeout(() => { safeCreateIcons(); animateDemo(); initScrollReveal(); }, 350);
 }
 
 async function handleGoogleAuth() {
