@@ -1422,7 +1422,7 @@ footer{
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="upload" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Export anywhere</div>
-          <div class="feature-desc">Export your cards as a .txt file and import into Anki, Notion, or any study app.</div>
+          <div class="feature-desc">Export your cards as a .txt or Anki-compatible file and import into any study app.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="lock" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1472,7 +1472,7 @@ footer{
             <li>Up to 10 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
-            <li>Export to .txt</li>
+            <li>Export to .txt &amp; Anki format</li>
             <li class="muted">Unlimited generations</li>
             <li class="muted">Up to 25 cards per deck</li>
           </ul>
@@ -1489,7 +1489,7 @@ footer{
             <li>Up to 25 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
-            <li>Export to .txt</li>
+            <li>Export to .txt &amp; Anki format</li>
           </ul>
           <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $5/mo</button>
         </div>
@@ -1721,7 +1721,8 @@ footer{
           </div>
           <div class="panel-actions" id="panelActions" style="display:none;">
             <button class="btn-sm" onclick="startStudy()">▶ Study Now</button>
-            <button class="btn-sm" onclick="exportCards()">↓ Export</button>
+            <button class="btn-sm" onclick="exportCards()">↓ Export .txt</button>
+            <button class="btn-sm" onclick="exportAnki()">↓ Anki</button>
           </div>
         </div>
       </div>
@@ -2711,6 +2712,18 @@ function exportCards() {
   a.download = `${currentDeckName.replace(/\s+/g,'-').toLowerCase()}.txt`;
   a.click();
   showToast('Exported successfully');
+}
+
+function exportAnki() {
+  if (!cards.length) return;
+  // Anki tab-separated format: front[tab]back, one card per line
+  // Import in Anki via File → Import, delimiter: Tab
+  const out = cards.map(c => `${c.front}\t${c.back}`).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
+  a.download = `${currentDeckName.replace(/\s+/g,'-').toLowerCase()}-anki.txt`;
+  a.click();
+  showToast('Exported for Anki — import via File → Import');
 }
 
 // ── STRIPE ──
