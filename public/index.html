@@ -499,9 +499,25 @@ header{
 @keyframes deckFade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
 .deck-name{font-size:14px;font-weight:600;margin-bottom:6px;letter-spacing:-0.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding-right:90px;/* always reserve space for buttons */}
 .deck-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
 .deck-dot{width:3px;height:3px;border-radius:50%;background:var(--border2);}
+
+.deck-card{position:relative;}
+.deck-actions-row{
+  position:absolute;top:10px;right:10px;
+  display:none;align-items:center;gap:3px;
+}
+.deck-card:hover .deck-actions-row{display:flex;}
+.deck-action-btn{
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:5px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.deck-action-btn:hover{color:var(--accent);background:var(--accent-dim);}
+.deck-action-btn.danger:hover{color:var(--danger);background:rgba(248,113,113,0.1);}
 
 .decks-empty{
   background:var(--surface);border:1px dashed var(--border2);border-radius:12px;
@@ -763,17 +779,6 @@ footer{
 }
 
 /* ── DECK DELETE ── */
-.deck-card{position:relative;}
-.deck-delete{
-  position:absolute;top:10px;right:10px;
-  background:none;border:none;color:var(--text3);
-  cursor:pointer;padding:4px;border-radius:5px;
-  display:none;align-items:center;justify-content:center;
-  transition:all 0.15s;
-}
-.deck-card:hover .deck-delete{display:flex;}
-.deck-delete:hover{color:var(--danger);background:rgba(248,113,113,0.1);}
-
 /* ── ACCOUNT MODAL ── */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(10,10,10,0.88);
@@ -888,13 +893,13 @@ footer{
 /* ── DIFFICULTY RATING (Pro) ── */
 .difficulty-row{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:14px 20px;margin:16px auto 0;
-  max-width:480px;text-align:center;
+  border-radius:12px;padding:16px 20px;margin:20px auto 0;
+  max-width:420px;text-align:center;
 }
-.diff-label{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.diff-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
 .diff-buttons{display:flex;gap:8px;justify-content:center;}
 .btn-diff{
-  flex:1;max-width:110px;padding:9px 0;border-radius:9px;border:1.5px solid var(--border2);
+  flex:1;padding:10px 0;border-radius:9px;border:1.5px solid var(--border2);
   font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;
   cursor:pointer;transition:all .18s;background:var(--surface);color:var(--text2);
   display:flex;align-items:center;justify-content:center;gap:5px;
@@ -916,25 +921,53 @@ footer{
 .folder-tab:hover,.folder-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
 .folder-tab.all.active{background:var(--text);color:var(--bg);border-color:var(--text);}
 
-/* ── SHARE MODAL ── */
-.share-url-row{display:flex;gap:8px;margin-bottom:12px;}
-.share-url-input{
-  flex:1;background:var(--surface2);border:1.5px solid var(--border2);
-  color:var(--text);padding:10px 13px;border-radius:8px;
-  font-family:'JetBrains Mono',monospace;font-size:12px;
+/* ── FOLDER MODAL ── */
+.folder-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto;}
+.folder-list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-radius:9px;border:1.5px solid var(--border);
+  cursor:pointer;transition:all .15s;background:var(--surface);font-size:13px;font-weight:600;
 }
-.btn-copy{
-  background:var(--accent);color:white;border:none;padding:10px 16px;
+.folder-list-item:hover{border-color:var(--accent);color:var(--accent);}
+.folder-list-item.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+.folder-list-item.none-item{color:var(--text3);font-weight:400;}
+.folder-new-row{display:flex;gap:8px;margin-bottom:12px;}
+.folder-new-input{
+  flex:1;background:var(--surface2);border:1.5px solid var(--border2);
+  color:var(--text);padding:9px 13px;border-radius:8px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;transition:border-color .15s;
+}
+.folder-new-input:focus{outline:none;border-color:var(--accent);}
+.btn-folder-add{
+  background:var(--accent);color:white;border:none;padding:9px 16px;
   border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;
   font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;
 }
+.btn-folder-add:hover{opacity:.85;}
+
+/* ── SHARE MODAL ── */
+.share-url-box{
+  background:var(--surface2);border:1.5px solid var(--border2);border-radius:10px;
+  padding:12px 14px;margin-bottom:12px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);
+  word-break:break-all;line-height:1.6;
+}
+.share-url-row{display:flex;gap:8px;margin-bottom:14px;}
+.btn-copy{
+  width:100%;background:var(--accent);color:white;border:none;padding:12px;
+  border-radius:9px;font-family:'Bricolage Grotesque',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;
+}
 .btn-copy:hover{opacity:.85;}
+.btn-copy.copied{background:#4ade80;color:#0f1f0f;}
 .share-preview{
   background:var(--surface2);border:1px solid var(--border);border-radius:10px;
-  padding:12px 14px;max-height:180px;overflow-y:auto;
+  padding:10px 14px;max-height:140px;overflow-y:auto;margin-bottom:10px;
 }
-.share-preview-item{font-size:12px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);}
+.share-preview-item{font-size:12px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .share-preview-item:last-child{border-bottom:none;}
+.share-hint{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-align:center;}
 
 /* ── STATS (Pro) ── */
 .stats-grid{
@@ -2051,18 +2084,38 @@ footer{
 </div>
 </div>
 
+<!-- ── FOLDER ASSIGN MODAL ── -->
+<div class="modal-overlay" id="folderModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('folderModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">Assign to Folder</div>
+    <div class="modal-sub" id="folderModalDeckName"></div>
+    <div class="folder-new-row">
+      <input type="text" class="folder-new-input" id="folderNewInput" placeholder="New folder name..." maxlength="40"/>
+      <button class="btn-folder-add" onclick="createFolderFromModal()">+ Create</button>
+    </div>
+    <div class="folder-list" id="folderList"></div>
+    <button class="btn-save" onclick="applyFolderSelection()">Apply</button>
+    <button class="btn-cancel" onclick="document.getElementById('folderModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- ── SHARE DECK MODAL ── -->
 <div class="modal-overlay" id="shareDeckModal">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('shareDeckModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     <div class="modal-title">Share Deck</div>
-    <div class="modal-sub">Anyone with this link can view and clone this deck into their account.</div>
-    <div class="share-url-row">
-      <input class="share-url-input" id="shareUrlInput" readonly/>
-      <button class="btn-copy" onclick="copyShareUrl()">Copy</button>
+    <div class="modal-sub">Anyone with this link can view and import this deck.</div>
+    <div class="share-url-box" id="shareUrlBox"></div>
+    <button class="btn-copy" id="copyBtn" onclick="copyShareUrl()">
+      <i data-lucide="copy" style="width:14px;height:14px;"></i>
+      Copy link
+    </button>
+    <div style="margin-top:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Preview</div>
+      <div class="share-preview" id="sharePreview"></div>
     </div>
-    <div class="share-preview" id="sharePreview"></div>
-    <button class="btn-cancel" style="margin-top:10px;" onclick="document.getElementById('shareDeckModal').classList.remove('open')">Close</button>
+    <div class="share-hint" style="margin-top:8px;">Link expires when you delete this deck</div>
   </div>
 </div>
 
@@ -2583,6 +2636,10 @@ let renameDeckId = null;
   cancelBtn.addEventListener('click', closeModal);
   closeBtn.addEventListener('click', closeModal);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
+
+document.getElementById('folderNewInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') createFolderFromModal();
+});
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 })();
 
@@ -2894,8 +2951,7 @@ function renderFolderTabs() {
   container.style.display = 'flex';
   container.innerHTML = [
     `<button class="folder-tab all ${currentFolder === 'all' ? 'active' : ''}" onclick="setFolder('all')">All decks</button>`,
-    ...folders.map(f => `<button class="folder-tab ${currentFolder === f ? 'active' : ''}" onclick="setFolder('${esc(f)}')">${esc(f)}</button>`),
-    `<button class="folder-tab" onclick="addFolder()" title="New folder" style="opacity:.6;">+ New folder</button>`
+    ...folders.map(f => `<button class="folder-tab ${currentFolder === f ? 'active' : ''}" onclick="setFolder(${JSON.stringify(f)})">${esc(f)}</button>`)
   ].join('');
 }
 
@@ -2905,44 +2961,113 @@ function setFolder(name) {
   renderDecksFiltered();
 }
 
-function addFolder() {
-  const name = prompt('Enter folder name:');
-  if (!name || !name.trim()) return;
-  const trimmed = name.trim();
-  // Ask which deck to start with
-  if (savedDecks.length === 0) { showToast('Add some decks first'); return; }
-  const deckNames = savedDecks.map((d, i) => `${i + 1}. ${d.name || 'Untitled'}`).join('\n');
-  const pick = prompt(`Folder "${trimmed}" created!\n\nWhich deck to add? Enter the number:\n${deckNames}`);
-  const idx = parseInt(pick) - 1;
-  if (!isNaN(idx) && idx >= 0 && idx < savedDecks.length) {
-    deckFolders[savedDecks[idx].id] = trimmed;
-    saveFolders();
-  }
-  currentFolder = trimmed;
-  renderFolderTabs();
-  renderDecksFiltered();
-  showToast(`Folder "${trimmed}" created`);
+// ── FOLDER MODAL (Pro) ──
+let folderTargetDeckId = null;
+let selectedFolderName = null;
+
+function openFolderModal(deckId, deckName) {
+  folderTargetDeckId = deckId;
+  selectedFolderName = deckFolders[deckId] || null;
+  document.getElementById('folderModalDeckName').textContent = `"${deckName}"`;
+  document.getElementById('folderNewInput').value = '';
+  renderFolderList();
+  document.getElementById('folderModal').classList.add('open');
+  setTimeout(() => safeCreateIcons(), 150);
 }
 
-function assignDeckToFolder(deckId, deckName) {
+function renderFolderList() {
+  const list = document.getElementById('folderList');
   const folders = getAllFolderNames();
-  const opts = ['(none)', ...folders, '+ New folder'].map((f, i) => `${i}. ${f}`).join('\n');
-  const pick = prompt(`Assign "${deckName}" to a folder:\n${opts}`);
-  const idx = parseInt(pick);
-  if (isNaN(idx)) return;
-  if (idx === 0) { delete deckFolders[deckId]; saveFolders(); renderFolderTabs(); renderDecks(); return; }
-  const allOpts = ['(none)', ...folders, '+ New folder'];
-  if (idx === allOpts.length - 1) {
-    const newName = prompt('New folder name:');
-    if (!newName?.trim()) return;
-    deckFolders[deckId] = newName.trim();
-  } else if (idx < allOpts.length) {
-    deckFolders[deckId] = folders[idx - 1];
+  const current = deckFolders[folderTargetDeckId] || null;
+  list.innerHTML = `
+    <div class="folder-list-item none-item ${!current ? 'selected' : ''}" onclick="selectFolderItem(null, this)">
+      <span>No folder</span>
+      ${!current ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}
+    </div>
+    ${folders.map(f => `
+      <div class="folder-list-item ${current === f ? 'selected' : ''}" onclick="selectFolderItem(${JSON.stringify(f)}, this)">
+        <span>${esc(f)}</span>
+        ${current === f ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}
+      </div>
+    `).join('')}
+  `;
+  setTimeout(() => safeCreateIcons(), 100);
+}
+
+function selectFolderItem(name, el) {
+  selectedFolderName = name;
+  document.querySelectorAll('.folder-list-item').forEach(i => {
+    i.classList.remove('selected');
+    const chk = i.querySelector('[data-lucide="check"]');
+    if (chk) chk.remove();
+  });
+  el.classList.add('selected');
+  el.insertAdjacentHTML('beforeend', '<i data-lucide="check" style="width:13px;height:13px;"></i>');
+  setTimeout(() => safeCreateIcons(), 50);
+}
+
+function createFolderFromModal() {
+  const name = document.getElementById('folderNewInput').value.trim();
+  if (!name) return;
+  document.getElementById('folderNewInput').value = '';
+  selectedFolderName = name;
+  // Add to list visually if not already there
+  const list = document.getElementById('folderList');
+  const exists = [...list.querySelectorAll('.folder-list-item')].some(el => el.textContent.trim() === name);
+  if (!exists) {
+    const item = document.createElement('div');
+    item.className = 'folder-list-item selected';
+    item.innerHTML = `<span>${esc(name)}</span><i data-lucide="check" style="width:13px;height:13px;"></i>`;
+    item.onclick = function() { selectFolderItem(name, this); };
+    list.appendChild(item);
+    setTimeout(() => safeCreateIcons(), 50);
   }
+  // Deselect others
+  document.querySelectorAll('.folder-list-item:not(:last-child)').forEach(i => {
+    if (i.textContent.trim() !== name) {
+      i.classList.remove('selected');
+      const chk = i.querySelector('[data-lucide="check"]');
+      if (chk) chk.remove();
+    }
+  });
+}
+
+function applyFolderSelection() {
+  if (!folderTargetDeckId) return;
+  if (selectedFolderName === null) delete deckFolders[folderTargetDeckId];
+  else deckFolders[folderTargetDeckId] = selectedFolderName;
   saveFolders();
+  document.getElementById('folderModal').classList.remove('open');
   renderFolderTabs();
   renderDecksFiltered();
-  showToast('Folder updated');
+  showToast(selectedFolderName ? `Moved to "${selectedFolderName}"` : 'Removed from folder');
+}
+
+// ── SHARE DECK (Pro) ──
+let currentShareUrl = '';
+function openShareDeck(deck) {
+  if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
+  const payload = encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }));
+  currentShareUrl = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
+  document.getElementById('shareUrlBox').textContent = currentShareUrl;
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy link';
+  copyBtn.className = 'btn-copy';
+  document.getElementById('sharePreview').innerHTML = (deck.cards || []).slice(0, 5).map(c =>
+    `<div class="share-preview-item">${esc(c.front)}</div>`
+  ).join('') + (deck.cards?.length > 5 ? `<div class="share-preview-item" style="color:var(--text3);">...and ${deck.cards.length - 5} more</div>` : '');
+  document.getElementById('shareDeckModal').classList.add('open');
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+function copyShareUrl() {
+  const btn = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(currentShareUrl).then(() => {
+    btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Copied!';
+    btn.className = 'btn-copy copied';
+    safeCreateIcons();
+    setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy link'; btn.className = 'btn-copy'; safeCreateIcons(); }, 2200);
+  }).catch(() => showToast('Copy failed — select the link manually'));
 }
 
 function getFilteredDecks() {
@@ -2971,43 +3096,22 @@ function renderDecksFiltered() {
         <div class="deck-dot"></div>
         ${folder ? `<span style="color:var(--accent);font-size:10px;">${esc(folder)}</span>` : `<span>${date}</span>`}
       </div>
-      <button class="deck-delete" data-folder-id="${deck.id}" data-folder-name="${esc(deck.name||'Untitled')}" title="Assign folder" style="right:62px;"><i data-lucide="folder" style="width:12px;height:12px;"></i></button>
-      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:38px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
-      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:14px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
+      <div class="deck-actions-row">
+        <button class="deck-action-btn" data-folder-id="${deck.id}" data-folder-name="${esc(deck.name||'Untitled')}" title="Assign folder"><i data-lucide="folder" style="width:12px;height:12px;"></i></button>
+        ${userProfile?.is_pro ? `<button class="deck-action-btn" data-share-id="${deck.id}" title="Share deck"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
+        <button class="deck-action-btn" data-deck-id="${deck.id}" title="Rename"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
+        <button class="deck-action-btn danger" data-delete-id="${deck.id}" title="Delete"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
+      </div>
     `;
-    el.querySelector('[data-folder-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); assignDeckToFolder(e.currentTarget.dataset.folderId, e.currentTarget.dataset.folderName); });
+    el.querySelector('[data-folder-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openFolderModal(e.currentTarget.dataset.folderId, e.currentTarget.dataset.folderName); });
     if (userProfile?.is_pro) el.querySelector('[data-share-id]')?.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openShareDeck(deck); });
     el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
     el.querySelector('[data-deck-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openRenameDeck(e.currentTarget.dataset.deckId, e.currentTarget._deckName); });
+    el.querySelector('[data-delete-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); deleteDeck(e.currentTarget.dataset.deleteId); });
     el.addEventListener('click', () => openDeckPreview(deck));
     grid.appendChild(el);
   });
   setTimeout(() => safeCreateIcons(), 200);
-}
-
-// ── SHARE DECK (Pro) ──
-let shareDeck = null;
-function openShareDeck(deck) {
-  if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
-  shareDeck = deck;
-  const payload = encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }));
-  const url = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
-  document.getElementById('shareUrlInput').value = url;
-  const list = document.getElementById('sharePreview');
-  list.innerHTML = (deck.cards || []).slice(0, 5).map(c =>
-    `<div class="share-preview-item">${esc(c.front)}</div>`
-  ).join('') + (deck.cards?.length > 5 ? `<div class="share-preview-item" style="color:var(--text3);">...and ${deck.cards.length - 5} more</div>` : '');
-  document.getElementById('shareDeckModal').classList.add('open');
-  setTimeout(() => safeCreateIcons(), 200);
-}
-
-function copyShareUrl() {
-  const val = document.getElementById('shareUrlInput').value;
-  navigator.clipboard.writeText(val).then(() => showToast('Link copied!')).catch(() => {
-    document.getElementById('shareUrlInput').select();
-    document.execCommand('copy');
-    showToast('Link copied!');
-  });
 }
 
 function checkSharedDeck() {
