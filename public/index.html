@@ -2303,7 +2303,6 @@ function showErrorBoundary(msg) {
 // ── INIT ──
 async function init() {
   try {
-    // Show loader immediately — never show landing during auth check
     document.getElementById('appLoader').style.display = 'flex';
 
     if (window.location.hash.includes('access_token')) {
@@ -2322,12 +2321,15 @@ async function init() {
     if (session) await onSignedIn(session.user);
     else showLanding();
 
+    initDone = true;
+
     sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
-      if (event === 'SIGNED_OUT') onSignedOut();
+      if (event === 'SIGNED_IN' && session) { await onSignedIn(session.user); initDone = true; }
+      if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
   } catch(e) {
     console.warn('Auth init failed:', e.message);
+    initDone = true;
     showLanding();
   }
 }
@@ -2344,6 +2346,8 @@ function onSignedOut() {
   currentUser = null; userProfile = null; savedDecks = [];
   showLanding();
 }
+
+let initDone = false;
 
 // ── VIEWS ──
 function showLanding() {
@@ -3463,12 +3467,14 @@ function typeText(el, text, speed, callback) {
   type();
 }
 
+let demoHasRun = false;
 function animateDemo() {
-  // Set label
+  if (demoHasRun) return;
+  demoHasRun = true;
+
   const labelEl = document.querySelector('.demo-label');
   if (labelEl) labelEl.textContent = demoSet.label;
 
-  // Type each card once - no loop at end
   let delay = 200;
   demoSet.cards.forEach((data, idx) => {
     const card = document.getElementById(`demoCard${idx + 1}`);
