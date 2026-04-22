@@ -1141,6 +1141,40 @@ footer{
 }
 .btn-start-now:hover{opacity:.85;transform:translateY(-1px);}
 
+/* ── PRO UPSELL (free users) ── */
+.pro-upsell{
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;
+}
+.pro-upsell-header{
+  background:linear-gradient(135deg,#1a0a00,#2d1200);
+  padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.pro-upsell-title{font-size:15px;font-weight:800;letter-spacing:-.3px;}
+.pro-upsell-title span{color:var(--accent);}
+.pro-upsell-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+}
+@media(max-width:600px){.pro-upsell-grid{grid-template-columns:1fr;}}
+.pro-upsell-item{
+  padding:18px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:12px;
+  position:relative;overflow:hidden;
+}
+.pro-upsell-item:nth-child(even){border-right:none;}
+.pro-upsell-item:nth-last-child(-n+2){border-bottom:none;}
+.pro-upsell-lock{
+  width:32px;height:32px;border-radius:8px;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);
+}
+.pro-upsell-item-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.pro-upsell-item-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+.pro-upsell-blur{
+  position:absolute;inset:0;backdrop-filter:blur(2px);
+  background:rgba(10,10,10,0.3);
+  display:flex;align-items:center;justify-content:center;
+}
+
 /* ── APP FOOTER ── */
 .app-footer{
   border-top:1px solid var(--border);margin-top:60px;
@@ -1838,6 +1872,61 @@ footer{
       </div>
     </div>
 
+    <!-- Pro upsell for free users -->
+    <div class="pro-upsell" id="proUpsell" style="display:none;">
+      <div class="pro-upsell-header">
+        <div>
+          <div class="pro-upsell-title">Unlock <span>Pro features</span></div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px;">Everything you need to study smarter — $5/month</div>
+        </div>
+        <button class="btn-header-cta" onclick="startCheckout()">Upgrade to Pro</button>
+      </div>
+      <div class="pro-upsell-grid">
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="shuffle" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">Unlimited generations</div>
+            <div class="pro-upsell-item-desc">Create as many decks as you need, every month.</div>
+          </div>
+        </div>
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="smile" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">Card difficulty rating</div>
+            <div class="pro-upsell-item-desc">Mark cards Easy, Okay or Hard while studying.</div>
+          </div>
+        </div>
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="folder" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">Deck folders</div>
+            <div class="pro-upsell-item-desc">Organise decks by subject, semester or exam.</div>
+          </div>
+        </div>
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="bar-chart-2" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">Study stats & streaks</div>
+            <div class="pro-upsell-item-desc">Track your progress and keep your streak alive.</div>
+          </div>
+        </div>
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="share-2" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">Shareable deck links</div>
+            <div class="pro-upsell-item-desc">Share any deck with a friend via a single link.</div>
+          </div>
+        </div>
+        <div class="pro-upsell-item">
+          <div class="pro-upsell-lock"><i data-lucide="layers" style="width:15px;height:15px;"></i></div>
+          <div>
+            <div class="pro-upsell-item-title">25 cards per deck</div>
+            <div class="pro-upsell-item-desc">Free plan is limited to 10. Pro doubles your depth.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- App footer -->
     <footer class="app-footer">
       <div class="app-footer-left">
@@ -2146,6 +2235,17 @@ footer{
   </div>
 </div>
 
+<!-- ── DELETE CONFIRM MODAL ── -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="max-width:380px;">
+    <div class="modal-title">Delete deck?</div>
+    <div class="modal-sub" id="deleteModalName"></div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">This will permanently remove the deck and all its cards. This cannot be undone.</p>
+    <button class="btn-save" id="deleteConfirmBtn" style="background:var(--danger);box-shadow:none;">Delete</button>
+    <button class="btn-cancel" onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- ── DECK PREVIEW MODAL ── -->
 <div class="modal-overlay" id="deckPreviewModal">
   <div class="modal-box">
@@ -2157,9 +2257,13 @@ footer{
       <i data-lucide="layers" style="width:12px;height:12px;"></i>
       <span id="previewCardCount">0 cards</span>
     </div>
-    <div id="previewCardsList" style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;"></div>
+    <div id="previewCardsList" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;"></div>
     <button class="btn-save" onclick="startStudyFromPreview()">Study this deck</button>
-    <button class="btn-cancel" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">Close</button>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn-cancel" style="flex:1;" onclick="exportPreviewDeck()">↓ Export .txt</button>
+      <button class="btn-cancel" style="flex:1;" onclick="exportPreviewAnki()">↓ Anki</button>
+    </div>
+    <button class="btn-cancel" style="margin-top:8px;" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">Close</button>
   </div>
 </div>
 
@@ -2263,6 +2367,11 @@ function showApp() {
     if (statsBtn) statsBtn.style.display = 'flex';
     loadFolders();
     renderFolderTabs();
+    const upsell = document.getElementById('proUpsell');
+    if (upsell) upsell.style.display = 'none';
+  } else {
+    const upsell = document.getElementById('proUpsell');
+    if (upsell) upsell.style.display = 'block';
   }
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
@@ -2545,13 +2654,45 @@ function renderDecks() {
   renderDecksFiltered();
 }
 
-async function deleteDeck(deckId) {
-  if (!confirm('Delete this deck?')) return;
-  await sb.from('decks').delete().eq('id', deckId).eq('user_id', currentUser.id);
-  await loadDecks();
-  renderDecks();
-  updateWelcome();
-  showToast('Deck deleted');
+let deleteDeckId = null;
+function deleteDeck(deckId) {
+  const deck = savedDecks.find(d => d.id === deckId);
+  deleteDeckId = deckId;
+  document.getElementById('deleteModalName').textContent = deck ? `"${deck.name || 'Untitled Deck'}"` : '';
+  const confirmBtn = document.getElementById('deleteConfirmBtn');
+  confirmBtn.onclick = async () => {
+    document.getElementById('deleteModal').classList.remove('open');
+    await sb.from('decks').delete().eq('id', deleteDeckId).eq('user_id', currentUser.id);
+    // Remove from folder mappings
+    delete deckFolders[deleteDeckId];
+    saveFolders();
+    await loadDecks();
+    renderDecks();
+    updateWelcome();
+    showToast('Deck deleted');
+  };
+  document.getElementById('deleteModal').classList.add('open');
+}
+
+function exportPreviewDeck() {
+  if (!previewDeck) return;
+  let out = `CARDLY — ${previewDeck.name}\n` + '='.repeat(40) + '\n\n';
+  (previewDeck.cards || []).forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
+  a.download = `${(previewDeck.name||'deck').replace(/\s+/g,'-').toLowerCase()}.txt`;
+  a.click();
+  showToast('Exported');
+}
+
+function exportPreviewAnki() {
+  if (!previewDeck) return;
+  const out = (previewDeck.cards || []).map(c => `${c.front}\t${c.back}`).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
+  a.download = `${(previewDeck.name||'deck').replace(/\s+/g,'-').toLowerCase()}-anki.txt`;
+  a.click();
+  showToast('Exported for Anki — import via File → Import');
 }
 
 async function loadDeckAndStudy(deck) {
@@ -2952,10 +3093,21 @@ function renderFolderTabs() {
     container.style.display = 'none'; return;
   }
   container.style.display = 'flex';
-  container.innerHTML = [
-    `<button class="folder-tab all ${currentFolder === 'all' ? 'active' : ''}" onclick="setFolder('all')">All decks</button>`,
-    ...folders.map(f => `<button class="folder-tab ${currentFolder === f ? 'active' : ''}" onclick="setFolder(${JSON.stringify(f)})">${esc(f)}</button>`)
-  ].join('');
+  container.innerHTML = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'folder-tab all' + (currentFolder === 'all' ? ' active' : '');
+  allBtn.textContent = 'All decks';
+  allBtn.addEventListener('click', () => setFolder('all'));
+  container.appendChild(allBtn);
+
+  folders.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'folder-tab' + (currentFolder === f ? ' active' : '');
+    btn.textContent = f;
+    btn.addEventListener('click', () => setFolder(f));
+    container.appendChild(btn);
+  });
 }
 
 function setFolder(name) {
