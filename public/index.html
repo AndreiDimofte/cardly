@@ -701,7 +701,7 @@ textarea::placeholder{color:var(--text3);}
   font-size:9px;color:var(--text3);letter-spacing:1px;
 }
 
-.card-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
+.card-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;}
 .btn-nav{
   width:46px;height:46px;border-radius:50%;
   border:1px solid var(--border2);background:var(--surface);
@@ -893,7 +893,7 @@ footer{
 /* ── DIFFICULTY RATING (Pro) ── */
 .difficulty-row{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:16px 20px;margin:20px auto 0;
+  border-radius:12px;padding:16px 20px;margin:16px auto 24px;
   max-width:420px;text-align:center;
 }
 .diff-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
@@ -2734,7 +2734,7 @@ async function generateCards() {
 
   if (notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
   if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
-    showError("You've used all 3 free generations this month. Pro is coming soon!"); return;
+    showError("You've used all 3 free generations this month. Upgrade to Pro for unlimited decks."); return;
   }
 
   setLoading(true); hideError();
@@ -2747,7 +2747,10 @@ async function generateCards() {
       body: JSON.stringify({ notes, count })
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch { throw new Error('Server error — please try again'); }
     if (!res.ok) throw new Error(data.error || 'Server error');
 
     cards = data.cards;
@@ -2979,18 +2982,24 @@ function renderFolderList() {
   const list = document.getElementById('folderList');
   const folders = getAllFolderNames();
   const current = deckFolders[folderTargetDeckId] || null;
-  list.innerHTML = `
-    <div class="folder-list-item none-item ${!current ? 'selected' : ''}" onclick="selectFolderItem(null, this)">
-      <span>No folder</span>
-      ${!current ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}
-    </div>
-    ${folders.map(f => `
-      <div class="folder-list-item ${current === f ? 'selected' : ''}" onclick="selectFolderItem(${JSON.stringify(f)}, this)">
-        <span>${esc(f)}</span>
-        ${current === f ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}
-      </div>
-    `).join('')}
-  `;
+
+  // No folder option
+  const noneEl = document.createElement('div');
+  noneEl.className = 'folder-list-item none-item' + (!current ? ' selected' : '');
+  noneEl.innerHTML = `<span>No folder</span>${!current ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}`;
+  noneEl.addEventListener('click', () => selectFolderItem(null, noneEl));
+
+  list.innerHTML = '';
+  list.appendChild(noneEl);
+
+  folders.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'folder-list-item' + (current === f ? ' selected' : '');
+    el.innerHTML = `<span>${esc(f)}</span>${current === f ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}`;
+    el.addEventListener('click', () => selectFolderItem(f, el));
+    list.appendChild(el);
+  });
+
   setTimeout(() => safeCreateIcons(), 100);
 }
 
@@ -3011,23 +3020,25 @@ function createFolderFromModal() {
   if (!name) return;
   document.getElementById('folderNewInput').value = '';
   selectedFolderName = name;
-  // Add to list visually if not already there
   const list = document.getElementById('folderList');
-  const exists = [...list.querySelectorAll('.folder-list-item')].some(el => el.textContent.trim() === name);
+  const exists = [...list.querySelectorAll('.folder-list-item')].some(el => el.querySelector('span')?.textContent === name);
   if (!exists) {
     const item = document.createElement('div');
     item.className = 'folder-list-item selected';
     item.innerHTML = `<span>${esc(name)}</span><i data-lucide="check" style="width:13px;height:13px;"></i>`;
-    item.onclick = function() { selectFolderItem(name, this); };
+    item.addEventListener('click', () => selectFolderItem(name, item));
     list.appendChild(item);
     setTimeout(() => safeCreateIcons(), 50);
   }
-  // Deselect others
-  document.querySelectorAll('.folder-list-item:not(:last-child)').forEach(i => {
-    if (i.textContent.trim() !== name) {
-      i.classList.remove('selected');
-      const chk = i.querySelector('[data-lucide="check"]');
+  // Deselect all others
+  list.querySelectorAll('.folder-list-item').forEach(el => {
+    const spanText = el.querySelector('span')?.textContent;
+    if (spanText !== name) {
+      el.classList.remove('selected');
+      const chk = el.querySelector('[data-lucide="check"]');
       if (chk) chk.remove();
+    } else {
+      el.classList.add('selected');
     }
   });
 }
@@ -3049,7 +3060,11 @@ function openShareDeck(deck) {
   if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
   const payload = encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }));
   currentShareUrl = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
-  document.getElementById('shareUrlBox').textContent = currentShareUrl;
+  // Show a friendly preview, not the raw encoded URL
+  const box = document.getElementById('shareUrlBox');
+  const displayUrl = `${window.location.origin}/?shared=...`;
+  box.textContent = displayUrl;
+  box.style.color = 'var(--text2)';
   const copyBtn = document.getElementById('copyBtn');
   copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy link';
   copyBtn.className = 'btn-copy';
