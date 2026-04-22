@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 <title>Cardly: Turn Notes into Flashcards with AI</title>
 <meta name="description" content="Paste your lecture notes and get smart AI-generated flashcards in seconds. Study smarter, not harder.">
 <link rel="canonical" href="https://www.studywithcardly.com">
@@ -2309,6 +2309,7 @@ let currentDeckName = '';
 
 // ── LOADER ──
 function hideLoader() {
+  if (signingIn) return; // don't hide loader mid sign-in
   const loader = document.getElementById('appLoader');
   loader.classList.add('hidden');
   setTimeout(() => loader.style.display = 'none', 300);
@@ -2553,28 +2554,36 @@ function renderHeader(loggedIn) {
   const hn = document.getElementById('headerNav');
   const hr = document.getElementById('headerRight');
   const mc = document.getElementById('mobileMenuContent');
+
   if (loggedIn) {
     hn.innerHTML = '';
     const used = userProfile?.sets_this_month || 0;
     const isPro = userProfile?.is_pro;
     const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
     const pillText = isPro ? '✦ Pro' : `${used} / 3 free`;
+
     hr.innerHTML = `
       <span class="${pillClass}">${pillText}</span>
       ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout()" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
       <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
       <button class="btn-signout" onclick="signOut()">Sign out</button>
-      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-        <i data-lucide="menu" style="width:18px;height:18px;"></i>
-      </button>
     `;
+
+    // Hamburger — built with createElement so onclick survives safeCreateIcons
+    const ham = document.createElement('button');
+    ham.className = 'btn-mobile-menu';
+    ham.id = 'mobileMenuBtn';
+    ham.innerHTML = `<i data-lucide="menu" style="width:18px;height:18px;"></i>`;
+    ham.addEventListener('click', toggleMobileMenu);
+    hr.appendChild(ham);
+
     if (mc) mc.innerHTML = `
-      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout()">⚡ Upgrade to Pro</button>` : ''}
+      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout()">Upgrade to Pro</button>` : ''}
       <button class="mobile-menu-link" onclick="closeMobileMenu();openAccountModal()">Account</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();signOut()" style="color:var(--text3);">Sign out</button>
+      <button class="mobile-menu-link" style="color:var(--text3);" onclick="closeMobileMenu();signOut()">Sign out</button>
     `;
   } else {
     hn.innerHTML = `
@@ -2583,13 +2592,19 @@ function renderHeader(loggedIn) {
       <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
       <button class="nav-link" onclick="showAbout()">About</button>
     `;
+
     hr.innerHTML = `
       <button class="nav-link" onclick="showAuth()">Sign In</button>
       <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
-      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-        <i data-lucide="menu" style="width:18px;height:18px;"></i>
-      </button>
     `;
+
+    const ham = document.createElement('button');
+    ham.className = 'btn-mobile-menu';
+    ham.id = 'mobileMenuBtn';
+    ham.innerHTML = `<i data-lucide="menu" style="width:18px;height:18px;"></i>`;
+    ham.addEventListener('click', toggleMobileMenu);
+    hr.appendChild(ham);
+
     if (mc) mc.innerHTML = `
       <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('features')?.scrollIntoView({behavior:'smooth'})">Features</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('how')?.scrollIntoView({behavior:'smooth'})">How it works</button>
@@ -2599,6 +2614,7 @@ function renderHeader(loggedIn) {
       <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
     `;
   }
+  setTimeout(() => safeCreateIcons(), 150);
 }
 
 // ── ACCOUNT MODAL ──
@@ -2881,8 +2897,10 @@ async function handleEmailAuth() {
     ({ error } = await sb.auth.signInWithPassword({ email, password }));
     if (!error) {
       signingIn = true;
+      // Keep overlay but show loader — smoothest transition
       document.getElementById('authOverlay').style.display = 'none';
       document.getElementById('appLoader').style.display = 'flex';
+      document.getElementById('appLoader').style.opacity = '1';
       return;
     }
   } else {
