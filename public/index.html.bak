@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardly: Turn Notes into Flashcards with AI</title>
+<title>Cardly — Turn Notes into Flashcards with AI</title>
 <meta name="description" content="Paste your lecture notes and get smart AI-generated flashcards in seconds. Study smarter, not harder.">
-<link rel="canonical" href="https://www.studywithcardly.com">
-<meta property="og:url" content="https://www.studywithcardly.com">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='6' width='22' height='16' rx='4' fill='%23b83a00'/><rect x='3' y='3' width='22' height='16' rx='4' fill='%23cc4300'/><rect x='0' y='0' width='22' height='16' rx='4' fill='%23ff4d00'/><line x1='4' y1='5' x2='18' y2='5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round'/><line x1='4' y1='9' x2='18' y2='9' stroke='rgba(255,255,255,0.9)' stroke-width='1.5' stroke-linecap='round'/><line x1='4' y1='13' x2='13' y2='13' stroke='rgba(255,255,255,0.9)' stroke-width='1.5' stroke-linecap='round'/></svg>">
-<meta property="og:title" content="Cardly: AI Flashcard Generator">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23ff4d00'/><text x='16' y='23' font-family='Arial Black,sans-serif' font-size='18' font-weight='900' fill='white' text-anchor='middle'>C</text></svg>">
+<meta property="og:title" content="Cardly — AI Flashcard Generator">
 <meta property="og:description" content="Turn your lecture notes into smart flashcards in seconds with AI.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -168,17 +166,13 @@ body::after {
    HEADER
 ════════════════════════════════════ */
 header{
-  display:grid;grid-template-columns:1fr auto 1fr;
-  align-items:center;
+  display:flex;align-items:center;justify-content:space-between;
   padding:16px 40px;
   border-bottom:1px solid var(--border);
   background:rgba(10,10,10,0.85);
   backdrop-filter:blur(16px);
   position:sticky;top:0;z-index:100;
 }
-
-.header-nav{display:flex;align-items:center;gap:4px;justify-content:center;}
-.header-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
 
 .wordmark{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .wordmark-icon{
@@ -188,6 +182,8 @@ header{
   box-shadow:0 2px 12px var(--accent-glow);
 }
 .wordmark-text{font-weight:800;font-size:19px;letter-spacing:-0.5px;}
+
+.header-right{display:flex;align-items:center;gap:12px;}
 
 .nav-links{display:flex;gap:4px;}
 .nav-link{
@@ -456,7 +452,7 @@ header{
 .btn-pricing-pro:hover{background:#e04400;transform:translateY(-1px);}
 
 /* ════════════════════════════════════
-   APP - DASHBOARD
+   APP — DASHBOARD
 ════════════════════════════════════ */
 .app{max-width:1060px;margin:0 auto;padding:48px 40px 80px;}
 
@@ -501,25 +497,9 @@ header{
 @keyframes deckFade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
 .deck-name{font-size:14px;font-weight:600;margin-bottom:6px;letter-spacing:-0.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  padding-right:90px;/* always reserve space for buttons */}
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .deck-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
 .deck-dot{width:3px;height:3px;border-radius:50%;background:var(--border2);}
-
-.deck-card{position:relative;}
-.deck-actions-row{
-  position:absolute;top:10px;right:10px;
-  display:none;align-items:center;gap:3px;
-}
-.deck-card:hover .deck-actions-row{display:flex;}
-.deck-action-btn{
-  background:none;border:none;color:var(--text3);
-  cursor:pointer;padding:5px;border-radius:5px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;
-}
-.deck-action-btn:hover{color:var(--accent);background:var(--accent-dim);}
-.deck-action-btn.danger:hover{color:var(--danger);background:rgba(248,113,113,0.1);}
 
 .decks-empty{
   background:var(--surface);border:1px dashed var(--border2);border-radius:12px;
@@ -703,7 +683,7 @@ textarea::placeholder{color:var(--text3);}
   font-size:9px;color:var(--text3);letter-spacing:1px;
 }
 
-.card-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;}
+.card-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
 .btn-nav{
   width:46px;height:46px;border-radius:50%;
   border:1px solid var(--border2);background:var(--surface);
@@ -781,6 +761,17 @@ footer{
 }
 
 /* ── DECK DELETE ── */
+.deck-card{position:relative;}
+.deck-delete{
+  position:absolute;top:10px;right:10px;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:4px;border-radius:5px;
+  display:none;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.deck-card:hover .deck-delete{display:flex;}
+.deck-delete:hover{color:var(--danger);background:rgba(248,113,113,0.1);}
+
 /* ── ACCOUNT MODAL ── */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(10,10,10,0.88);
@@ -842,7 +833,12 @@ footer{
 .app-loader-logo{
   font-family:'Bricolage Grotesque',sans-serif;
   font-weight:800;font-size:28px;letter-spacing:-1px;color:var(--text);
-  display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.app-loader-icon{
+  width:36px;height:36px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;color:white;
 }
 .app-loader-spinner{
   width:28px;height:28px;border:2px solid var(--border2);
@@ -892,103 +888,6 @@ footer{
   color:var(--text3);margin-bottom:12px;
 }
 
-/* ── DIFFICULTY RATING (Pro) ── */
-.difficulty-row{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:16px 20px;margin:16px auto 24px;
-  max-width:420px;text-align:center;
-}
-.diff-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
-.diff-buttons{display:flex;gap:8px;justify-content:center;}
-.btn-diff{
-  flex:1;padding:10px 0;border-radius:9px;border:1.5px solid var(--border2);
-  font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;
-  cursor:pointer;transition:all .18s;background:var(--surface);color:var(--text2);
-  display:flex;align-items:center;justify-content:center;gap:5px;
-}
-.btn-diff.easy{border-color:#4ade80;}
-.btn-diff.easy:hover,.btn-diff.easy.active{background:#4ade80;color:#0f1f0f;border-color:#4ade80;}
-.btn-diff.medium{border-color:#facc15;}
-.btn-diff.medium:hover,.btn-diff.medium.active{background:#facc15;color:#1c1500;border-color:#facc15;}
-.btn-diff.hard{border-color:var(--danger);}
-.btn-diff.hard:hover,.btn-diff.hard.active{background:var(--danger);color:white;border-color:var(--danger);}
-
-/* ── DECK FOLDERS (Pro) ── */
-.folder-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-.folder-tab{
-  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
-  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .15s;font-family:'Bricolage Grotesque',sans-serif;
-}
-.folder-tab:hover,.folder-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
-.folder-tab.all.active{background:var(--text);color:var(--bg);border-color:var(--text);}
-
-/* ── FOLDER MODAL ── */
-.folder-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto;}
-.folder-list-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;border-radius:9px;border:1.5px solid var(--border);
-  cursor:pointer;transition:all .15s;background:var(--surface);font-size:13px;font-weight:600;
-}
-.folder-list-item:hover{border-color:var(--accent);color:var(--accent);}
-.folder-list-item.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
-.folder-list-item.none-item{color:var(--text3);font-weight:400;}
-.folder-new-row{display:flex;gap:8px;margin-bottom:12px;}
-.folder-new-input{
-  flex:1;background:var(--surface2);border:1.5px solid var(--border2);
-  color:var(--text);padding:9px 13px;border-radius:8px;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;transition:border-color .15s;
-}
-.folder-new-input:focus{outline:none;border-color:var(--accent);}
-.btn-folder-add{
-  background:var(--accent);color:white;border:none;padding:9px 16px;
-  border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;
-  font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;
-}
-.btn-folder-add:hover{opacity:.85;}
-
-/* ── SHARE MODAL ── */
-.share-url-box{
-  background:var(--surface2);border:1.5px solid var(--border2);border-radius:10px;
-  padding:12px 14px;margin-bottom:12px;
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);
-  word-break:break-all;line-height:1.6;
-}
-.share-url-row{display:flex;gap:8px;margin-bottom:14px;}
-.btn-copy{
-  width:100%;background:var(--accent);color:white;border:none;padding:12px;
-  border-radius:9px;font-family:'Bricolage Grotesque',sans-serif;
-  font-size:13px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;
-}
-.btn-copy:hover{opacity:.85;}
-.btn-copy.copied{background:#4ade80;color:#0f1f0f;}
-.share-preview{
-  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
-  padding:10px 14px;max-height:140px;overflow-y:auto;margin-bottom:10px;
-}
-.share-preview-item{font-size:12px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.share-preview-item:last-child{border-bottom:none;}
-.share-hint{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-align:center;}
-
-/* ── STATS (Pro) ── */
-.stats-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;
-}
-.stat-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;
-  padding:18px 14px;text-align:center;
-}
-.stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--text);}
-.stat-label{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
-.study-history{display:flex;flex-direction:column;gap:6px;}
-.study-history-item{
-  display:flex;align-items:center;justify-content:space-between;
-  font-size:13px;padding:8px 12px;background:var(--surface2);border-radius:8px;
-}
-.study-history-date{color:var(--text2);}
-.study-history-count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);}
-
 /* ── STUDY COMPLETE ── */
 .study-complete{
   display:none;flex-direction:column;align-items:center;
@@ -1018,183 +917,7 @@ footer{
 }
 .btn-shuffle:hover{border-color:var(--accent);color:var(--accent);}
 
-/* ── INPUT MODE TABS ── */
-.input-tabs{
-  display:flex;gap:0;margin-bottom:12px;
-  background:var(--surface2);border-radius:8px;padding:3px;border:1px solid var(--border);
-}
-.input-tab{
-  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-  padding:7px 12px;border-radius:6px;border:none;background:none;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
-  color:var(--text3);cursor:pointer;transition:all .18s;
-}
-.input-tab.active{
-  background:var(--surface);color:var(--text);
-  box-shadow:0 1px 4px rgba(0,0,0,.18);
-}
-.input-tab:not(.active):hover{color:var(--text2);}
-
-/* ── PDF DROP ZONE ── */
-#pdfFileInput{display:none;}
-.pdf-drop-zone{
-  height:190px;border:2px dashed var(--border2);border-radius:12px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:6px;cursor:pointer;transition:all .2s;background:var(--surface);
-}
-.pdf-drop-zone:hover{border-color:var(--accent);background:rgba(255,77,0,.03);}
-.pdf-drop-zone.drag-over{border-color:var(--accent);background:rgba(255,77,0,.06);transform:scale(1.01);}
-.pdf-drop-icon{margin-bottom:4px;}
-.pdf-drop-title{font-size:14px;font-weight:700;color:var(--text);}
-.pdf-drop-sub{font-size:12px;color:var(--text2);}
-.pdf-drop-hint{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:4px;}
-
-/* ── PDF LOADED STATE ── */
-.pdf-loaded{
-  height:190px;border:2px solid var(--success);border-radius:12px;background:rgba(74,222,128,.06);
-  display:flex;align-items:center;justify-content:center;gap:14px;padding:20px;
-}
-.pdf-loaded-icon{flex-shrink:0;}
-.pdf-loaded-info{flex:1;min-width:0;}
-.pdf-loaded-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pdf-loaded-meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:3px;}
-.pdf-loaded-clear{
-  background:var(--surface2);border:1px solid var(--border2);color:var(--text3);
-  width:28px;height:28px;border-radius:7px;cursor:pointer;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;transition:all .15s;
-}
-.pdf-loaded-clear:hover{background:var(--danger);border-color:var(--danger);color:white;}
-
-/* ── USAGE BAR ── */
-.usage-bar-section{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:18px 22px;margin-bottom:24px;
-  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-}
-.usage-bar-left{flex:1;min-width:160px;}
-.usage-bar-label{font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.usage-bar-label strong{color:var(--text);font-weight:700;}
-.usage-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-.usage-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease;}
-.usage-fill.full{background:var(--danger);}
-.usage-fill.warn{background:var(--yellow, #d97706);}
-.usage-bar-right{display:flex;gap:8px;flex-shrink:0;}
-.btn-upgrade-inline{
-  background:var(--accent);color:white;border:none;
-  padding:8px 16px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;
-  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.btn-upgrade-inline:hover{opacity:.85;}
-.usage-pro-badge{
-  display:flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:700;color:var(--accent);
-  font-family:'JetBrains Mono',monospace;
-}
-
-/* ── QUICK ACTIONS ── */
-.quick-actions{
-  display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;
-}
-.quick-action-btn{
-  display:flex;align-items:center;gap:8px;
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text2);padding:10px 16px;border-radius:10px;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .18s;
-}
-.quick-action-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--surface);}
-.quick-action-btn i{flex-shrink:0;}
-
-/* ── EMPTY STATE (app) ── */
-.app-empty-state{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;padding:48px 32px;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;gap:12px;margin-bottom:28px;
-}
-.app-empty-icon{
-  width:56px;height:56px;background:var(--accent-dim);border-radius:14px;
-  display:flex;align-items:center;justify-content:center;margin-bottom:4px;
-}
-.app-empty-title{font-size:18px;font-weight:800;letter-spacing:-.3px;}
-.app-empty-sub{font-size:13px;color:var(--text2);max-width:320px;line-height:1.7;font-weight:300;}
-.app-empty-steps{
-  display:flex;gap:0;margin-top:8px;border:1px solid var(--border);
-  border-radius:10px;overflow:hidden;width:100%;max-width:480px;
-}
-.app-empty-step{
-  flex:1;padding:14px 10px;display:flex;flex-direction:column;
-  align-items:center;gap:6px;border-right:1px solid var(--border);
-  font-size:12px;color:var(--text2);
-}
-.app-empty-step:last-child{border-right:none;}
-.app-empty-step-num{
-  width:24px;height:24px;border-radius:50%;
-  background:var(--accent);color:white;
-  font-size:11px;font-weight:800;
-  display:flex;align-items:center;justify-content:center;
-}
-.app-empty-step-label{font-weight:600;color:var(--text);font-size:12px;}
-.btn-start-now{
-  background:var(--accent);color:white;border:none;
-  padding:12px 28px;border-radius:9px;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .2s;margin-top:4px;
-}
-.btn-start-now:hover{opacity:.85;transform:translateY(-1px);}
-
-/* ── PRO UPSELL (free users) ── */
-.pro-upsell{
-  border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;
-}
-.pro-upsell-header{
-  background:linear-gradient(135deg,#1a0a00,#2d1200);
-  padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
-  border-bottom:1px solid var(--border);
-}
-.pro-upsell-title{font-size:15px;font-weight:800;letter-spacing:-.3px;}
-.pro-upsell-title span{color:var(--accent);}
-.pro-upsell-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:0;
-}
-@media(max-width:600px){.pro-upsell-grid{grid-template-columns:1fr;}}
-.pro-upsell-item{
-  padding:18px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
-  display:flex;align-items:flex-start;gap:12px;
-  position:relative;overflow:hidden;
-}
-.pro-upsell-item:nth-child(even){border-right:none;}
-.pro-upsell-item:nth-last-child(-n+2){border-bottom:none;}
-.pro-upsell-lock{
-  width:32px;height:32px;border-radius:8px;background:var(--surface2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);
-}
-.pro-upsell-item-title{font-size:13px;font-weight:700;margin-bottom:3px;}
-.pro-upsell-item-desc{font-size:12px;color:var(--text3);line-height:1.5;}
-.pro-upsell-blur{
-  position:absolute;inset:0;backdrop-filter:blur(2px);
-  background:rgba(10,10,10,0.3);
-  display:flex;align-items:center;justify-content:center;
-}
-
-/* ── APP FOOTER ── */
-.app-footer{
-  border-top:1px solid var(--border);margin-top:60px;
-  padding:28px 0 40px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-}
-.app-footer-left{display:flex;align-items:center;gap:16px;}
-.app-footer-logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;letter-spacing:-.3px;color:var(--text2);}
-.app-footer-copy{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
-.app-footer-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
-.app-footer-link{
-  font-size:12px;color:var(--text3);background:none;border:none;
-  cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:500;
-  transition:color .15s;padding:0;
-}
-.app-footer-link:hover{color:var(--accent);}
-
+/* ── LIMIT WARNING ── */
 .limit-warning{
   background:rgba(255,77,0,0.06);border:1px solid rgba(255,77,0,0.2);
   border-radius:10px;padding:12px 16px;margin-bottom:16px;
@@ -1374,17 +1097,9 @@ footer{
 }
 .tooltip-close:hover { color: white; }
 
-/* RESPONSIVE */
+/* RESPONSIVE FOOTER */
 @media(max-width:768px){
-  header{
-    display:flex;padding:12px 20px;gap:0;
-    justify-content:space-between;align-items:center;
-  }
-  #headerNav{display:none;}
-  .header-right .nav-link{display:none;}
-  .header-right .usage-pill{display:none;}
-  .header-right{gap:6px;}
-  .btn-mobile-menu{display:flex;}
+  header{padding:14px 20px;}
   .landing,.app{padding-left:20px;padding-right:20px;}
   .hero{padding:60px 0 50px;}
   .hero h1{letter-spacing:-2px;}
@@ -1393,6 +1108,7 @@ footer{
   .study-view{padding:32px 20px 60px;}
   .step-connector{display:none;}
   .nav-links{display:none;}
+  .btn-mobile-menu{display:flex;}
   .legal-view{padding:40px 20px 80px;}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
   .site-footer{padding:40px 20px 32px;}
@@ -1404,14 +1120,7 @@ footer{
 <!-- ── APP LOADER ── -->
 <div class="app-loader" id="appLoader">
   <div class="app-loader-logo">
-    <svg width="44" height="32" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-      <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
-      <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
-      <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
-      <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
+    <div class="app-loader-icon">C</div>
     Cardly
   </div>
   <div class="app-loader-spinner"></div>
@@ -1432,14 +1141,7 @@ footer{
       <i data-lucide="x" style="width:18px;height:18px;"></i>
     </button>
     <div class="auth-wordmark">
-      <svg width="28" height="20" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-        <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
-        <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
-        <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
-        <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
+      <div class="auth-icon">C</div>
       <div class="auth-brand">Cardly</div>
     </div>
     <div class="auth-subtitle">Turn your notes into flashcards with AI</div>
@@ -1470,23 +1172,21 @@ footer{
 <!-- ── HEADER ── -->
 <header>
   <div class="wordmark" onclick="goHome()">
-    <svg width="26" height="18" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-      <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
-      <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
-      <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
-      <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
+    <div class="wordmark-icon">C</div>
     <div class="wordmark-text">Cardly</div>
   </div>
-  <div class="header-nav" id="headerNav"></div>
   <div class="header-right" id="headerRight"></div>
+  <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+    <i data-lucide="menu" style="width:18px;height:18px;"></i>
+  </button>
 </header>
 
 <!-- ── MOBILE MENU ── -->
 <div class="mobile-menu" id="mobileMenu">
-  <div id="mobileMenuContent"></div>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();scrollTo({top:document.getElementById('pricing')?.offsetTop||0,behavior:'smooth'})">Pricing</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
+  <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
+  <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
 </div>
 
 <!-- ── LANDING VIEW ── -->
@@ -1501,7 +1201,7 @@ footer{
         Notes in.
         <span class="line2">Knowledge out.</span>
       </h1>
-      <p class="hero-sub">Paste any lecture notes, textbook excerpt, or study material. Cardly generates smart flashcards in seconds.</p>
+      <p class="hero-sub">Paste any lecture notes, textbook excerpt, or study material — Cardly generates smart flashcards in seconds.</p>
       <div class="hero-cta">
         <button class="btn-primary" onclick="showAuth()">Get Started Free</button>
         <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
@@ -1509,7 +1209,7 @@ footer{
 
       <!-- Demo -->
       <div class="hero-demo">
-        <div class="demo-label">Example output: TCP/IP notes</div>
+        <div class="demo-label">Example output — TCP/IP notes</div>
         <div class="demo-cards" id="demoCards">
           <div class="demo-card" id="demoCard1">
             <div class="demo-q" id="demoQ1"></div>
@@ -1528,7 +1228,7 @@ footer{
     </section>
 
     <!-- FEATURES -->
-    <section class="features" id="features">
+    <section class="features">
       <div class="section-label reveal">Why Cardly</div>
       <div class="section-title reveal reveal-delay-1">Everything you need<br>to study smarter</div>
       <div class="features-grid">
@@ -1540,7 +1240,7 @@ footer{
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="brain" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Actually smart cards</div>
-          <div class="feature-desc">Powered by advanced AI. Cards test real understanding with specific, testable questions, not just definitions.</div>
+          <div class="feature-desc">Powered by Claude AI — cards test real understanding with specific, testable questions. Not just definitions.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="library" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1555,7 +1255,7 @@ footer{
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="upload" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Export anywhere</div>
-          <div class="feature-desc">Export your cards as a .txt or Anki-compatible file and import into any study app.</div>
+          <div class="feature-desc">Export your cards as a .txt file and import into Anki, Notion, or any study app.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="lock" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1566,7 +1266,7 @@ footer{
     </section>
 
     <!-- HOW IT WORKS -->
-    <section class="how" id="how">
+    <section class="how">
       <div class="section-label reveal">How it works</div>
       <div class="section-title reveal reveal-delay-1">Three steps to<br>a full deck</div>
       <div class="steps">
@@ -1602,35 +1302,28 @@ footer{
           <ul class="pricing-features">
             <li>3 deck generations per month</li>
             <li>Up to 10 saved decks</li>
-            <li>Up to 10 cards per deck</li>
-            <li>PDF upload support</li>
+            <li>Up to 25 cards per deck</li>
             <li>Study mode with flip cards</li>
-            <li>Export to .txt &amp; Anki format</li>
+            <li>Export to .txt</li>
             <li class="muted">Unlimited generations</li>
-            <li class="muted">Up to 25 cards per deck</li>
-            <li class="muted">Difficulty rating & folders</li>
-            <li class="muted">Stats, streaks & sharing</li>
+            <li class="muted">Unlimited saved decks</li>
           </ul>
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
         <div class="pricing-card featured reveal reveal-delay-3">
           <div class="pricing-badge">Most Popular</div>
           <div class="pricing-plan">Pro</div>
-          <div class="pricing-price">$5<span>/month</span></div>
+          <div class="pricing-price">$7<span>/month</span></div>
           <div class="pricing-desc">For serious students</div>
           <ul class="pricing-features">
             <li>Unlimited deck generations</li>
             <li>Unlimited saved decks</li>
             <li>Up to 25 cards per deck</li>
-            <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
-            <li>Card difficulty rating</li>
-            <li>Deck folders & organisation</li>
-            <li>Study statistics & streaks</li>
-            <li>Shareable deck links</li>
-            <li>Export to .txt &amp; Anki format</li>
+            <li>Export to .txt</li>
+            <li>Priority support</li>
           </ul>
-          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro for $5/mo</button>
+          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $7/mo</button>
         </div>
       </div>
     </section>
@@ -1640,18 +1333,11 @@ footer{
     <div class="footer-grid">
       <div class="footer-brand-col">
         <div class="footer-logo">
-          <svg width="24" height="17" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-            <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
-            <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
-            <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
-            <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+          <div class="footer-logo-icon">C</div>
           <div class="footer-logo-text">Cardly</div>
         </div>
         <div class="footer-tagline">AI-powered flashcard generator. Turn your lecture notes into study-ready cards in seconds.</div>
-        <div class="footer-contact">Questions? <a href="mailto:hello@studywithcardly.com">hello@studywithcardly.com</a></div>
+        <div class="footer-contact">Questions? <a href="mailto:hello@cardly.app">hello@cardly.app</a></div>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Product</div>
@@ -1666,19 +1352,18 @@ footer{
         <div class="footer-col-links">
           <button onclick="showLegal('tos')">Terms of Service</button>
           <button onclick="showLegal('privacy')">Privacy Policy</button>
-          <button onclick="showAbout()">About</button>
         </div>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Support</div>
         <div class="footer-col-links">
-          <a href="mailto:hello@studywithcardly.com">Contact Us</a>
-          <a href="mailto:hello@studywithcardly.com">Report a Bug</a>
+          <a href="mailto:hello@cardly.app">Contact Us</a>
+          <a href="mailto:hello@cardly.app">Report a Bug</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Cardly. All rights reserved.</span>
+      <span>© 2025 Cardly. All rights reserved.</span>
     </div>
   </footer>
 </div>
@@ -1696,76 +1381,12 @@ footer{
       <button class="btn-new-deck" onclick="scrollToGenerator()">+ New Deck</button>
     </div>
 
-    <!-- Usage bar -->
-    <div class="usage-bar-section" id="usageBarSection">
-      <div class="usage-bar-left">
-        <div class="usage-bar-label">
-          <span id="usageBarLabel">Generations this month</span>
-          <strong id="usageBarCount">0 / 3</strong>
-        </div>
-        <div class="usage-track">
-          <div class="usage-fill" id="usageFill" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="usage-bar-right" id="usageBarRight"></div>
-    </div>
-
-    <!-- Quick actions (only when decks exist) -->
-    <div class="quick-actions" id="quickActions" style="display:none;">
-      <button class="quick-action-btn" onclick="studyRandomDeck()">
-        <i data-lucide="shuffle" style="width:14px;height:14px;"></i>
-        Study a random deck
-      </button>
-      <button class="quick-action-btn" onclick="exportAllDecks()">
-        <i data-lucide="download" style="width:14px;height:14px;"></i>
-        Export all decks
-      </button>
-      <button class="quick-action-btn" onclick="scrollToGenerator()">
-        <i data-lucide="plus" style="width:14px;height:14px;"></i>
-        New deck
-      </button>
-    </div>
-
     <!-- Saved decks -->
     <div class="decks-section" id="decksSection" style="display:none;">
       <div class="decks-header">
         <div class="decks-title">Your Decks</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn-sm" onclick="openStatsModal()" id="statsBtn" style="display:none;">
-            <i data-lucide="bar-chart-2" style="width:13px;height:13px;"></i> Stats
-          </button>
-        </div>
       </div>
-      <!-- Folder tabs - Pro only -->
-      <div class="folder-tabs" id="folderTabs" style="display:none;"></div>
       <div class="decks-grid" id="decksGrid"></div>
-    </div>
-
-    <!-- Empty state (only when no decks) -->
-    <div class="app-empty-state" id="appEmptyState" style="display:none;">
-      <div class="app-empty-icon">
-        <i data-lucide="layers" style="width:26px;height:26px;color:var(--accent);"></i>
-      </div>
-      <div class="app-empty-title">Create your first deck</div>
-      <div class="app-empty-sub">Paste any lecture notes, textbook excerpt, or study material below and get smart flashcards in seconds.</div>
-      <div class="app-empty-steps">
-        <div class="app-empty-step">
-          <div class="app-empty-step-num">1</div>
-          <div class="app-empty-step-label">Paste notes</div>
-          <div>or upload a PDF</div>
-        </div>
-        <div class="app-empty-step">
-          <div class="app-empty-step-num">2</div>
-          <div class="app-empty-step-label">Generate</div>
-          <div>AI makes the cards</div>
-        </div>
-        <div class="app-empty-step">
-          <div class="app-empty-step-num">3</div>
-          <div class="app-empty-step-label">Study</div>
-          <div>flip & remember</div>
-        </div>
-      </div>
-      <button class="btn-start-now" onclick="scrollToGenerator()">Get Started ↓</button>
     </div>
 
     <!-- Generator -->
@@ -1781,54 +1402,16 @@ footer{
         <div class="panel">
           <div class="panel-label">Your Notes</div>
 
-          <!-- Input mode tabs -->
-          <div class="input-tabs">
-            <button class="input-tab active" id="tabText" onclick="switchInputMode('text')">
-              <i data-lucide="pencil-line" style="width:13px;height:13px;"></i>
-              Paste Text
-            </button>
-            <button class="input-tab" id="tabPdf" onclick="switchInputMode('pdf')">
-              <i data-lucide="file-text" style="width:13px;height:13px;"></i>
-              Upload PDF
-            </button>
+          <!-- Onboarding tooltip -->
+          <div class="onboarding-tooltip" id="onboardingTooltip">
+            <div class="tooltip-bubble">
+              <span>Start here — paste your lecture notes or textbook text</span>
+              <button class="tooltip-close" onclick="dismissTooltip()">×</button>
+            </div>
           </div>
 
-          <!-- TEXT MODE -->
-          <div id="modeText">
-            <div class="onboarding-tooltip" id="onboardingTooltip">
-              <div class="tooltip-bubble">
-                <span>Start here: paste your lecture notes or textbook text</span>
-                <button class="tooltip-close" onclick="dismissTooltip()">×</button>
-              </div>
-            </div>
-            <textarea id="notesInput" placeholder="Paste your lecture notes, textbook excerpts, or any study material here...&#10;&#10;Example: The mitochondria produces ATP through cellular respiration. There are three stages: glycolysis, the Krebs cycle, and the electron transport chain..."></textarea>
-          </div>
-
-          <!-- PDF MODE -->
-          <div id="modePdf" style="display:none;">
-            <input type="file" id="pdfFileInput" accept=".pdf" onchange="handlePdfUpload(this)">
-            <div class="pdf-drop-zone" id="pdfDropZone" onclick="document.getElementById('pdfFileInput').click()">
-              <div class="pdf-drop-icon">
-                <i data-lucide="file-text" style="width:32px;height:32px;color:var(--accent);"></i>
-              </div>
-              <div class="pdf-drop-title">Drop your PDF here</div>
-              <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">Text-based PDFs only · Max ~50 pages</div>
-            </div>
-            <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
-              <div class="pdf-loaded-icon">
-                <i data-lucide="check-circle" style="width:20px;height:20px;color:var(--success);"></i>
-              </div>
-              <div class="pdf-loaded-info">
-                <div class="pdf-loaded-name" id="pdfLoadedName">document.pdf</div>
-                <div class="pdf-loaded-meta" id="pdfLoadedMeta">3 pages · 4,200 chars</div>
-              </div>
-              <button class="pdf-loaded-clear" onclick="clearPdf()" title="Remove PDF">
-                <i data-lucide="x" style="width:14px;height:14px;"></i>
-              </button>
-            </div>
-          </div>
-          <input type="text" class="deck-name-input" id="deckNameInput" placeholder="Deck name (optional, e.g. Biology Ch.4)"/>
+          <textarea id="notesInput" placeholder="Paste your lecture notes, textbook excerpts, or any study material here...&#10;&#10;Example: The mitochondria produces ATP through cellular respiration. There are three stages: glycolysis, the Krebs cycle, and the electron transport chain..."></textarea>
+          <input type="text" class="deck-name-input" id="deckNameInput" placeholder="Deck name (optional — e.g. Biology Ch.4)"/>
           <div class="controls">
             <div class="count-control">
               <span>Generate</span>
@@ -1867,93 +1450,16 @@ footer{
           </div>
           <div class="panel-actions" id="panelActions" style="display:none;">
             <button class="btn-sm" onclick="startStudy()">▶ Study Now</button>
-            <button class="btn-sm" onclick="exportCards()">↓ Export .txt</button>
-            <button class="btn-sm" onclick="exportAnki()">↓ Anki</button>
+            <button class="btn-sm" onclick="exportCards()">↓ Export</button>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Pro upsell for free users -->
-    <div class="pro-upsell" id="proUpsell" style="display:none;">
-      <div class="pro-upsell-header">
-        <div>
-          <div class="pro-upsell-title">Unlock <span>Pro features</span></div>
-          <div style="font-size:12px;color:var(--text3);margin-top:3px;">Everything you need to study smarter, for $5/month.</div>
-        </div>
-        <button class="btn-header-cta" onclick="startCheckout()">Upgrade to Pro</button>
-      </div>
-      <div class="pro-upsell-grid">
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="shuffle" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">Unlimited generations</div>
-            <div class="pro-upsell-item-desc">Create as many decks as you need, every month.</div>
-          </div>
-        </div>
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="smile" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">Card difficulty rating</div>
-            <div class="pro-upsell-item-desc">Mark cards Easy, Okay or Hard while studying.</div>
-          </div>
-        </div>
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="folder" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">Deck folders</div>
-            <div class="pro-upsell-item-desc">Organise decks by subject, semester or exam.</div>
-          </div>
-        </div>
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="bar-chart-2" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">Study stats & streaks</div>
-            <div class="pro-upsell-item-desc">Track your progress and keep your streak alive.</div>
-          </div>
-        </div>
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="share-2" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">Shareable deck links</div>
-            <div class="pro-upsell-item-desc">Share any deck with a friend via a single link.</div>
-          </div>
-        </div>
-        <div class="pro-upsell-item">
-          <div class="pro-upsell-lock"><i data-lucide="layers" style="width:15px;height:15px;"></i></div>
-          <div>
-            <div class="pro-upsell-item-title">25 cards per deck</div>
-            <div class="pro-upsell-item-desc">Free plan is limited to 10. Pro doubles your depth.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- App footer -->
-    <footer class="app-footer">
-      <div class="app-footer-left">
-        <div class="app-footer-logo">
-          <svg width="18" height="13" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
-            <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
-            <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
-            <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
-          Cardly
-        </div>
-        <span class="app-footer-copy">© 2026 Cardly</span>
-      </div>
-      <div class="app-footer-links">
-        <button class="app-footer-link" onclick="showLegal('tos')">Terms</button>
-        <button class="app-footer-link" onclick="showLegal('privacy')">Privacy</button>
-        <a class="app-footer-link" href="mailto:hello@studywithcardly.com">hello@studywithcardly.com</a>
-      </div>
-    </footer>
 
   </div>
 </div>
+
+<!-- ── STUDY VIEW ── -->
 <div class="study-view" id="studyView">
   <div class="study-header">
     <div class="study-title" id="studyDeckName">Study Mode</div>
@@ -1983,22 +1489,6 @@ footer{
     <button class="btn-nav" id="prevBtn" onclick="prevCard()">←</button>
     <span class="card-counter" id="cardCounter">1 / 10</span>
     <button class="btn-nav" id="nextBtn" onclick="nextCard()">→</button>
-  </div>
-
-  <!-- Difficulty rating - Pro only, shown after flipping -->
-  <div class="difficulty-row" id="difficultyRow" style="display:none;">
-    <div class="diff-label">How well did you know it?</div>
-    <div class="diff-buttons">
-      <button class="btn-diff easy" onclick="rateDifficulty('easy')">
-        <i data-lucide="smile" style="width:14px;height:14px;"></i> Easy
-      </button>
-      <button class="btn-diff medium" onclick="rateDifficulty('medium')">
-        <i data-lucide="meh" style="width:14px;height:14px;"></i> Okay
-      </button>
-      <button class="btn-diff hard" onclick="rateDifficulty('hard')">
-        <i data-lucide="frown" style="width:14px;height:14px;"></i> Hard
-      </button>
-    </div>
   </div>
 
   <!-- Study complete -->
@@ -2058,7 +1548,7 @@ footer{
 <div class="legal-view" id="tosView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Terms of Service</div>
-  <div class="legal-date">Last updated: January 2026</div>
+  <div class="legal-date">Last updated: April 2025</div>
 
   <h2>1. Acceptance of Terms</h2>
   <p>By accessing or using Cardly ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.</p>
@@ -2091,26 +1581,26 @@ footer{
   <p>We may update these terms at any time. Continued use of the Service after changes constitutes acceptance of the new terms.</p>
 
   <h2>Contact</h2>
-  <p>Questions about these terms? Email us at <a href="mailto:hello@studywithcardly.com">hello@studywithcardly.com</a></p>
+  <p>Questions about these terms? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
 </div>
 
 <!-- ── PRIVACY POLICY ── -->
 <div class="legal-view" id="privacyView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Privacy Policy</div>
-  <div class="legal-date">Last updated: January 2026</div>
+  <div class="legal-date">Last updated: April 2025</div>
 
   <h2>1. What we collect</h2>
-  <p>We collect your email address when you sign up. We store the flashcard decks you generate so you can access them later. We do not collect payment information directly; that is handled by Stripe.</p>
+  <p>We collect your email address when you sign up. We store the flashcard decks you generate so you can access them later. We do not collect payment information directly — that is handled by Stripe.</p>
 
   <h2>2. How we use your data</h2>
   <p>Your email is used to authenticate your account and send transactional emails (such as email confirmation). Your deck data is used solely to provide the Service to you.</p>
 
   <h2>3. AI processing</h2>
-  <p>Your notes are sent to an AI API to generate flashcards. We do not store your raw notes. Only the generated flashcards are saved.</p>
+  <p>Your notes are sent to Anthropic's Claude API to generate flashcards. Anthropic's privacy policy governs how they handle this data. We do not store your raw notes — only the generated flashcards are saved.</p>
 
   <h2>4. Data sharing</h2>
-  <p>We do not sell your data. We do not share your data with third parties except as necessary to provide the Service (Supabase for database hosting, Stripe for payments).</p>
+  <p>We do not sell your data. We do not share your data with third parties except as necessary to provide the Service (Supabase for database hosting, Anthropic for AI generation, Stripe for payments).</p>
 
   <h2>5. Data retention</h2>
   <p>Your data is retained as long as your account is active. When you delete your account, all associated data including decks is permanently deleted within 30 days.</p>
@@ -2119,132 +1609,26 @@ footer{
   <p>We use only essential cookies required for authentication. We do not use tracking or advertising cookies.</p>
 
   <h2>7. Your rights</h2>
-  <p>You have the right to access, correct, or delete your personal data at any time. You can delete your account and all associated data directly from the app. For other requests, contact us at <a href="mailto:hello@studywithcardly.com">hello@studywithcardly.com</a>.</p>
+  <p>You have the right to access, correct, or delete your personal data at any time. You can delete your account and all associated data directly from the app. For other requests, contact us at <a href="mailto:hello@cardly.app">hello@cardly.app</a>.</p>
 
   <h2>8. Security</h2>
   <p>We use industry-standard security practices including encrypted connections and secure authentication. However, no system is completely secure.</p>
 
   <h2>Contact</h2>
-  <p>Privacy questions? Email us at <a href="mailto:hello@studywithcardly.com">hello@studywithcardly.com</a></p>
-</div>
-
-</div>
-
-<!-- ── ABOUT VIEW ── -->
-<div class="legal-view" id="aboutView">
-<div class="legal-wrap">
-  <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
-
-  <div style="margin-bottom:48px;">
-    <div class="section-label" style="margin-bottom:12px;">About</div>
-    <div class="legal-title" style="font-size:clamp(36px,5vw,56px);line-height:1.05;margin-bottom:0;">Built by students,<br>for students.</div>
-  </div>
-
-  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:24px;font-weight:300;">
-    Cardly started as a personal project. We were tired of spending hours turning lecture notes into flashcards by hand, so we built a tool that does it in seconds.
-  </p>
-  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:24px;font-weight:300;">
-    We're a small team of engineering students who wanted a smarter way to study. Cardly is the tool we wished existed when we were cramming for exams.
-  </p>
-  <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:48px;font-weight:300;">
-    We built it lean, kept it simple, and made it affordable. No bloat, no unnecessary features. Just paste your notes and get to studying.
-  </p>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:560px;margin-bottom:56px;">
-    <div style="background:var(--surface);padding:28px 20px;text-align:center;">
-      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">∞</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Cards generated</div>
-    </div>
-    <div style="background:var(--surface);padding:28px 20px;text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border);">
-      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">AI</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Powered</div>
-    </div>
-    <div style="background:var(--surface);padding:28px 20px;text-align:center;">
-      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);">$5</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:6px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;">Per month Pro</div>
-    </div>
-  </div>
-
-  <div style="border-top:1px solid var(--border);padding-top:36px;max-width:580px;">
-    <div style="font-size:13px;font-weight:700;letter-spacing:-.1px;margin-bottom:8px;">Get in touch</div>
-    <p style="font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;">
-      Questions, feedback, or just want to say hi? We're always happy to hear from fellow students.<br>
-      <a href="mailto:hello@studywithcardly.com" style="color:var(--accent);text-decoration:none;font-weight:600;">hello@studywithcardly.com</a>
-    </p>
-  </div>
-</div>
-</div>
-
-<!-- ── FOLDER ASSIGN MODAL ── -->
-<div class="modal-overlay" id="folderModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('folderModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
-    <div class="modal-title">Assign to Folder</div>
-    <div class="modal-sub" id="folderModalDeckName"></div>
-    <div class="folder-new-row">
-      <input type="text" class="folder-new-input" id="folderNewInput" placeholder="New folder name..." maxlength="40"/>
-      <button class="btn-folder-add" onclick="createFolderFromModal()">+ Create</button>
-    </div>
-    <div class="folder-list" id="folderList"></div>
-    <button class="btn-save" onclick="applyFolderSelection()">Apply</button>
-    <button class="btn-cancel" onclick="document.getElementById('folderModal').classList.remove('open')">Cancel</button>
-  </div>
-</div>
-
-<!-- ── SHARE DECK MODAL ── -->
-<div class="modal-overlay" id="shareDeckModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('shareDeckModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
-    <div class="modal-title">Share Deck</div>
-    <div class="modal-sub">Anyone with this link can view and import this deck.</div>
-    <div class="share-url-box" id="shareUrlBox"></div>
-    <button class="btn-copy" id="copyBtn" onclick="copyShareUrl()">
-      <i data-lucide="copy" style="width:14px;height:14px;"></i>
-      Copy link
-    </button>
-    <div style="margin-top:12px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Preview</div>
-      <div class="share-preview" id="sharePreview"></div>
-    </div>
-    <div class="share-hint" style="margin-top:8px;">Link expires when you delete this deck</div>
-  </div>
-</div>
-
-<!-- ── STATS MODAL ── -->
-<div class="modal-overlay" id="statsModal">
-  <div class="modal-box" style="max-width:480px;">
-    <button class="modal-close" onclick="document.getElementById('statsModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
-    <div class="modal-title">Study Stats</div>
-    <div class="modal-sub">Your study activity this month.</div>
-    <div class="stats-grid" id="statsGrid"></div>
-    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;font-family:'JetBrains Mono',monospace;">Recent Sessions</div>
-    <div class="study-history" id="studyHistory"></div>
-    <button class="btn-cancel" style="margin-top:16px;" onclick="document.getElementById('statsModal').classList.remove('open')">Close</button>
-  </div>
+  <p>Privacy questions? Email us at <a href="mailto:hello@cardly.app">hello@cardly.app</a></p>
 </div>
 
 <!-- ── RENAME DECK MODAL ── -->
 <div class="modal-overlay" id="renameDeckModal">
   <div class="modal-box">
-    <button class="modal-close" id="renameCloseBtn">
+    <button class="modal-close" onclick="document.getElementById('renameDeckModal').classList.remove('open')">
       <i data-lucide="x" style="width:16px;height:16px;"></i>
     </button>
     <div class="modal-title">Rename Deck</div>
     <div class="modal-sub">Give your deck a new name.</div>
     <input type="text" class="rename-input" id="renameInput" placeholder="Deck name..." maxlength="60"/>
-    <button class="btn-save" id="renameSaveBtn">Save</button>
-    <button class="btn-cancel" id="renameCancelBtn">Cancel</button>
-  </div>
-</div>
-
-<!-- ── DELETE CONFIRM MODAL ── -->
-<div class="modal-overlay" id="deleteModal">
-  <div class="modal-box" style="max-width:380px;">
-    <div class="modal-title">Delete deck?</div>
-    <div class="modal-sub" id="deleteModalName"></div>
-    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">This will permanently remove the deck and all its cards. This cannot be undone.</p>
-    <button class="btn-save" id="deleteConfirmBtn" style="background:var(--danger);box-shadow:none;">Delete</button>
-    <button class="btn-cancel" onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+    <button class="btn-save" onclick="saveRename()">Save</button>
+    <button class="btn-cancel" onclick="document.getElementById('renameDeckModal').classList.remove('open')">Cancel</button>
   </div>
 </div>
 
@@ -2259,13 +1643,9 @@ footer{
       <i data-lucide="layers" style="width:12px;height:12px;"></i>
       <span id="previewCardCount">0 cards</span>
     </div>
-    <div id="previewCardsList" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;"></div>
+    <div id="previewCardsList" style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;"></div>
     <button class="btn-save" onclick="startStudyFromPreview()">Study this deck</button>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="btn-cancel" style="flex:1;" onclick="exportPreviewDeck()">↓ Export .txt</button>
-      <button class="btn-cancel" style="flex:1;" onclick="exportPreviewAnki()">↓ Anki</button>
-    </div>
-    <button class="btn-cancel" style="margin-top:8px;" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">Close</button>
+    <button class="btn-cancel" onclick="document.getElementById('deckPreviewModal').classList.remove('open')">Close</button>
   </div>
 </div>
 
@@ -2304,35 +1684,30 @@ function showErrorBoundary(msg) {
 async function init() {
   try {
     if (window.location.hash.includes('access_token')) {
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(resolve => setTimeout(resolve, 500));
       window.history.replaceState(null, '', window.location.pathname);
     }
 
-    const sessionResult = await Promise.race([
-      sb.auth.getSession(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
-    ]);
-
-    const { data: { session }, error } = sessionResult;
+    const { data: { session }, error } = await sb.auth.getSession();
     if (error) throw error;
 
     if (session) await onSignedIn(session.user);
-    else { showLanding(); }
+    else { showLanding(); hideLoader(); }
 
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
       if (event === 'SIGNED_OUT') onSignedOut();
     });
   } catch(e) {
-    console.warn('Auth init failed:', e.message);
-    showLanding(); // fallback - show landing after timeout
+    showErrorBoundary('Could not connect to Cardly. Check your internet and try again.');
   }
 }
 
 async function onSignedIn(user) {
   currentUser = user;
   document.getElementById('authOverlay').style.display = 'none';
-  await Promise.all([loadProfile(), loadDecks()]);
+  await loadProfile();
+  await loadDecks();
   showApp();
   handleCheckoutReturn();
 }
@@ -2360,90 +1735,9 @@ function showApp() {
   updateWelcome();
   renderDecks();
   updateLimitWarning();
-  updateUsageBar();
-  updateQuickActions();
-  updateEmptyState();
   enforceCardCountLimit();
-  if (userProfile?.is_pro) {
-    const statsBtn = document.getElementById('statsBtn');
-    if (statsBtn) statsBtn.style.display = 'flex';
-    loadFolders();
-    renderFolderTabs();
-    const upsell = document.getElementById('proUpsell');
-    if (upsell) upsell.style.display = 'none';
-  } else {
-    const upsell = document.getElementById('proUpsell');
-    if (upsell) upsell.style.display = 'block';
-  }
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
-  checkSharedDeck();
-}
-
-function updateUsageBar() {
-  if (!userProfile) return;
-  const used = userProfile.sets_this_month || 0;
-  const isPro = userProfile.is_pro;
-  const fill = document.getElementById('usageFill');
-  const count = document.getElementById('usageBarCount');
-  const label = document.getElementById('usageBarLabel');
-  const right = document.getElementById('usageBarRight');
-
-  if (isPro) {
-    label.textContent = 'Pro plan: unlimited generations';
-    count.textContent = `${used} used`;
-    fill.style.width = '100%';
-    fill.className = 'usage-fill';
-    fill.style.background = 'var(--accent)';
-    fill.style.opacity = '0.3';
-    right.innerHTML = `<div class="usage-pro-badge"><i data-lucide="zap" style="width:13px;height:13px;"></i> Pro</div>`;
-  } else {
-    const pct = Math.min((used / 3) * 100, 100);
-    label.textContent = 'Free plan: generations this month';
-    count.textContent = `${used} / 3`;
-    fill.style.width = pct + '%';
-    fill.style.opacity = '1';
-    fill.className = 'usage-fill' + (used >= 3 ? ' full' : used === 2 ? ' warn' : '');
-    right.innerHTML = used < 3
-      ? `<button class="btn-upgrade-inline" onclick="startCheckout()">Upgrade to Pro</button>`
-      : `<button class="btn-upgrade-inline" onclick="startCheckout()">Limit reached - Upgrade</button>`;
-  }
-  setTimeout(() => safeCreateIcons(), 100);
-}
-
-function updateQuickActions() {
-  const el = document.getElementById('quickActions');
-  el.style.display = savedDecks.length > 0 ? 'flex' : 'none';
-}
-
-function updateEmptyState() {
-  const el = document.getElementById('appEmptyState');
-  el.style.display = savedDecks.length === 0 ? 'flex' : 'none';
-  setTimeout(() => safeCreateIcons(), 100);
-}
-
-function studyRandomDeck() {
-  if (!savedDecks.length) return;
-  const deck = savedDecks[Math.floor(Math.random() * savedDecks.length)];
-  cards = deck.cards || [];
-  currentDeckName = deck.name || 'Study Mode';
-  if (cards.length) startStudy();
-  else showToast('That deck has no cards');
-}
-
-function exportAllDecks() {
-  if (!savedDecks.length) return;
-  let out = `CARDLY: All Decks Export\n${'='.repeat(40)}\n\n`;
-  savedDecks.forEach(deck => {
-    out += `DECK: ${deck.name || 'Untitled'}\n${'-'.repeat(30)}\n`;
-    (deck.cards || []).forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
-    out += '\n';
-  });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
-  a.download = 'cardly-all-decks.txt';
-  a.click();
-  showToast(`Exported ${savedDecks.length} decks`);
 }
 
 function updateLimitWarning() {
@@ -2482,13 +1776,6 @@ function showLegal(page) {
   setTimeout(() => safeCreateIcons(), 200);
 }
 
-function showAbout() {
-  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
-  document.getElementById('studyView').style.display = 'none';
-  document.getElementById('aboutView').classList.add('active');
-  window.scrollTo(0, 0);
-}
-
 function hideLegal() {
   if (currentUser) showApp();
   else showLanding();
@@ -2500,30 +1787,22 @@ function toggleMobileMenu() {
   const btn = document.getElementById('mobileMenuBtn');
   const isOpen = menu.classList.contains('open');
   menu.classList.toggle('open', !isOpen);
-  if (btn) {
-    btn.innerHTML = isOpen
-      ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
-      : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
-    setTimeout(() => safeCreateIcons(), 100);
-  }
+  btn.innerHTML = isOpen
+    ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
+    : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 function closeMobileMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
-  const btn = document.getElementById('mobileMenuBtn');
-  if (btn) {
-    btn.innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
-    setTimeout(() => safeCreateIcons(), 100);
-  }
+  document.getElementById('mobileMenuBtn').innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
 // ── HEADER ──
 function renderHeader(loggedIn) {
-  const hn = document.getElementById('headerNav');
   const hr = document.getElementById('headerRight');
-  const mc = document.getElementById('mobileMenuContent');
   if (loggedIn) {
-    hn.innerHTML = '';
     const used = userProfile?.sets_this_month || 0;
     const isPro = userProfile?.is_pro;
     const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
@@ -2533,39 +1812,15 @@ function renderHeader(loggedIn) {
       ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout()" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
       <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
       <button class="btn-signout" onclick="signOut()">Sign out</button>
-      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-        <i data-lucide="menu" style="width:18px;height:18px;"></i>
-      </button>
-    `;
-    if (mc) mc.innerHTML = `
-      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout()">⚡ Upgrade to Pro</button>` : ''}
-      <button class="mobile-menu-link" onclick="closeMobileMenu();openAccountModal()">Account</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();signOut()" style="color:var(--text3);">Sign out</button>
     `;
   } else {
-    hn.innerHTML = `
-      <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
-      <button class="nav-link" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
-      <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
-      <button class="nav-link" onclick="showAbout()">About</button>
-    `;
     hr.innerHTML = `
-      <button class="nav-link" onclick="showAuth()">Sign In</button>
+      <div class="nav-links">
+        <button class="nav-link" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</button>
+        <button class="nav-link" onclick="showLegal('tos')">Terms</button>
+        <button class="nav-link" onclick="showLegal('privacy')">Privacy</button>
+      </div>
       <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
-      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-        <i data-lucide="menu" style="width:18px;height:18px;"></i>
-      </button>
-    `;
-    if (mc) mc.innerHTML = `
-      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('features')?.scrollIntoView({behavior:'smooth'})">Features</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('how')?.scrollIntoView({behavior:'smooth'})">How it works</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})">Pricing</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
-      <button class="mobile-menu-link" onclick="closeMobileMenu();showAuth()">Sign In</button>
-      <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
     `;
   }
 }
@@ -2627,7 +1882,7 @@ async function deleteAccount() {
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Yes, delete everything';
-    showToast('Error: ' + e.message + '. Contact hello@studywithcardly.com for help.');
+    showToast('Error: ' + e.message + '. Email hello@cardly.app for help.');
   }
 }
 
@@ -2645,56 +1900,58 @@ async function loadDecks() {
 
 function renderDecks() {
   const section = document.getElementById('decksSection');
-  if (savedDecks.length === 0) {
-    section.style.display = 'none';
-    if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
-    return;
-  }
+  const grid = document.getElementById('decksGrid');
+
+  if (savedDecks.length === 0) { section.style.display = 'none'; return; }
+
   section.style.display = 'block';
-  if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
-  if (userProfile?.is_pro) { loadFolders(); renderFolderTabs(); }
-  renderDecksFiltered();
+  grid.innerHTML = '';
+
+  savedDecks.forEach((deck, i) => {
+    const el = document.createElement('div');
+    el.className = 'deck-card';
+    el.style.animationDelay = (i * 0.05) + 's';
+    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    el.innerHTML = `
+      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
+      <div class="deck-meta">
+        <span>${deck.card_count || 0} cards</span>
+        <div class="deck-dot"></div>
+        <span>${date}</span>
+      </div>
+      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;">
+        <i data-lucide="pencil" style="width:12px;height:12px;"></i>
+      </button>
+      <button class="deck-delete" data-delete-id="${deck.id}" title="Delete deck">
+        <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+      </button>
+    `;
+    el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
+    el.querySelector('[data-deck-id]').addEventListener('click', e => {
+      e.stopPropagation();
+      e.preventDefault();
+      const btn = e.currentTarget;
+      openRenameDeck(btn.dataset.deckId, btn._deckName);
+    });
+    el.querySelector('[data-delete-id]').addEventListener('click', e => {
+      e.stopPropagation();
+      e.preventDefault();
+      deleteDeck(e.currentTarget.dataset.deleteId);
+    });
+    el.addEventListener('click', () => openDeckPreview(deck));
+    grid.appendChild(el);
+  });
+
+  setTimeout(() => safeCreateIcons(), 200);
 }
 
-let deleteDeckId = null;
-function deleteDeck(deckId) {
-  const deck = savedDecks.find(d => d.id === deckId);
-  deleteDeckId = deckId;
-  document.getElementById('deleteModalName').textContent = deck ? `"${deck.name || 'Untitled Deck'}"` : '';
-  const confirmBtn = document.getElementById('deleteConfirmBtn');
-  confirmBtn.onclick = async () => {
-    document.getElementById('deleteModal').classList.remove('open');
-    await sb.from('decks').delete().eq('id', deleteDeckId).eq('user_id', currentUser.id);
-    // Remove from folder mappings
-    delete deckFolders[deleteDeckId];
-    saveFolders();
-    await loadDecks();
-    renderDecks();
-    updateWelcome();
-    showToast('Deck deleted');
-  };
-  document.getElementById('deleteModal').classList.add('open');
-}
-
-function exportPreviewDeck() {
-  if (!previewDeck) return;
-  let out = `CARDLY: ${previewDeck.name}\n` + '='.repeat(40) + '\n\n';
-  (previewDeck.cards || []).forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
-  a.download = `${(previewDeck.name||'deck').replace(/\s+/g,'-').toLowerCase()}.txt`;
-  a.click();
-  showToast('Exported');
-}
-
-function exportPreviewAnki() {
-  if (!previewDeck) return;
-  const out = (previewDeck.cards || []).map(c => `${c.front}\t${c.back}`).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
-  a.download = `${(previewDeck.name||'deck').replace(/\s+/g,'-').toLowerCase()}-anki.txt`;
-  a.click();
-  showToast('Exported for Anki. Import via File > Import');
+async function deleteDeck(deckId) {
+  if (!confirm('Delete this deck?')) return;
+  await sb.from('decks').delete().eq('id', deckId).eq('user_id', currentUser.id);
+  await loadDecks();
+  renderDecks();
+  updateWelcome();
+  showToast('Deck deleted');
 }
 
 async function loadDeckAndStudy(deck) {
@@ -2733,68 +1990,30 @@ function startStudyFromPreview() {
 // ── RENAME DECK ──
 let renameDeckId = null;
 
-// ── RENAME DECK - self-contained, all listeners bound once at startup ──
-(function() {
-  const modal     = document.getElementById('renameDeckModal');
-  const input     = document.getElementById('renameInput');
-  const saveBtn   = document.getElementById('renameSaveBtn');
-  const cancelBtn = document.getElementById('renameCancelBtn');
-  const closeBtn  = document.getElementById('renameCloseBtn');
-
-  function closeModal() {
-    modal.style.display = 'none';
-    modal.classList.remove('open');
-    renameDeckId = null;
-    input.value = '';
-  }
-
-  async function doSave() {
-    const newName = input.value.trim();
-    if (!newName || !renameDeckId) return;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-    try {
-      console.log('saving rename:', { renameDeckId, userId: currentUser?.id, newName });
-      const { data, error } = await sb.from('decks')
-        .update({ name: newName })
-        .eq('id', renameDeckId)
-        .select();
-      console.log('rename result:', { data, error });
-      if (error) throw error;
-      if (!data || data.length === 0) throw new Error('No rows updated: deck not found');
-      closeModal();
-      await loadDecks();
-      renderDecks();
-      updateWelcome();
-      showToast('Deck renamed');
-    } catch(e) {
-      showToast('Error: ' + e.message);
-    } finally {
-      saveBtn.disabled = false;
-      saveBtn.textContent = 'Save';
-    }
-  }
-
-  saveBtn.addEventListener('click', doSave);
-  cancelBtn.addEventListener('click', closeModal);
-  closeBtn.addEventListener('click', closeModal);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
-
-document.getElementById('folderNewInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') createFolderFromModal();
-});
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-})();
-
 function openRenameDeck(deckId, deckName) {
   renameDeckId = deckId;
-  const modal = document.getElementById('renameDeckModal');
-  const input = document.getElementById('renameInput');
-  input.value = deckName;
-  modal.style.display = 'flex';
-  modal.classList.add('open');
-  setTimeout(() => { input.focus(); input.select(); }, 100);
+  document.getElementById('renameInput').value = deckName;
+  document.getElementById('renameDeckModal').style.display = 'flex';
+  document.getElementById('renameDeckModal').classList.add('open');
+  setTimeout(() => document.getElementById('renameInput').focus(), 150);
+  setTimeout(() => safeCreateIcons(), 200);
 }
+
+async function saveRename() {
+  const newName = document.getElementById('renameInput').value.trim();
+  if (!newName || !renameDeckId) return;
+  await sb.from('decks').update({ name: newName }).eq('id', renameDeckId).eq('user_id', currentUser.id);
+  document.getElementById('renameDeckModal').classList.remove('open');
+  await loadDecks();
+  renderDecks();
+  updateWelcome();
+  showToast('Deck renamed');
+}
+
+// Allow Enter key to save rename
+document.getElementById('renameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveRename();
+});
 
 async function saveDeck(deckName, deckCards) {
   if (!currentUser) return;
@@ -2877,7 +2096,7 @@ async function generateCards() {
 
   if (notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
   if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
-    showError("You've used all 3 free generations this month. Upgrade to Pro for unlimited decks."); return;
+    showError("You've used all 3 free generations this month. Pro is coming soon!"); return;
   }
 
   setLoading(true); hideError();
@@ -2890,10 +2109,7 @@ async function generateCards() {
       body: JSON.stringify({ notes, count })
     });
 
-    const text = await res.text();
-    let data;
-    try { data = JSON.parse(text); }
-    catch { throw new Error('Server error. Please try again.'); }
+    const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Server error');
 
     cards = data.cards;
@@ -2945,7 +2161,6 @@ function displayMiniCards() {
 // ── STUDY ──
 function startStudy() {
   if (!cards.length) return;
-  cardDifficulty = {};
   document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
@@ -2953,9 +2168,7 @@ function startStudy() {
   document.querySelector('.card-scene').style.opacity = '1';
   document.querySelector('.card-nav').style.display = 'flex';
   document.querySelector('.kb-hints').style.display = 'flex';
-  showDifficultyRow(false);
   isFlipped = false; currentIndex = 0; renderCard();
-  recordStudySession();
   setTimeout(() => safeCreateIcons(), 200);
 }
 
@@ -2975,7 +2188,6 @@ function renderCard() {
   document.getElementById('nextBtn').disabled = currentIndex === total - 1;
   isFlipped = false;
   document.getElementById('cardInner').classList.remove('flipped');
-  showDifficultyRow(false);
 }
 
 function flipCard() { isFlipped = !isFlipped; document.getElementById('cardInner').classList.toggle('flipped', isFlipped); }
@@ -3019,7 +2231,7 @@ document.addEventListener('keydown', e => {
 
 function exportCards() {
   if (!cards.length) return;
-  let out = `CARDLY: ${currentDeckName}\n` + '='.repeat(40) + '\n\n';
+  let out = `CARDLY — ${currentDeckName}\n` + '='.repeat(40) + '\n\n';
   cards.forEach((c, i) => out += `Q${i+1}: ${c.front}\nA${i+1}: ${c.back}\n\n`);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
@@ -3028,322 +2240,7 @@ function exportCards() {
   showToast('Exported successfully');
 }
 
-function exportAnki() {
-  if (!cards.length) return;
-  // Anki tab-separated format: front[tab]back, one card per line
-  // Import in Anki via File → Import, delimiter: Tab
-  const out = cards.map(c => `${c.front}\t${c.back}`).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain' }));
-  a.download = `${currentDeckName.replace(/\s+/g,'-').toLowerCase()}-anki.txt`;
-  a.click();
-  showToast('Exported for Anki. Import via File > Import');
-}
-
-// ── DIFFICULTY RATING (Pro) ──
-let cardDifficulty = {}; // {cardIndex: 'easy'|'medium'|'hard'}
-let hardCardIndices = [];
-
-function rateDifficulty(level) {
-  if (!userProfile?.is_pro) return;
-  cardDifficulty[currentIndex] = level;
-  document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.btn-diff.${level}`)?.classList.add('active');
-  setTimeout(() => nextCard(), 500);
-}
-
-function showDifficultyRow(show) {
-  const row = document.getElementById('difficultyRow');
-  if (!row) return;
-  row.style.display = (show && userProfile?.is_pro) ? 'block' : 'none';
-  if (show) {
-    document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
-    if (cardDifficulty[currentIndex]) {
-      document.querySelector(`.btn-diff.${cardDifficulty[currentIndex]}`)?.classList.add('active');
-    }
-    setTimeout(() => safeCreateIcons(), 100);
-  }
-}
-
-// Show rating row only after card is flipped
-const _origFlipCard = flipCard;
-flipCard = function() {
-  _origFlipCard();
-  showDifficultyRow(isFlipped);
-};
-
-// ── DECK FOLDERS (Pro) ──
-let currentFolder = 'all';
-let deckFolders = {};
-
-function loadFolders() {
-  try { deckFolders = JSON.parse(localStorage.getItem('cardly_folders') || '{}'); } catch(e) { deckFolders = {}; }
-}
-function saveFolders() {
-  try { localStorage.setItem('cardly_folders', JSON.stringify(deckFolders)); } catch(e) {}
-}
-function getAllFolderNames() {
-  return [...new Set(Object.values(deckFolders))].sort();
-}
-
-function renderFolderTabs() {
-  const container = document.getElementById('folderTabs');
-  if (!container || !userProfile?.is_pro) return;
-  loadFolders();
-  const folders = getAllFolderNames();
-  if (folders.length === 0 && currentFolder === 'all') {
-    container.style.display = 'none'; return;
-  }
-  container.style.display = 'flex';
-  container.innerHTML = '';
-
-  const allBtn = document.createElement('button');
-  allBtn.className = 'folder-tab all' + (currentFolder === 'all' ? ' active' : '');
-  allBtn.textContent = 'All decks';
-  allBtn.addEventListener('click', () => setFolder('all'));
-  container.appendChild(allBtn);
-
-  folders.forEach(f => {
-    const btn = document.createElement('button');
-    btn.className = 'folder-tab' + (currentFolder === f ? ' active' : '');
-    btn.textContent = f;
-    btn.addEventListener('click', () => setFolder(f));
-    container.appendChild(btn);
-  });
-}
-
-function setFolder(name) {
-  currentFolder = name;
-  renderFolderTabs();
-  renderDecksFiltered();
-}
-
-// ── FOLDER MODAL (Pro) ──
-let folderTargetDeckId = null;
-let selectedFolderName = null;
-
-function openFolderModal(deckId, deckName) {
-  folderTargetDeckId = deckId;
-  selectedFolderName = deckFolders[deckId] || null;
-  document.getElementById('folderModalDeckName').textContent = `"${deckName}"`;
-  document.getElementById('folderNewInput').value = '';
-  renderFolderList();
-  document.getElementById('folderModal').classList.add('open');
-  setTimeout(() => safeCreateIcons(), 150);
-}
-
-function renderFolderList() {
-  const list = document.getElementById('folderList');
-  const folders = getAllFolderNames();
-  const current = deckFolders[folderTargetDeckId] || null;
-
-  // No folder option
-  const noneEl = document.createElement('div');
-  noneEl.className = 'folder-list-item none-item' + (!current ? ' selected' : '');
-  noneEl.innerHTML = `<span>No folder</span>${!current ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}`;
-  noneEl.addEventListener('click', () => selectFolderItem(null, noneEl));
-
-  list.innerHTML = '';
-  list.appendChild(noneEl);
-
-  folders.forEach(f => {
-    const el = document.createElement('div');
-    el.className = 'folder-list-item' + (current === f ? ' selected' : '');
-    el.innerHTML = `<span>${esc(f)}</span>${current === f ? '<i data-lucide="check" style="width:13px;height:13px;"></i>' : ''}`;
-    el.addEventListener('click', () => selectFolderItem(f, el));
-    list.appendChild(el);
-  });
-
-  setTimeout(() => safeCreateIcons(), 100);
-}
-
-function selectFolderItem(name, el) {
-  selectedFolderName = name;
-  document.querySelectorAll('.folder-list-item').forEach(i => {
-    i.classList.remove('selected');
-    const chk = i.querySelector('[data-lucide="check"]');
-    if (chk) chk.remove();
-  });
-  el.classList.add('selected');
-  el.insertAdjacentHTML('beforeend', '<i data-lucide="check" style="width:13px;height:13px;"></i>');
-  setTimeout(() => safeCreateIcons(), 50);
-}
-
-function createFolderFromModal() {
-  const name = document.getElementById('folderNewInput').value.trim();
-  if (!name) return;
-  document.getElementById('folderNewInput').value = '';
-  selectedFolderName = name;
-  const list = document.getElementById('folderList');
-  const exists = [...list.querySelectorAll('.folder-list-item')].some(el => el.querySelector('span')?.textContent === name);
-  if (!exists) {
-    const item = document.createElement('div');
-    item.className = 'folder-list-item selected';
-    item.innerHTML = `<span>${esc(name)}</span><i data-lucide="check" style="width:13px;height:13px;"></i>`;
-    item.addEventListener('click', () => selectFolderItem(name, item));
-    list.appendChild(item);
-    setTimeout(() => safeCreateIcons(), 50);
-  }
-  // Deselect all others
-  list.querySelectorAll('.folder-list-item').forEach(el => {
-    const spanText = el.querySelector('span')?.textContent;
-    if (spanText !== name) {
-      el.classList.remove('selected');
-      const chk = el.querySelector('[data-lucide="check"]');
-      if (chk) chk.remove();
-    } else {
-      el.classList.add('selected');
-    }
-  });
-}
-
-function applyFolderSelection() {
-  if (!folderTargetDeckId) return;
-  if (selectedFolderName === null) delete deckFolders[folderTargetDeckId];
-  else deckFolders[folderTargetDeckId] = selectedFolderName;
-  saveFolders();
-  document.getElementById('folderModal').classList.remove('open');
-  renderFolderTabs();
-  renderDecksFiltered();
-  showToast(selectedFolderName ? `Moved to "${selectedFolderName}"` : 'Removed from folder');
-}
-
-// ── SHARE DECK (Pro) ──
-let currentShareUrl = '';
-function openShareDeck(deck) {
-  if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
-  const payload = encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }));
-  currentShareUrl = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
-  // Show a friendly preview, not the raw encoded URL
-  const box = document.getElementById('shareUrlBox');
-  const displayUrl = `${window.location.origin}/?shared=...`;
-  box.textContent = displayUrl;
-  box.style.color = 'var(--text2)';
-  const copyBtn = document.getElementById('copyBtn');
-  copyBtn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy link';
-  copyBtn.className = 'btn-copy';
-  document.getElementById('sharePreview').innerHTML = (deck.cards || []).slice(0, 5).map(c =>
-    `<div class="share-preview-item">${esc(c.front)}</div>`
-  ).join('') + (deck.cards?.length > 5 ? `<div class="share-preview-item" style="color:var(--text3);">...and ${deck.cards.length - 5} more</div>` : '');
-  document.getElementById('shareDeckModal').classList.add('open');
-  setTimeout(() => safeCreateIcons(), 200);
-}
-
-function copyShareUrl() {
-  const btn = document.getElementById('copyBtn');
-  navigator.clipboard.writeText(currentShareUrl).then(() => {
-    btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Copied!';
-    btn.className = 'btn-copy copied';
-    safeCreateIcons();
-    setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy link'; btn.className = 'btn-copy'; safeCreateIcons(); }, 2200);
-  }).catch(() => showToast('Copy failed. Select the link manually.'));
-}
-
-function getFilteredDecks() {
-  if (currentFolder === 'all') return savedDecks;
-  return savedDecks.filter(d => deckFolders[d.id] === currentFolder);
-}
-
-function renderDecksFiltered() {
-  const grid = document.getElementById('decksGrid');
-  grid.innerHTML = '';
-  const filtered = getFilteredDecks();
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;grid-column:1/-1;">No decks in this folder.</div>`;
-    return;
-  }
-  filtered.forEach((deck, i) => {
-    const el = document.createElement('div');
-    el.className = 'deck-card';
-    el.style.animationDelay = (i * 0.05) + 's';
-    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    const folder = deckFolders[deck.id];
-    el.innerHTML = `
-      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
-      <div class="deck-meta">
-        <span>${deck.card_count || 0} cards</span>
-        <div class="deck-dot"></div>
-        ${folder ? `<span style="color:var(--accent);font-size:10px;">${esc(folder)}</span>` : `<span>${date}</span>`}
-      </div>
-      <div class="deck-actions-row">
-        <button class="deck-action-btn" data-folder-id="${deck.id}" data-folder-name="${esc(deck.name||'Untitled')}" title="Assign folder"><i data-lucide="folder" style="width:12px;height:12px;"></i></button>
-        ${userProfile?.is_pro ? `<button class="deck-action-btn" data-share-id="${deck.id}" title="Share deck"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
-        <button class="deck-action-btn" data-deck-id="${deck.id}" title="Rename"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
-        <button class="deck-action-btn danger" data-delete-id="${deck.id}" title="Delete"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
-      </div>
-    `;
-    el.querySelector('[data-folder-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openFolderModal(e.currentTarget.dataset.folderId, e.currentTarget.dataset.folderName); });
-    if (userProfile?.is_pro) el.querySelector('[data-share-id]')?.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openShareDeck(deck); });
-    el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
-    el.querySelector('[data-deck-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openRenameDeck(e.currentTarget.dataset.deckId, e.currentTarget._deckName); });
-    el.querySelector('[data-delete-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); deleteDeck(e.currentTarget.dataset.deleteId); });
-    el.addEventListener('click', () => openDeckPreview(deck));
-    grid.appendChild(el);
-  });
-  setTimeout(() => safeCreateIcons(), 200);
-}
-
-function checkSharedDeck() {
-  const params = new URLSearchParams(window.location.search);
-  const shared = params.get('shared');
-  if (!shared) return;
-  window.history.replaceState(null, '', window.location.pathname);
-  try {
-    const data = JSON.parse(decodeURIComponent(shared));
-    if (!data?.cards?.length) return;
-    if (confirm(`Import "${data.name || 'Shared Deck'}" (${data.cards.length} cards) into your account?`)) {
-      saveDeck(data.name || 'Shared Deck', data.cards).then(() => { renderDecks(); showToast('Deck imported!'); });
-    }
-  } catch(e) {
-    console.error('Share decode error:', e);
-    showToast('Invalid share link');
-  }
-}
-
-// ── STUDY STATS (Pro) ──
-function recordStudySession() {
-  if (!userProfile?.is_pro) return;
-  try {
-    const key = 'cardly_sessions';
-    const sessions = JSON.parse(localStorage.getItem(key) || '[]');
-    const today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    const existing = sessions.find(s => s.date === today);
-    if (existing) { existing.cards += cards.length; existing.decks = (existing.decks || 0) + 1; }
-    else sessions.unshift({ date: today, cards: cards.length, decks: 1 });
-    localStorage.setItem(key, JSON.stringify(sessions.slice(0, 30)));
-  } catch(e) {}
-}
-
-function openStatsModal() {
-  if (!userProfile?.is_pro) { showToast('Stats are a Pro feature'); return; }
-  try {
-    const sessions = JSON.parse(localStorage.getItem('cardly_sessions') || '[]');
-    const totalCards = sessions.reduce((s, x) => s + (x.cards || 0), 0);
-    const totalSessions = sessions.length;
-    const streak = calcStreak(sessions);
-    document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card"><div class="stat-num">${totalCards}</div><div class="stat-label">Cards studied</div></div>
-      <div class="stat-card"><div class="stat-num">${totalSessions}</div><div class="stat-label">Sessions</div></div>
-      <div class="stat-card"><div class="stat-num">${streak}🔥</div><div class="stat-label">Day streak</div></div>
-    `;
-    document.getElementById('studyHistory').innerHTML = sessions.slice(0, 7).map(s =>
-      `<div class="study-history-item"><span class="study-history-date">${s.date}</span><span class="study-history-count">${s.cards} cards</span></div>`
-    ).join('') || '<div style="font-size:13px;color:var(--text3);">No sessions recorded yet. Start studying!</div>';
-  } catch(e) {}
-  document.getElementById('statsModal').classList.add('open');
-}
-
-function calcStreak(sessions) {
-  if (!sessions.length) return 0;
-  let streak = 0, d = new Date();
-  for (let i = 0; i < 30; i++) {
-    const key = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    if (sessions.find(s => s.date === key)) streak++;
-    else if (i > 0) break;
-    d.setDate(d.getDate() - 1);
-  }
-  return streak;
-}
+// ── STRIPE ──
 async function startCheckout() {
   if (!currentUser) { showAuth(); return; }
   if (userProfile?.is_pro) { showToast('You are already on Pro!'); return; }
@@ -3369,7 +2266,7 @@ async function startCheckout() {
     window.location.href = data.url;
   } catch(e) {
     btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro for $5/mo';
+    btn.textContent = 'Upgrade to Pro — $7/mo';
     showToast('Error: ' + e.message);
   }
 }
@@ -3388,7 +2285,7 @@ function handleCheckoutReturn() {
     // Reload profile to get updated is_pro status
     if (currentUser) loadProfile().then(() => renderHeader(true));
   } else if (checkout === 'cancelled') {
-    showToast('Checkout cancelled. You have not been charged.');
+    showToast('Checkout cancelled — you have not been charged.');
   }
 }
 function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; }
@@ -3400,26 +2297,26 @@ function showToast(msg) {
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── ANIMATED HERO DEMO - plays once, random subject per page load ──
+// ── ANIMATED HERO DEMO — plays once, random subject per page load ──
 const demoSets = [
   {
-    label: 'Example output: TCP/IP notes',
+    label: 'Example output — TCP/IP notes',
     cards: [
-      { q: "What does TCP stand for and what makes it unique?", a: "Transmission Control Protocol - connection-oriented, guarantees delivery via three-way handshake." },
-      { q: "How does IPv4 differ from IPv6 in address size?", a: "IPv4 uses 32-bit addresses. IPv6 uses 128-bit - a vastly larger address space." },
+      { q: "What does TCP stand for and what makes it unique?", a: "Transmission Control Protocol — connection-oriented, guarantees delivery via three-way handshake." },
+      { q: "How does IPv4 differ from IPv6 in address size?", a: "IPv4 uses 32-bit addresses. IPv6 uses 128-bit — a vastly larger address space." },
       { q: "What is the role of DNS in a network?", a: "DNS translates domain names into IP addresses computers use to communicate." }
     ]
   },
   {
-    label: 'Example output: Cell Biology notes',
+    label: 'Example output — Cell Biology notes',
     cards: [
-      { q: "What is the function of the mitochondria?", a: "The mitochondria produces ATP through cellular respiration - the powerhouse of the cell." },
+      { q: "What is the function of the mitochondria?", a: "The mitochondria produces ATP through cellular respiration — the powerhouse of the cell." },
       { q: "What are the three stages of cellular respiration?", a: "Glycolysis (cytoplasm), the Krebs cycle (mitochondrial matrix), and the electron transport chain." },
       { q: "What happens during anaerobic respiration?", a: "Without oxygen, cells switch to lactic acid fermentation (animals) or alcoholic fermentation (yeast)." }
     ]
   },
   {
-    label: 'Example output: Psychology notes',
+    label: 'Example output — Psychology notes',
     cards: [
       { q: "What is confirmation bias?", a: "The tendency to search for information that confirms one's existing beliefs." },
       { q: "What does the Dunning-Kruger effect describe?", a: "People with limited knowledge in a domain tend to overestimate their own competence." },
@@ -3428,7 +2325,7 @@ const demoSets = [
   }
 ];
 
-// Random set chosen once per page load - changes on refresh
+// Random set chosen once per page load — changes on refresh
 const demoSet = demoSets[Math.floor(Math.random() * demoSets.length)];
 
 function typeText(el, text, speed, callback) {
@@ -3445,7 +2342,7 @@ function animateDemo() {
   const labelEl = document.querySelector('.demo-label');
   if (labelEl) labelEl.textContent = demoSet.label;
 
-  // Type each card once - no loop at end
+  // Type each card once — no loop at end
   let delay = 200;
   demoSet.cards.forEach((data, idx) => {
     const card = document.getElementById(`demoCard${idx + 1}`);
@@ -3475,7 +2372,7 @@ function initScrollReveal() {
 // ── ONBOARDING TOOLTIP ──
 function showOnboardingTooltip() {
   const seen = localStorage.getItem('cardly_tooltip_seen');
-  if (!seen && savedDecks.length === 0 && currentInputMode === 'text') {
+  if (!seen && savedDecks.length === 0) {
     document.getElementById('onboardingTooltip').classList.add('show');
   }
 }
@@ -3506,123 +2403,6 @@ document.getElementById('cardCount').addEventListener('change', () => {
   input.value = val;
 });
 
-// ── INPUT MODE SWITCHER ──
-let currentInputMode = 'text';
-
-function switchInputMode(mode) {
-  currentInputMode = mode;
-  document.getElementById('tabText').classList.toggle('active', mode === 'text');
-  document.getElementById('tabPdf').classList.toggle('active', mode === 'pdf');
-  document.getElementById('modeText').style.display = mode === 'text' ? 'block' : 'none';
-  document.getElementById('modePdf').style.display = mode === 'pdf' ? 'block' : 'none';
-  // Clear the other mode's data when switching
-  if (mode === 'text') {
-    clearPdf();
-  } else {
-    document.getElementById('notesInput').value = '';
-    document.getElementById('charCount').textContent = '0 chars';
-  }
-  setTimeout(() => safeCreateIcons(), 100);
-}
-
-function clearPdf() {
-  document.getElementById('pdfLoaded').style.display = 'none';
-  document.getElementById('pdfDropZone').style.display = 'flex';
-  document.getElementById('pdfFileInput').value = '';
-  document.getElementById('notesInput').value = '';
-  document.getElementById('charCount').textContent = '0 chars';
-  document.getElementById('deckNameInput').value = '';
-}
-
-// Drag and drop support
-(function initDragDrop() {
-  const zone = document.getElementById('pdfDropZone');
-  if (!zone) return;
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/pdf') processPdf(file);
-    else showToast('Please drop a PDF file');
-  });
-})();
-
-// ── PDF EXTRACTION - PDF.js loaded lazily on first use ──
-async function loadPdfJs() {
-  if (window.pdfjsLib) return true;
-  return new Promise((resolve) => {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    script.onload = () => {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      resolve(true);
-    };
-    script.onerror = () => resolve(false);
-    document.head.appendChild(script);
-  });
-}
-
-function handlePdfUpload(input) {
-  const file = input.files[0];
-  if (file) processPdf(file);
-}
-
-async function processPdf(file) {
-  const zone = document.getElementById('pdfDropZone');
-  const loaded = document.getElementById('pdfLoaded');
-
-  zone.style.display = 'none';
-  loaded.style.display = 'flex';
-  document.getElementById('pdfLoadedName').textContent = file.name;
-  document.getElementById('pdfLoadedMeta').textContent = 'Reading...';
-
-  try {
-    const ok = await loadPdfJs();
-    if (!ok) throw new Error('Could not load PDF reader. Check your connection.');
-
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const totalPages = pdf.numPages;
-    let fullText = '';
-
-    for (let i = 1; i <= totalPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      fullText += content.items.map(item => item.str).join(' ') + '\n\n';
-    }
-
-    fullText = fullText.trim();
-    if (!fullText || fullText.length < 50) throw new Error('No readable text. PDF may be scanned or image-based');
-
-    const trimmed = fullText.length > 12000;
-    if (trimmed) fullText = fullText.slice(0, 12000);
-
-    // Store extracted text in the hidden textarea
-    document.getElementById('notesInput').value = fullText;
-    document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
-    dismissTooltip();
-
-    // Auto-fill deck name
-    const nameInput = document.getElementById('deckNameInput');
-    if (!nameInput.value.trim()) {
-      nameInput.value = file.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
-    }
-
-    document.getElementById('pdfLoadedMeta').textContent =
-      `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars${trimmed ? ' (trimmed)' : ''}`;
-
-    setTimeout(() => safeCreateIcons(), 100);
-  } catch(e) {
-    // Show error and reset to drop zone
-    zone.style.display = 'flex';
-    loaded.style.display = 'none';
-    document.getElementById('pdfFileInput').value = '';
-    showToast('PDF error: ' + e.message);
-  }
-}
-
 function safeCreateIcons() {
   try { if (window.lucide) lucide.createIcons(); } catch(e) {}
 }
@@ -3630,8 +2410,7 @@ function safeCreateIcons() {
 window.addEventListener('load', () => safeCreateIcons());
 
 document.addEventListener('DOMContentLoaded', () => {
-  init(); // fire and forget - landing shows immediately
-  setTimeout(() => safeCreateIcons(), 200);
+  init().then(() => setTimeout(() => safeCreateIcons(), 200));
 });
 
 </script>
