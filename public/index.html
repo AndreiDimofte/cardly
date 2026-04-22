@@ -885,6 +885,70 @@ footer{
   color:var(--text3);margin-bottom:12px;
 }
 
+/* ── DIFFICULTY RATING (Pro) ── */
+.difficulty-row{
+  display:flex;gap:8px;justify-content:center;margin-top:16px;
+}
+.btn-diff{
+  flex:1;max-width:120px;padding:9px 0;border-radius:9px;border:1.5px solid var(--border2);
+  font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .18s;background:var(--surface);color:var(--text2);
+}
+.btn-diff.easy{border-color:#4ade80;}
+.btn-diff.easy:hover,.btn-diff.easy.active{background:#4ade80;color:#0f1f0f;border-color:#4ade80;}
+.btn-diff.medium{border-color:#facc15;}
+.btn-diff.medium:hover,.btn-diff.medium.active{background:#facc15;color:#1c1500;border-color:#facc15;}
+.btn-diff.hard{border-color:var(--danger);}
+.btn-diff.hard:hover,.btn-diff.hard.active{background:var(--danger);color:white;border-color:var(--danger);}
+
+/* ── DECK FOLDERS (Pro) ── */
+.folder-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.folder-tab{
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;font-family:'Bricolage Grotesque',sans-serif;
+}
+.folder-tab:hover,.folder-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+.folder-tab.all.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+
+/* ── SHARE MODAL ── */
+.share-url-row{display:flex;gap:8px;margin-bottom:12px;}
+.share-url-input{
+  flex:1;background:var(--surface2);border:1.5px solid var(--border2);
+  color:var(--text);padding:10px 13px;border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+}
+.btn-copy{
+  background:var(--accent);color:white;border:none;padding:10px 16px;
+  border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;
+}
+.btn-copy:hover{opacity:.85;}
+.share-preview{
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;max-height:180px;overflow-y:auto;
+}
+.share-preview-item{font-size:12px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);}
+.share-preview-item:last-child{border-bottom:none;}
+
+/* ── STATS (Pro) ── */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:18px 14px;text-align:center;
+}
+.stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--text);}
+.stat-label{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+.study-history{display:flex;flex-direction:column;gap:6px;}
+.study-history-item{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;padding:8px 12px;background:var(--surface2);border-radius:8px;
+}
+.study-history-date{color:var(--text2);}
+.study-history-count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);}
+
 /* ── STUDY COMPLETE ── */
 .study-complete{
   display:none;flex-direction:column;align-items:center;
@@ -1348,12 +1412,7 @@ footer{
 
 <!-- ── MOBILE MENU ── -->
 <div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('features')?.scrollIntoView({behavior:'smooth'})">Features</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('how')?.scrollIntoView({behavior:'smooth'})">How it works</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})">Pricing</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
-  <button class="mobile-menu-link" onclick="closeMobileMenu();showAuth()">Sign In</button>
-  <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
+  <div id="mobileMenuContent"></div>
 </div>
 
 <!-- ── LANDING VIEW ── -->
@@ -1475,6 +1534,8 @@ footer{
             <li>Export to .txt &amp; Anki format</li>
             <li class="muted">Unlimited generations</li>
             <li class="muted">Up to 25 cards per deck</li>
+            <li class="muted">Difficulty rating & folders</li>
+            <li class="muted">Stats, streaks & sharing</li>
           </ul>
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
@@ -1489,6 +1550,10 @@ footer{
             <li>Up to 25 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
+            <li>Card difficulty rating</li>
+            <li>Deck folders & organisation</li>
+            <li>Study statistics & streaks</li>
+            <li>Shareable deck links</li>
             <li>Export to .txt &amp; Anki format</li>
           </ul>
           <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro — $5/mo</button>
@@ -1591,7 +1656,14 @@ footer{
     <div class="decks-section" id="decksSection" style="display:none;">
       <div class="decks-header">
         <div class="decks-title">Your Decks</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn-sm" onclick="openStatsModal()" id="statsBtn" style="display:none;">
+            <i data-lucide="bar-chart-2" style="width:13px;height:13px;"></i> Stats
+          </button>
+        </div>
       </div>
+      <!-- Folder tabs - Pro only -->
+      <div class="folder-tabs" id="folderTabs" style="display:none;"></div>
       <div class="decks-grid" id="decksGrid"></div>
     </div>
 
@@ -1784,6 +1856,13 @@ footer{
     <button class="btn-nav" id="nextBtn" onclick="nextCard()">→</button>
   </div>
 
+  <!-- Difficulty rating - Pro only, shown after flipping -->
+  <div class="difficulty-row" id="difficultyRow" style="display:none;">
+    <button class="btn-diff easy" onclick="rateDifficulty('easy')">😊 Easy</button>
+    <button class="btn-diff medium" onclick="rateDifficulty('medium')">😐 Okay</button>
+    <button class="btn-diff hard" onclick="rateDifficulty('hard')">😓 Hard</button>
+  </div>
+
   <!-- Study complete -->
   <div class="study-complete" id="studyComplete">
     <div class="study-complete-icon">
@@ -1958,6 +2037,34 @@ footer{
 </div>
 </div>
 
+<!-- ── SHARE DECK MODAL ── -->
+<div class="modal-overlay" id="shareDeckModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('shareDeckModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">Share Deck</div>
+    <div class="modal-sub">Anyone with this link can view and clone this deck into their account.</div>
+    <div class="share-url-row">
+      <input class="share-url-input" id="shareUrlInput" readonly/>
+      <button class="btn-copy" onclick="copyShareUrl()">Copy</button>
+    </div>
+    <div class="share-preview" id="sharePreview"></div>
+    <button class="btn-cancel" style="margin-top:10px;" onclick="document.getElementById('shareDeckModal').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<!-- ── STATS MODAL ── -->
+<div class="modal-overlay" id="statsModal">
+  <div class="modal-box" style="max-width:480px;">
+    <button class="modal-close" onclick="document.getElementById('statsModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">Study Stats</div>
+    <div class="modal-sub">Your study activity this month.</div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;font-family:'JetBrains Mono',monospace;">Recent Sessions</div>
+    <div class="study-history" id="studyHistory"></div>
+    <button class="btn-cancel" style="margin-top:16px;" onclick="document.getElementById('statsModal').classList.remove('open')">Close</button>
+  </div>
+</div>
+
 <!-- ── RENAME DECK MODAL ── -->
 <div class="modal-overlay" id="renameDeckModal">
   <div class="modal-box">
@@ -2084,8 +2191,15 @@ function showApp() {
   updateQuickActions();
   updateEmptyState();
   enforceCardCountLimit();
+  if (userProfile?.is_pro) {
+    const statsBtn = document.getElementById('statsBtn');
+    if (statsBtn) statsBtn.style.display = 'flex';
+    loadFolders();
+    renderFolderTabs();
+  }
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
+  checkSharedDeck();
 }
 
 function updateUsageBar() {
@@ -2229,6 +2343,7 @@ function closeMobileMenu() {
 function renderHeader(loggedIn) {
   const hn = document.getElementById('headerNav');
   const hr = document.getElementById('headerRight');
+  const mc = document.getElementById('mobileMenuContent');
   if (loggedIn) {
     hn.innerHTML = '';
     const used = userProfile?.sets_this_month || 0;
@@ -2244,6 +2359,14 @@ function renderHeader(loggedIn) {
         <i data-lucide="menu" style="width:18px;height:18px;"></i>
       </button>
     `;
+    if (mc) mc.innerHTML = `
+      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout()">⚡ Upgrade to Pro</button>` : ''}
+      <button class="mobile-menu-link" onclick="closeMobileMenu();openAccountModal()">Account</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();signOut()" style="color:var(--text3);">Sign out</button>
+    `;
   } else {
     hn.innerHTML = `
       <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
@@ -2257,6 +2380,14 @@ function renderHeader(loggedIn) {
       <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
         <i data-lucide="menu" style="width:18px;height:18px;"></i>
       </button>
+    `;
+    if (mc) mc.innerHTML = `
+      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('features')?.scrollIntoView({behavior:'smooth'})">Features</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('how')?.scrollIntoView({behavior:'smooth'})">How it works</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();document.getElementById('pricing')?.scrollIntoView({behavior:'smooth'})">Pricing</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();showAbout()">About</button>
+      <button class="mobile-menu-link" onclick="closeMobileMenu();showAuth()">Sign In</button>
+      <button class="mobile-menu-cta" onclick="closeMobileMenu();showAuth()">Get Started Free</button>
     `;
   }
 }
@@ -2359,6 +2490,7 @@ function renderDecks() {
         <div class="deck-dot"></div>
         <span>${date}</span>
       </div>
+      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:60px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
       <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;">
         <i data-lucide="pencil" style="width:12px;height:12px;"></i>
       </button>
@@ -2366,6 +2498,12 @@ function renderDecks() {
         <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
       </button>
     `;
+    if (userProfile?.is_pro) {
+      el.querySelector('[data-share-id]').addEventListener('click', e => {
+        e.stopPropagation(); e.preventDefault();
+        openShareDeck(deck);
+      });
+    }
     el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
     el.querySelector('[data-deck-id]').addEventListener('click', e => {
       e.stopPropagation();
@@ -2635,6 +2773,7 @@ function displayMiniCards() {
 // ── STUDY ──
 function startStudy() {
   if (!cards.length) return;
+  cardDifficulty = {};
   document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
   document.getElementById('studyView').style.display = 'block';
   document.getElementById('studyDeckName').textContent = currentDeckName || 'Study Mode';
@@ -2642,7 +2781,9 @@ function startStudy() {
   document.querySelector('.card-scene').style.opacity = '1';
   document.querySelector('.card-nav').style.display = 'flex';
   document.querySelector('.kb-hints').style.display = 'flex';
+  showDifficultyRow(false);
   isFlipped = false; currentIndex = 0; renderCard();
+  recordStudySession();
   setTimeout(() => safeCreateIcons(), 200);
 }
 
@@ -2662,6 +2803,7 @@ function renderCard() {
   document.getElementById('nextBtn').disabled = currentIndex === total - 1;
   isFlipped = false;
   document.getElementById('cardInner').classList.remove('flipped');
+  showDifficultyRow(false);
 }
 
 function flipCard() { isFlipped = !isFlipped; document.getElementById('cardInner').classList.toggle('flipped', isFlipped); }
@@ -2726,7 +2868,205 @@ function exportAnki() {
   showToast('Exported for Anki — import via File → Import');
 }
 
-// ── STRIPE ──
+// ── DIFFICULTY RATING (Pro) ──
+let cardDifficulty = {}; // {cardIndex: 'easy'|'medium'|'hard'}
+let hardCardIndices = [];
+
+function rateDifficulty(level) {
+  if (!userProfile?.is_pro) return;
+  cardDifficulty[currentIndex] = level;
+  document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.btn-diff.${level}`)?.classList.add('active');
+  // Auto-advance after rating
+  setTimeout(() => nextCard(), 400);
+}
+
+function showDifficultyRow(show) {
+  const row = document.getElementById('difficultyRow');
+  if (!row) return;
+  row.style.display = (show && userProfile?.is_pro) ? 'flex' : 'none';
+  document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
+  if (show && cardDifficulty[currentIndex]) {
+    document.querySelector(`.btn-diff.${cardDifficulty[currentIndex]}`)?.classList.add('active');
+  }
+}
+
+// Show rating row only after card is flipped
+const _origFlipCard = flipCard;
+flipCard = function() {
+  _origFlipCard();
+  showDifficultyRow(isFlipped);
+};
+
+// ── DECK FOLDERS (Pro) ──
+let currentFolder = 'all';
+let deckFolders = {}; // {deckId: folderName} — stored in localStorage
+
+function loadFolders() {
+  try { deckFolders = JSON.parse(localStorage.getItem('cardly_folders') || '{}'); } catch(e) { deckFolders = {}; }
+}
+function saveFolders() {
+  try { localStorage.setItem('cardly_folders', JSON.stringify(deckFolders)); } catch(e) {}
+}
+
+function getFolderNames() {
+  const names = new Set(Object.values(deckFolders));
+  return ['All', ...Array.from(names).sort()];
+}
+
+function renderFolderTabs() {
+  const container = document.getElementById('folderTabs');
+  if (!container || !userProfile?.is_pro) return;
+  container.style.display = 'flex';
+  loadFolders();
+  const folders = getFolderNames();
+  container.innerHTML = folders.map(f =>
+    `<button class="folder-tab ${f === 'All' ? 'all' : ''} ${(f === 'All' && currentFolder === 'all') || f === currentFolder ? 'active' : ''}"
+     onclick="setFolder('${f}')">${f}</button>`
+  ).join('') + (userProfile?.is_pro ? `<button class="folder-tab" onclick="addFolder()" title="New folder">+ Folder</button>` : '');
+}
+
+function setFolder(name) {
+  currentFolder = name === 'All' ? 'all' : name;
+  renderFolderTabs();
+  renderDecksFiltered();
+}
+
+function addFolder() {
+  const name = prompt('Folder name:');
+  if (!name || !name.trim()) return;
+  currentFolder = name.trim();
+  renderFolderTabs();
+}
+
+function getFilteredDecks() {
+  if (currentFolder === 'all') return savedDecks;
+  return savedDecks.filter(d => deckFolders[d.id] === currentFolder);
+}
+
+function renderDecksFiltered() {
+  const grid = document.getElementById('decksGrid');
+  const filtered = getFilteredDecks();
+  grid.innerHTML = '';
+  // re-render just the grid with filtered decks
+  const section = document.getElementById('decksSection');
+  if (filtered.length === 0) { grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;">No decks in this folder.</div>`; return; }
+  filtered.forEach((deck, i) => {
+    const el = document.createElement('div');
+    el.className = 'deck-card';
+    el.style.animationDelay = (i * 0.05) + 's';
+    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const folder = deckFolders[deck.id];
+    el.innerHTML = `
+      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
+      <div class="deck-meta">
+        <span>${deck.card_count || 0} cards</span>
+        ${folder ? `<div class="deck-dot"></div><span style="color:var(--accent)">${esc(folder)}</span>` : `<div class="deck-dot"></div><span>${date}</span>`}
+      </div>
+      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:60px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
+      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
+      <button class="deck-delete" data-delete-id="${deck.id}" title="Delete"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
+    `;
+    if (userProfile?.is_pro) {
+      el.querySelector('[data-share-id]')?.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openShareDeck(deck); });
+    }
+    el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
+    el.querySelector('[data-deck-id]').addEventListener('click', e => {
+      e.stopPropagation(); e.preventDefault();
+      const btn = e.currentTarget;
+      openRenameDeck(btn.dataset.deckId, btn._deckName);
+    });
+    el.querySelector('[data-delete-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); deleteDeck(e.currentTarget.dataset.deleteId); });
+    el.addEventListener('click', () => openDeckPreview(deck));
+    grid.appendChild(el);
+  });
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+// ── SHARE DECK (Pro) ──
+let shareDeck = null;
+function openShareDeck(deck) {
+  if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
+  shareDeck = deck;
+  // Encode deck data as base64 in URL
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }))));
+  const url = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
+  document.getElementById('shareUrlInput').value = url;
+  const list = document.getElementById('sharePreview');
+  list.innerHTML = (deck.cards || []).slice(0, 5).map(c =>
+    `<div class="share-preview-item">${esc(c.front)}</div>`
+  ).join('') + (deck.cards?.length > 5 ? `<div class="share-preview-item" style="color:var(--text3);">...and ${deck.cards.length - 5} more</div>` : '');
+  document.getElementById('shareDeckModal').classList.add('open');
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  navigator.clipboard.writeText(input.value).then(() => showToast('Link copied!')).catch(() => {
+    input.select(); document.execCommand('copy'); showToast('Link copied!');
+  });
+}
+
+function checkSharedDeck() {
+  const params = new URLSearchParams(window.location.search);
+  const shared = params.get('shared');
+  if (!shared) return;
+  window.history.replaceState(null, '', window.location.pathname);
+  try {
+    const data = JSON.parse(decodeURIComponent(escape(atob(shared))));
+    if (!data.cards?.length) return;
+    if (confirm(`Import "${data.name || 'Shared Deck'}" (${data.cards.length} cards) into your account?`)) {
+      cards = data.cards;
+      currentDeckName = data.name || 'Shared Deck';
+      saveDeck(currentDeckName, cards).then(() => { renderDecks(); showToast('Deck imported!'); });
+    }
+  } catch(e) { showToast('Invalid share link'); }
+}
+
+// ── STUDY STATS (Pro) ──
+function recordStudySession() {
+  if (!userProfile?.is_pro) return;
+  try {
+    const key = 'cardly_sessions';
+    const sessions = JSON.parse(localStorage.getItem(key) || '[]');
+    const today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const existing = sessions.find(s => s.date === today);
+    if (existing) { existing.cards += cards.length; existing.decks = (existing.decks || 0) + 1; }
+    else sessions.unshift({ date: today, cards: cards.length, decks: 1 });
+    localStorage.setItem(key, JSON.stringify(sessions.slice(0, 30)));
+  } catch(e) {}
+}
+
+function openStatsModal() {
+  if (!userProfile?.is_pro) { showToast('Stats are a Pro feature'); return; }
+  try {
+    const sessions = JSON.parse(localStorage.getItem('cardly_sessions') || '[]');
+    const totalCards = sessions.reduce((s, x) => s + (x.cards || 0), 0);
+    const totalSessions = sessions.length;
+    const streak = calcStreak(sessions);
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card"><div class="stat-num">${totalCards}</div><div class="stat-label">Cards studied</div></div>
+      <div class="stat-card"><div class="stat-num">${totalSessions}</div><div class="stat-label">Sessions</div></div>
+      <div class="stat-card"><div class="stat-num">${streak}🔥</div><div class="stat-label">Day streak</div></div>
+    `;
+    document.getElementById('studyHistory').innerHTML = sessions.slice(0, 7).map(s =>
+      `<div class="study-history-item"><span class="study-history-date">${s.date}</span><span class="study-history-count">${s.cards} cards</span></div>`
+    ).join('') || '<div style="font-size:13px;color:var(--text3);">No sessions recorded yet. Start studying!</div>';
+  } catch(e) {}
+  document.getElementById('statsModal').classList.add('open');
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  let streak = 0, d = new Date();
+  for (let i = 0; i < 30; i++) {
+    const key = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    if (sessions.find(s => s.date === key)) streak++;
+    else if (i > 0) break;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
 async function startCheckout() {
   if (!currentUser) { showAuth(); return; }
   if (userProfile?.is_pro) { showToast('You are already on Pro!'); return; }
