@@ -887,12 +887,17 @@ footer{
 
 /* ── DIFFICULTY RATING (Pro) ── */
 .difficulty-row{
-  display:flex;gap:8px;justify-content:center;margin-top:16px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px 20px;margin:16px auto 0;
+  max-width:480px;text-align:center;
 }
+.diff-label{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.diff-buttons{display:flex;gap:8px;justify-content:center;}
 .btn-diff{
-  flex:1;max-width:120px;padding:9px 0;border-radius:9px;border:1.5px solid var(--border2);
+  flex:1;max-width:110px;padding:9px 0;border-radius:9px;border:1.5px solid var(--border2);
   font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;
   cursor:pointer;transition:all .18s;background:var(--surface);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;gap:5px;
 }
 .btn-diff.easy{border-color:#4ade80;}
 .btn-diff.easy:hover,.btn-diff.easy.active{background:#4ade80;color:#0f1f0f;border-color:#4ade80;}
@@ -1858,9 +1863,18 @@ footer{
 
   <!-- Difficulty rating - Pro only, shown after flipping -->
   <div class="difficulty-row" id="difficultyRow" style="display:none;">
-    <button class="btn-diff easy" onclick="rateDifficulty('easy')">😊 Easy</button>
-    <button class="btn-diff medium" onclick="rateDifficulty('medium')">😐 Okay</button>
-    <button class="btn-diff hard" onclick="rateDifficulty('hard')">😓 Hard</button>
+    <div class="diff-label">How well did you know it?</div>
+    <div class="diff-buttons">
+      <button class="btn-diff easy" onclick="rateDifficulty('easy')">
+        <i data-lucide="smile" style="width:14px;height:14px;"></i> Easy
+      </button>
+      <button class="btn-diff medium" onclick="rateDifficulty('medium')">
+        <i data-lucide="meh" style="width:14px;height:14px;"></i> Okay
+      </button>
+      <button class="btn-diff hard" onclick="rateDifficulty('hard')">
+        <i data-lucide="frown" style="width:14px;height:14px;"></i> Hard
+      </button>
+    </div>
   </div>
 
   <!-- Study complete -->
@@ -2467,8 +2481,6 @@ async function loadDecks() {
 
 function renderDecks() {
   const section = document.getElementById('decksSection');
-  const grid = document.getElementById('decksGrid');
-
   if (savedDecks.length === 0) {
     section.style.display = 'none';
     if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
@@ -2476,51 +2488,8 @@ function renderDecks() {
   }
   section.style.display = 'block';
   if (typeof updateQuickActions === 'function') { updateQuickActions(); updateEmptyState(); }
-  grid.innerHTML = '';
-
-  savedDecks.forEach((deck, i) => {
-    const el = document.createElement('div');
-    el.className = 'deck-card';
-    el.style.animationDelay = (i * 0.05) + 's';
-    const date = new Date(deck.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    el.innerHTML = `
-      <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
-      <div class="deck-meta">
-        <span>${deck.card_count || 0} cards</span>
-        <div class="deck-dot"></div>
-        <span>${date}</span>
-      </div>
-      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:60px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
-      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;">
-        <i data-lucide="pencil" style="width:12px;height:12px;"></i>
-      </button>
-      <button class="deck-delete" data-delete-id="${deck.id}" title="Delete deck">
-        <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
-      </button>
-    `;
-    if (userProfile?.is_pro) {
-      el.querySelector('[data-share-id]').addEventListener('click', e => {
-        e.stopPropagation(); e.preventDefault();
-        openShareDeck(deck);
-      });
-    }
-    el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
-    el.querySelector('[data-deck-id]').addEventListener('click', e => {
-      e.stopPropagation();
-      e.preventDefault();
-      const btn = e.currentTarget;
-      openRenameDeck(btn.dataset.deckId, btn._deckName);
-    });
-    el.querySelector('[data-delete-id]').addEventListener('click', e => {
-      e.stopPropagation();
-      e.preventDefault();
-      deleteDeck(e.currentTarget.dataset.deleteId);
-    });
-    el.addEventListener('click', () => openDeckPreview(deck));
-    grid.appendChild(el);
-  });
-
-  setTimeout(() => safeCreateIcons(), 200);
+  if (userProfile?.is_pro) { loadFolders(); renderFolderTabs(); }
+  renderDecksFiltered();
 }
 
 async function deleteDeck(deckId) {
@@ -2877,17 +2846,19 @@ function rateDifficulty(level) {
   cardDifficulty[currentIndex] = level;
   document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
   document.querySelector(`.btn-diff.${level}`)?.classList.add('active');
-  // Auto-advance after rating
-  setTimeout(() => nextCard(), 400);
+  setTimeout(() => nextCard(), 500);
 }
 
 function showDifficultyRow(show) {
   const row = document.getElementById('difficultyRow');
   if (!row) return;
-  row.style.display = (show && userProfile?.is_pro) ? 'flex' : 'none';
-  document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
-  if (show && cardDifficulty[currentIndex]) {
-    document.querySelector(`.btn-diff.${cardDifficulty[currentIndex]}`)?.classList.add('active');
+  row.style.display = (show && userProfile?.is_pro) ? 'block' : 'none';
+  if (show) {
+    document.querySelectorAll('.btn-diff').forEach(b => b.classList.remove('active'));
+    if (cardDifficulty[currentIndex]) {
+      document.querySelector(`.btn-diff.${cardDifficulty[currentIndex]}`)?.classList.add('active');
+    }
+    setTimeout(() => safeCreateIcons(), 100);
   }
 }
 
@@ -2900,7 +2871,7 @@ flipCard = function() {
 
 // ── DECK FOLDERS (Pro) ──
 let currentFolder = 'all';
-let deckFolders = {}; // {deckId: folderName} — stored in localStorage
+let deckFolders = {};
 
 function loadFolders() {
   try { deckFolders = JSON.parse(localStorage.getItem('cardly_folders') || '{}'); } catch(e) { deckFolders = {}; }
@@ -2908,35 +2879,70 @@ function loadFolders() {
 function saveFolders() {
   try { localStorage.setItem('cardly_folders', JSON.stringify(deckFolders)); } catch(e) {}
 }
-
-function getFolderNames() {
-  const names = new Set(Object.values(deckFolders));
-  return ['All', ...Array.from(names).sort()];
+function getAllFolderNames() {
+  return [...new Set(Object.values(deckFolders))].sort();
 }
 
 function renderFolderTabs() {
   const container = document.getElementById('folderTabs');
   if (!container || !userProfile?.is_pro) return;
-  container.style.display = 'flex';
   loadFolders();
-  const folders = getFolderNames();
-  container.innerHTML = folders.map(f =>
-    `<button class="folder-tab ${f === 'All' ? 'all' : ''} ${(f === 'All' && currentFolder === 'all') || f === currentFolder ? 'active' : ''}"
-     onclick="setFolder('${f}')">${f}</button>`
-  ).join('') + (userProfile?.is_pro ? `<button class="folder-tab" onclick="addFolder()" title="New folder">+ Folder</button>` : '');
+  const folders = getAllFolderNames();
+  if (folders.length === 0 && currentFolder === 'all') {
+    container.style.display = 'none'; return;
+  }
+  container.style.display = 'flex';
+  container.innerHTML = [
+    `<button class="folder-tab all ${currentFolder === 'all' ? 'active' : ''}" onclick="setFolder('all')">All decks</button>`,
+    ...folders.map(f => `<button class="folder-tab ${currentFolder === f ? 'active' : ''}" onclick="setFolder('${esc(f)}')">${esc(f)}</button>`),
+    `<button class="folder-tab" onclick="addFolder()" title="New folder" style="opacity:.6;">+ New folder</button>`
+  ].join('');
 }
 
 function setFolder(name) {
-  currentFolder = name === 'All' ? 'all' : name;
+  currentFolder = name;
   renderFolderTabs();
   renderDecksFiltered();
 }
 
 function addFolder() {
-  const name = prompt('Folder name:');
+  const name = prompt('Enter folder name:');
   if (!name || !name.trim()) return;
-  currentFolder = name.trim();
+  const trimmed = name.trim();
+  // Ask which deck to start with
+  if (savedDecks.length === 0) { showToast('Add some decks first'); return; }
+  const deckNames = savedDecks.map((d, i) => `${i + 1}. ${d.name || 'Untitled'}`).join('\n');
+  const pick = prompt(`Folder "${trimmed}" created!\n\nWhich deck to add? Enter the number:\n${deckNames}`);
+  const idx = parseInt(pick) - 1;
+  if (!isNaN(idx) && idx >= 0 && idx < savedDecks.length) {
+    deckFolders[savedDecks[idx].id] = trimmed;
+    saveFolders();
+  }
+  currentFolder = trimmed;
   renderFolderTabs();
+  renderDecksFiltered();
+  showToast(`Folder "${trimmed}" created`);
+}
+
+function assignDeckToFolder(deckId, deckName) {
+  const folders = getAllFolderNames();
+  const opts = ['(none)', ...folders, '+ New folder'].map((f, i) => `${i}. ${f}`).join('\n');
+  const pick = prompt(`Assign "${deckName}" to a folder:\n${opts}`);
+  const idx = parseInt(pick);
+  if (isNaN(idx)) return;
+  if (idx === 0) { delete deckFolders[deckId]; saveFolders(); renderFolderTabs(); renderDecks(); return; }
+  const allOpts = ['(none)', ...folders, '+ New folder'];
+  if (idx === allOpts.length - 1) {
+    const newName = prompt('New folder name:');
+    if (!newName?.trim()) return;
+    deckFolders[deckId] = newName.trim();
+  } else if (idx < allOpts.length) {
+    deckFolders[deckId] = folders[idx - 1];
+  }
+  saveFolders();
+  renderFolderTabs();
+  renderDecksFiltered();
+  showToast('Folder updated');
 }
 
 function getFilteredDecks() {
@@ -2946,11 +2952,12 @@ function getFilteredDecks() {
 
 function renderDecksFiltered() {
   const grid = document.getElementById('decksGrid');
-  const filtered = getFilteredDecks();
   grid.innerHTML = '';
-  // re-render just the grid with filtered decks
-  const section = document.getElementById('decksSection');
-  if (filtered.length === 0) { grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;">No decks in this folder.</div>`; return; }
+  const filtered = getFilteredDecks();
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;grid-column:1/-1;">No decks in this folder.</div>`;
+    return;
+  }
   filtered.forEach((deck, i) => {
     const el = document.createElement('div');
     el.className = 'deck-card';
@@ -2961,22 +2968,17 @@ function renderDecksFiltered() {
       <div class="deck-name">${esc(deck.name || 'Untitled Deck')}</div>
       <div class="deck-meta">
         <span>${deck.card_count || 0} cards</span>
-        ${folder ? `<div class="deck-dot"></div><span style="color:var(--accent)">${esc(folder)}</span>` : `<div class="deck-dot"></div><span>${date}</span>`}
+        <div class="deck-dot"></div>
+        ${folder ? `<span style="color:var(--accent);font-size:10px;">${esc(folder)}</span>` : `<span>${date}</span>`}
       </div>
-      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:60px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
-      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:36px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
-      <button class="deck-delete" data-delete-id="${deck.id}" title="Delete"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
+      <button class="deck-delete" data-folder-id="${deck.id}" data-folder-name="${esc(deck.name||'Untitled')}" title="Assign folder" style="right:62px;"><i data-lucide="folder" style="width:12px;height:12px;"></i></button>
+      ${userProfile?.is_pro ? `<button class="deck-delete" data-share-id="${deck.id}" title="Share" style="right:38px;"><i data-lucide="share-2" style="width:12px;height:12px;"></i></button>` : ''}
+      <button class="deck-delete" data-deck-id="${deck.id}" title="Rename" style="right:14px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
     `;
-    if (userProfile?.is_pro) {
-      el.querySelector('[data-share-id]')?.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openShareDeck(deck); });
-    }
+    el.querySelector('[data-folder-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); assignDeckToFolder(e.currentTarget.dataset.folderId, e.currentTarget.dataset.folderName); });
+    if (userProfile?.is_pro) el.querySelector('[data-share-id]')?.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openShareDeck(deck); });
     el.querySelector('[data-deck-id]')._deckName = deck.name || 'Untitled Deck';
-    el.querySelector('[data-deck-id]').addEventListener('click', e => {
-      e.stopPropagation(); e.preventDefault();
-      const btn = e.currentTarget;
-      openRenameDeck(btn.dataset.deckId, btn._deckName);
-    });
-    el.querySelector('[data-delete-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); deleteDeck(e.currentTarget.dataset.deleteId); });
+    el.querySelector('[data-deck-id]').addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); openRenameDeck(e.currentTarget.dataset.deckId, e.currentTarget._deckName); });
     el.addEventListener('click', () => openDeckPreview(deck));
     grid.appendChild(el);
   });
@@ -2988,8 +2990,7 @@ let shareDeck = null;
 function openShareDeck(deck) {
   if (!userProfile?.is_pro) { showToast('Sharing is a Pro feature'); return; }
   shareDeck = deck;
-  // Encode deck data as base64 in URL
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }))));
+  const payload = encodeURIComponent(JSON.stringify({ name: deck.name, cards: deck.cards }));
   const url = `${window.location.origin}${window.location.pathname}?shared=${payload}`;
   document.getElementById('shareUrlInput').value = url;
   const list = document.getElementById('sharePreview');
@@ -3001,9 +3002,11 @@ function openShareDeck(deck) {
 }
 
 function copyShareUrl() {
-  const input = document.getElementById('shareUrlInput');
-  navigator.clipboard.writeText(input.value).then(() => showToast('Link copied!')).catch(() => {
-    input.select(); document.execCommand('copy'); showToast('Link copied!');
+  const val = document.getElementById('shareUrlInput').value;
+  navigator.clipboard.writeText(val).then(() => showToast('Link copied!')).catch(() => {
+    document.getElementById('shareUrlInput').select();
+    document.execCommand('copy');
+    showToast('Link copied!');
   });
 }
 
@@ -3013,14 +3016,15 @@ function checkSharedDeck() {
   if (!shared) return;
   window.history.replaceState(null, '', window.location.pathname);
   try {
-    const data = JSON.parse(decodeURIComponent(escape(atob(shared))));
-    if (!data.cards?.length) return;
+    const data = JSON.parse(decodeURIComponent(shared));
+    if (!data?.cards?.length) return;
     if (confirm(`Import "${data.name || 'Shared Deck'}" (${data.cards.length} cards) into your account?`)) {
-      cards = data.cards;
-      currentDeckName = data.name || 'Shared Deck';
-      saveDeck(currentDeckName, cards).then(() => { renderDecks(); showToast('Deck imported!'); });
+      saveDeck(data.name || 'Shared Deck', data.cards).then(() => { renderDecks(); showToast('Deck imported!'); });
     }
-  } catch(e) { showToast('Invalid share link'); }
+  } catch(e) {
+    console.error('Share decode error:', e);
+    showToast('Invalid share link');
+  }
 }
 
 // ── STUDY STATS (Pro) ──
