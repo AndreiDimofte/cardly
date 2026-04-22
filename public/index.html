@@ -1535,7 +1535,7 @@ footer{
         <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="zap" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Instant generation</div>
-          <div class="feature-desc">Paste your notes and get a full deck of flashcards in under 10 seconds. Works with any subject, any format.</div>
+          <div class="feature-desc">Paste your notes and get a full deck of flashcards fast. Works with any subject, any format.</div>
         </div>
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="file-text" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -2303,21 +2303,24 @@ function showErrorBoundary(msg) {
 // ── INIT ──
 async function init() {
   try {
+    // Show loader immediately — never show landing during auth check
+    document.getElementById('appLoader').style.display = 'flex';
+
     if (window.location.hash.includes('access_token')) {
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 600));
       window.history.replaceState(null, '', window.location.pathname);
     }
 
     const sessionResult = await Promise.race([
       sb.auth.getSession(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
     ]);
 
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
     if (session) await onSignedIn(session.user);
-    else { showLanding(); }
+    else showLanding();
 
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) await onSignedIn(session.user);
@@ -2325,7 +2328,7 @@ async function init() {
     });
   } catch(e) {
     console.warn('Auth init failed:', e.message);
-    showLanding(); // fallback - show landing after timeout
+    showLanding();
   }
 }
 
@@ -2857,11 +2860,25 @@ async function handleEmailAuth() {
   if (error) showAuthMsg(error.message, 'error');
 }
 
-async function handleGoogleAuth() {
-  await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+async function signOut() {
+  try {
+    await sb.auth.signOut();
+  } catch(e) {
+    console.warn('SignOut error:', e);
+  } finally {
+    currentUser = null; userProfile = null; savedDecks = [];
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    showLanding();
+  }
 }
 
-async function signOut() { await sb.auth.signOut(); }
+async function handleGoogleAuth() {
+  const base = window.location.origin;
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: base }
+  });
+}
 
 function showAuthMsg(msg, type) {
   document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${msg}</div>`;
