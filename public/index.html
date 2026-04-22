@@ -2238,8 +2238,18 @@ footer{
   </div>
 </div>
 
+<!-- ── IMPORT DECK MODAL ── -->
+<div class="modal-overlay" id="importDeckModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title">Import shared deck?</div>
+    <div class="modal-sub" id="importDeckInfo"></div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">This deck will be added to your library. You can study, edit, or delete it anytime.</p>
+    <button class="btn-save" id="importConfirmBtn">Import deck</button>
+    <button class="btn-cancel" onclick="document.getElementById('importDeckModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- ── DELETE CONFIRM MODAL ── -->
-<div class="modal-overlay" id="deleteModal">
   <div class="modal-box" style="max-width:380px;">
     <div class="modal-title">Delete deck?</div>
     <div class="modal-sub" id="deleteModalName"></div>
@@ -2336,6 +2346,7 @@ async function init() {
 }
 
 async function onSignedIn(user) {
+  signingIn = false;
   currentUser = user;
   document.getElementById('authOverlay').style.display = 'none';
   await Promise.all([loadProfile(), loadDecks()]);
@@ -2349,9 +2360,11 @@ function onSignedOut() {
 }
 
 let initDone = false;
+let signingIn = false;
 
 // ── VIEWS ──
 function showLanding() {
+  if (signingIn) return; // never show landing mid sign-in
   document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
@@ -2857,7 +2870,7 @@ async function handleEmailAuth() {
   if (authMode === 'login') {
     ({ error } = await sb.auth.signInWithPassword({ email, password }));
     if (!error) {
-      // Show loader immediately — don't let landing peek through
+      signingIn = true;
       document.getElementById('authOverlay').style.display = 'none';
       document.getElementById('appLoader').style.display = 'flex';
       return;
@@ -2884,7 +2897,7 @@ async function signOut() {
 }
 
 async function handleGoogleAuth() {
-  // Show loader immediately before redirect
+  signingIn = true;
   document.getElementById('authOverlay').style.display = 'none';
   document.getElementById('appLoader').style.display = 'flex';
   const base = window.location.origin;
@@ -3328,9 +3341,14 @@ function checkSharedDeck() {
   try {
     const data = JSON.parse(decodeURIComponent(shared));
     if (!data?.cards?.length) return;
-    if (confirm(`Import "${data.name || 'Shared Deck'}" (${data.cards.length} cards) into your account?`)) {
+    // Show modal instead of confirm()
+    document.getElementById('importDeckInfo').textContent = `"${data.name || 'Shared Deck'}" — ${data.cards.length} cards`;
+    const btn = document.getElementById('importConfirmBtn');
+    btn.onclick = () => {
+      document.getElementById('importDeckModal').classList.remove('open');
       saveDeck(data.name || 'Shared Deck', data.cards).then(() => { renderDecks(); showToast('Deck imported!'); });
-    }
+    };
+    document.getElementById('importDeckModal').classList.add('open');
   } catch(e) {
     console.error('Share decode error:', e);
     showToast('Invalid share link');
