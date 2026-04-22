@@ -1236,10 +1236,17 @@ footer{
 }
 .tooltip-close:hover { color: white; }
 
-/* RESPONSIVE FOOTER */
+/* RESPONSIVE */
 @media(max-width:768px){
-  header{padding:14px 20px;grid-template-columns:1fr auto;}
+  header{
+    display:flex;padding:12px 20px;gap:0;
+    justify-content:space-between;align-items:center;
+  }
   #headerNav{display:none;}
+  .header-right .nav-link{display:none;}
+  .header-right .usage-pill{display:none;}
+  .header-right{gap:6px;}
+  .btn-mobile-menu{display:flex;}
   .landing,.app{padding-left:20px;padding-right:20px;}
   .hero{padding:60px 0 50px;}
   .hero h1{letter-spacing:-2px;}
@@ -1248,7 +1255,6 @@ footer{
   .study-view{padding:32px 20px 60px;}
   .step-connector{display:none;}
   .nav-links{display:none;}
-  .btn-mobile-menu{display:flex;}
   .legal-view{padding:40px 20px 80px;}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
   .site-footer{padding:40px 20px 32px;}
@@ -1338,9 +1344,6 @@ footer{
   </div>
   <div class="header-nav" id="headerNav"></div>
   <div class="header-right" id="headerRight"></div>
-  <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-    <i data-lucide="menu" style="width:18px;height:18px;"></i>
-  </button>
 </header>
 
 <!-- ── MOBILE MENU ── -->
@@ -2204,16 +2207,21 @@ function toggleMobileMenu() {
   const btn = document.getElementById('mobileMenuBtn');
   const isOpen = menu.classList.contains('open');
   menu.classList.toggle('open', !isOpen);
-  btn.innerHTML = isOpen
-    ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
-    : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
-  setTimeout(() => safeCreateIcons(), 200);
+  if (btn) {
+    btn.innerHTML = isOpen
+      ? '<i data-lucide="menu" style="width:18px;height:18px;"></i>'
+      : '<i data-lucide="x" style="width:18px;height:18px;"></i>';
+    setTimeout(() => safeCreateIcons(), 100);
+  }
 }
 
 function closeMobileMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
-  document.getElementById('mobileMenuBtn').innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
-  setTimeout(() => safeCreateIcons(), 200);
+  const btn = document.getElementById('mobileMenuBtn');
+  if (btn) {
+    btn.innerHTML = '<i data-lucide="menu" style="width:18px;height:18px;"></i>';
+    setTimeout(() => safeCreateIcons(), 100);
+  }
 }
 
 // ── HEADER ──
@@ -2231,6 +2239,9 @@ function renderHeader(loggedIn) {
       ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout()" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
       <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
       <button class="btn-signout" onclick="signOut()">Sign out</button>
+      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <i data-lucide="menu" style="width:18px;height:18px;"></i>
+      </button>
     `;
   } else {
     hn.innerHTML = `
@@ -2242,6 +2253,9 @@ function renderHeader(loggedIn) {
     hr.innerHTML = `
       <button class="nav-link" onclick="showAuth()">Sign In</button>
       <button class="btn-header-cta" onclick="showAuth()">Get Started</button>
+      <button class="btn-mobile-menu" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <i data-lucide="menu" style="width:18px;height:18px;"></i>
+      </button>
     `;
   }
 }
