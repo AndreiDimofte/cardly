@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Cardly: Turn Notes into Flashcards with AI</title>
 <meta name="description" content="Paste your lecture notes and get smart AI-generated flashcards in seconds. Study smarter, not harder.">
 <link rel="canonical" href="https://www.studywithcardly.com">
@@ -915,14 +915,19 @@ footer{
 .btn-diff.hard:hover,.btn-diff.hard.active{background:var(--danger);color:white;border-color:var(--danger);}
 
 /* ── DECK FOLDERS (Pro) ── */
-.folder-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.folder-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
 .folder-tab{
   background:var(--surface2);border:1px solid var(--border);color:var(--text2);
-  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
   cursor:pointer;transition:all .15s;font-family:'Bricolage Grotesque',sans-serif;
 }
-.folder-tab:hover,.folder-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
-.folder-tab.all.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+.folder-tab:hover{border-color:var(--accent);color:var(--accent);}
+.folder-tab.active{background:var(--accent);color:white;border-color:var(--accent);font-weight:800;}
+.folder-tab.all.active{background:var(--surface);color:var(--text);border-color:var(--text);font-weight:800;}
+.folder-active-hint{
+  font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;
+  margin-left:4px;align-self:center;
+}
 
 /* ── FOLDER MODAL ── */
 .folder-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto;}
@@ -1381,11 +1386,12 @@ footer{
     display:flex;padding:12px 20px;gap:0;
     justify-content:space-between;align-items:center;
   }
-  #headerNav{display:none;}
-  .header-right .nav-link{display:none;}
-  .header-right .usage-pill{display:none;}
-  .header-right{gap:6px;}
-  .btn-mobile-menu{display:flex;}
+  #headerNav{display:none !important;}
+  .header-right .nav-link{display:none !important;}
+  .header-right .usage-pill{display:none !important;}
+  .header-right .btn-signout{display:none !important;}
+  .header-right{gap:6px;display:flex;align-items:center;}
+  .btn-mobile-menu{display:flex !important;}
   .landing,.app{padding-left:20px;padding-right:20px;}
   .hero{padding:60px 0 50px;}
   .hero h1{letter-spacing:-2px;}
@@ -1397,6 +1403,8 @@ footer{
   .legal-view{padding:40px 20px 80px;}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
   .site-footer{padding:40px 20px 32px;}
+  /* prevent zoom issues */
+  input,textarea,select{font-size:16px !important;}
 }
 </style>
 </head>
@@ -2250,6 +2258,7 @@ footer{
 </div>
 
 <!-- ── DELETE CONFIRM MODAL ── -->
+<div class="modal-overlay" id="deleteModal">
   <div class="modal-box" style="max-width:380px;">
     <div class="modal-title">Delete deck?</div>
     <div class="modal-sub" id="deleteModalName"></div>
@@ -2346,10 +2355,11 @@ async function init() {
 }
 
 async function onSignedIn(user) {
-  signingIn = false;
   currentUser = user;
   document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('appLoader').style.display = 'flex';
   await Promise.all([loadProfile(), loadDecks()]);
+  signingIn = false;
   showApp();
   handleCheckoutReturn();
 }
@@ -2899,7 +2909,6 @@ async function signOut() {
 async function handleGoogleAuth() {
   signingIn = true;
   document.getElementById('authOverlay').style.display = 'none';
-  document.getElementById('appLoader').style.display = 'flex';
   const base = window.location.origin;
   await sb.auth.signInWithOAuth({
     provider: 'google',
@@ -3297,7 +3306,10 @@ function renderDecksFiltered() {
   grid.innerHTML = '';
   const filtered = getFilteredDecks();
   if (filtered.length === 0) {
-    grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;grid-column:1/-1;">No decks in this folder.</div>`;
+    grid.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;grid-column:1/-1;">
+      No decks in <strong style="color:var(--text2);">${currentFolder === 'all' ? 'your library' : '"' + currentFolder + '"'}</strong> yet.
+      ${currentFolder !== 'all' ? '<br><span style="font-size:12px;">Move a deck here using the folder icon on any deck card.</span>' : ''}
+    </div>`;
     return;
   }
   filtered.forEach((deck, i) => {
