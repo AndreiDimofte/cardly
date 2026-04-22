@@ -2856,6 +2856,12 @@ async function handleEmailAuth() {
   let error;
   if (authMode === 'login') {
     ({ error } = await sb.auth.signInWithPassword({ email, password }));
+    if (!error) {
+      // Show loader immediately — don't let landing peek through
+      document.getElementById('authOverlay').style.display = 'none';
+      document.getElementById('appLoader').style.display = 'flex';
+      return;
+    }
   } else {
     ({ error } = await sb.auth.signUp({ email, password }));
     if (!error) return showAuthMsg('Check your email to confirm your account!', 'success');
@@ -2878,6 +2884,9 @@ async function signOut() {
 }
 
 async function handleGoogleAuth() {
+  // Show loader immediately before redirect
+  document.getElementById('authOverlay').style.display = 'none';
+  document.getElementById('appLoader').style.display = 'flex';
   const base = window.location.origin;
   await sb.auth.signInWithOAuth({
     provider: 'google',
