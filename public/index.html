@@ -170,6 +170,7 @@ body::after {
 
 .auth-box{position:relative;}
 .auth-success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--success);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;}
+.auth-error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
 
 /* ════════════════════════════════════
    HEADER
@@ -1486,6 +1487,48 @@ footer{
   </div>
 </div>
 
+<!-- Auth box template for restoration -->
+<template id="authBoxTemplate">
+  <div class="auth-box">
+    <button class="auth-close" onclick="document.getElementById('authOverlay').style.display='none'" title="Close">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </button>
+    <div class="auth-wordmark">
+      <svg width="28" height="20" viewBox="0 0 52 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+        <rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/>
+        <rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/>
+        <rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/>
+        <line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div class="auth-brand">Cardly</div>
+    </div>
+    <div class="auth-subtitle">Turn your notes into flashcards with AI</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <div id="emailFields">
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <input type="password" class="auth-input" id="authPassword" placeholder="••••••••"/>
+      </div>
+      <button class="auth-btn" id="authSubmitBtn" onclick="handleEmailAuth()">Sign In</button>
+    </div>
+    <div class="auth-divider">or</div>
+    <button class="auth-google" onclick="handleGoogleAuth()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.706c-.18-.54-.282-1.117-.282-1.706s.102-1.166.282-1.706V4.962H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <div id="authMessage"></div>
+  </div>
+</template>
+
 <!-- ── HEADER ── -->
 <header>
   <div class="wordmark" onclick="goHome()">
@@ -2194,6 +2237,18 @@ footer{
 </div>
 </div>
 
+<!-- ── CREATE FOLDER MODAL ── -->
+<div class="modal-overlay" id="createFolderModal">
+  <div class="modal-box" style="max-width:380px;">
+    <button class="modal-close" onclick="document.getElementById('createFolderModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+    <div class="modal-title">New Folder</div>
+    <div class="modal-sub">Give your folder a name.</div>
+    <input type="text" class="folder-new-input" id="createFolderInput" placeholder="e.g. Biology, Semester 2..." maxlength="40" style="margin-bottom:14px;"/>
+    <button class="btn-save" onclick="confirmCreateFolder()">Create Folder</button>
+    <button class="btn-cancel" onclick="document.getElementById('createFolderModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- ── FOLDER ASSIGN MODAL ── -->
 <div class="modal-overlay" id="folderModal">
   <div class="modal-box">
@@ -2517,13 +2572,26 @@ function goHome() {
   else showLanding();
 }
 
-function showAuth() {
-  document.getElementById('authOverlay').style.display = 'flex';
+function showAuth(mode) {
+  const overlay = document.getElementById('authOverlay');
+  // Restore auth box if it was replaced by the loading spinner
+  if (!overlay.querySelector('.auth-box')) {
+    overlay.innerHTML = document.getElementById('authBoxTemplate').innerHTML;
+    setTimeout(() => safeCreateIcons(), 200);
+  }
+  overlay.style.display = 'flex';
+  if (mode) setAuthMode(mode);
   setTimeout(() => safeCreateIcons(), 200);
 }
 
 function scrollToGenerator() {
-  document.getElementById('generatorSection').scrollIntoView({ behavior: 'smooth' });
+  const gen = document.getElementById('generatorSection');
+  if (!gen) return;
+  gen.scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    const input = document.getElementById('notesInput');
+    if (input && input.offsetParent !== null) input.focus();
+  }, 600);
 }
 
 // ── LEGAL PAGES ──
@@ -2691,10 +2759,22 @@ async function deleteAccount() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to delete account');
     await sb.auth.signOut();
-    // Close all modals and go to landing
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    // Force landing — bypass all guards
+    signingIn = false;
     currentUser = null; userProfile = null; savedDecks = [];
-    showLanding();
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('studyView').style.display = 'none';
+    document.getElementById('landingView').classList.add('active');
+    const loader = document.getElementById('appLoader');
+    loader.classList.add('hidden');
+    setTimeout(() => { loader.style.display = 'none'; loader.classList.remove('hidden'); }, 300);
+    // Restore auth overlay
+    const overlay = document.getElementById('authOverlay');
+    overlay.innerHTML = document.getElementById('authBoxTemplate').innerHTML;
+    overlay.style.display = 'none';
+    renderHeader(false);
+    setTimeout(() => { safeCreateIcons(); initScrollReveal(); }, 300);
     showToast('Account deleted. Sorry to see you go.');
   } catch(e) {
     btn.disabled = false;
@@ -2855,6 +2935,9 @@ let renameDeckId = null;
 document.getElementById('folderNewInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') createFolderFromModal();
 });
+document.getElementById('createFolderInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmCreateFolder();
+});
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 })();
 
@@ -2963,7 +3046,15 @@ async function handleGoogleAuth() {
 }
 
 function showAuthMsg(msg, type) {
-  document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${msg}</div>`;
+  const friendly = {
+    'Invalid login credentials': 'Wrong email or password. Please try again.',
+    'Email not confirmed': 'Please check your email and click the confirmation link first.',
+    'User already registered': 'An account with this email already exists. Try signing in.',
+    'Password should be at least 6 characters': 'Password must be at least 6 characters.',
+  };
+  const display = friendly[msg] || msg;
+  const icon = type === 'error' ? '⚠' : '✓';
+  document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${type === 'error' ? icon + ' ' : ''}${display}</div>`;
 }
 
 // ── NOTES ──
@@ -3217,12 +3308,9 @@ function renderFolderTabs() {
   newBtn.style.cssText = 'opacity:.65;border-style:dashed;';
   newBtn.textContent = '+ New folder';
   newBtn.addEventListener('click', () => {
-    document.getElementById('folderNewInput').value = '';
-    folderTargetDeckId = null;
-    document.getElementById('folderModalDeckName').textContent = 'Create a new folder';
-    renderFolderList();
-    document.getElementById('folderModal').classList.add('open');
-    setTimeout(() => { document.getElementById('folderNewInput').focus(); safeCreateIcons(); }, 150);
+    document.getElementById('createFolderInput').value = '';
+    document.getElementById('createFolderModal').classList.add('open');
+    setTimeout(() => { document.getElementById('createFolderInput').focus(); safeCreateIcons(); }, 150);
   });
   container.appendChild(newBtn);
 }
@@ -3236,6 +3324,15 @@ function setFolder(name) {
 // ── FOLDER MODAL (Pro) ──
 let folderTargetDeckId = null;
 let selectedFolderName = null;
+
+function confirmCreateFolder() {
+  const name = document.getElementById('createFolderInput').value.trim();
+  if (!name) return;
+  document.getElementById('createFolderModal').classList.remove('open');
+  showToast(`Folder "${name}" created. Use the folder icon on a deck to assign it.`);
+  // Pre-select in folder modal for next assignment
+  renderFolderTabs();
+}
 
 function openFolderModal(deckId, deckName) {
   folderTargetDeckId = deckId;
