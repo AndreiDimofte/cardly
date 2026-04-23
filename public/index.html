@@ -1601,28 +1601,15 @@ footer{
         <button class="btn-primary" onclick="showAuth()">Get Started Free</button>
         <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:48px;">
-        <!-- Anki compatible badge -->
-        <div style="display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:7px 14px 7px 10px;">
-          <!-- Anki logo SVG approximation -->
-          <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" rx="18" fill="#0093D0"/>
-            <path d="M50 15 L62 38 L87 42 L68 60 L73 85 L50 72 L27 85 L32 60 L13 42 L38 38 Z" fill="white" opacity="0.95"/>
+      <div style="display:flex;align-items:center;justify-content:center;margin-bottom:48px;">
+        <div style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:8px 18px 8px 12px;">
+          <!-- Anki logo: accurate recreation of the official star logo -->
+          <svg width="26" height="26" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="22" fill="#0093D0"/>
+            <polygon points="50,12 61,38 90,38 67,56 75,82 50,65 25,82 33,56 10,38 39,38" fill="white"/>
           </svg>
-          <span style="font-size:12px;font-weight:600;color:var(--text2);">Works with <span style="color:var(--text);font-weight:700;">Anki</span></span>
-        </div>
-        <div style="width:1px;height:18px;background:var(--border);"></div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          PDF upload
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Free to start
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          No card required
+          <div style="font-size:13px;color:var(--text3);">Compatible with</div>
+          <div style="font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;">Anki</div>
         </div>
       </div>
 
@@ -2495,9 +2482,16 @@ async function init() {
 
     initDone = true;
 
+    let passwordRecovery = false;
     sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session && !signingIn) { await onSignedIn(session.user); initDone = true; }
-      if (event === 'PASSWORD_RECOVERY') { showPasswordResetModal(); }
+      if (event === 'PASSWORD_RECOVERY') {
+        passwordRecovery = true;
+        showPasswordResetModal();
+        return;
+      }
+      if (event === 'SIGNED_IN' && session && !signingIn && !passwordRecovery) {
+        await onSignedIn(session.user); initDone = true;
+      }
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
   } catch(e) {
