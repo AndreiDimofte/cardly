@@ -171,6 +171,8 @@ body::after {
 .auth-box{position:relative;}
 .auth-success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--success);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;}
 .auth-error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.auth-forgot{background:none;border:none;color:var(--accent);font-size:11px;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;padding:0;font-weight:600;transition:opacity .15s;}
+.auth-forgot:hover{opacity:.7;}
 
 /* ════════════════════════════════════
    HEADER
@@ -1174,7 +1176,6 @@ footer{
 .pro-upsell-grid{
   display:grid;grid-template-columns:repeat(2,1fr);gap:0;
 }
-@media(max-width:600px){.pro-upsell-grid{grid-template-columns:1fr;}}
 .pro-upsell-item{
   padding:18px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
   display:flex;align-items:flex-start;gap:12px;
@@ -1182,6 +1183,12 @@ footer{
 }
 .pro-upsell-item:nth-child(even){border-right:none;}
 .pro-upsell-item:nth-last-child(-n+2){border-bottom:none;}
+@media(max-width:600px){
+  .pro-upsell-grid{grid-template-columns:1fr;}
+  .pro-upsell-item{border-right:none;}
+  .pro-upsell-item:nth-last-child(-n+2){border-bottom:1px solid var(--border);}
+  .pro-upsell-item:last-child{border-bottom:none;}
+}
 .pro-upsell-lock{
   width:32px;height:32px;border-radius:8px;background:var(--surface2);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);
@@ -1412,8 +1419,12 @@ footer{
   .step-connector{display:none;}
   .nav-links{display:none;}
   .legal-view{padding:40px 20px 80px;}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
-  .site-footer{padding:40px 20px 32px;}
+  .footer-grid{grid-template-columns:1fr;gap:24px;}
+  .site-footer{padding:32px 20px 28px;}
+  .footer-brand-col{padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .app-footer{flex-direction:column;align-items:flex-start;gap:8px;padding:20px 0 32px;}
+  .app-footer-left{flex-wrap:wrap;gap:10px;}
+  .app-footer-links{gap:12px;}
   /* prevent zoom issues */
   input,textarea,select{font-size:16px !important;}
 }
@@ -1468,13 +1479,24 @@ footer{
       <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
     </div>
     <div id="emailFields">
-      <div class="auth-field">
-        <label class="auth-label">Email</label>
-        <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com"/>
+      <div class="auth-field" id="usernameField" style="display:none;">
+        <label class="auth-label">Username</label>
+        <input type="text" class="auth-input" id="authUsername" placeholder="e.g. dimo123" autocomplete="username"/>
       </div>
       <div class="auth-field">
-        <label class="auth-label">Password</label>
-        <input type="password" class="auth-input" id="authPassword" placeholder="••••••••"/>
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" style="display:flex;justify-content:space-between;align-items:center;">
+          Password
+          <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()" style="display:none;">Forgot password?</button>
+        </label>
+        <input type="password" class="auth-input" id="authPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div class="auth-field" id="confirmField" style="display:none;">
+        <label class="auth-label">Confirm Password</label>
+        <input type="password" class="auth-input" id="authConfirm" placeholder="••••••••" autocomplete="new-password"/>
       </div>
       <button class="auth-btn" id="authSubmitBtn" onclick="handleEmailAuth()">Sign In</button>
     </div>
@@ -1510,13 +1532,24 @@ footer{
       <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
     </div>
     <div id="emailFields">
-      <div class="auth-field">
-        <label class="auth-label">Email</label>
-        <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com"/>
+      <div class="auth-field" id="usernameField" style="display:none;">
+        <label class="auth-label">Username</label>
+        <input type="text" class="auth-input" id="authUsername" placeholder="e.g. dimo123" autocomplete="username"/>
       </div>
       <div class="auth-field">
-        <label class="auth-label">Password</label>
-        <input type="password" class="auth-input" id="authPassword" placeholder="••••••••"/>
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" style="display:flex;justify-content:space-between;align-items:center;">
+          Password
+          <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()" style="display:none;">Forgot password?</button>
+        </label>
+        <input type="password" class="auth-input" id="authPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div class="auth-field" id="confirmField" style="display:none;">
+        <label class="auth-label">Confirm Password</label>
+        <input type="password" class="auth-input" id="authConfirm" placeholder="••••••••" autocomplete="new-password"/>
       </div>
       <button class="auth-btn" id="authSubmitBtn" onclick="handleEmailAuth()">Sign In</button>
     </div>
@@ -1567,6 +1600,20 @@ footer{
       <div class="hero-cta">
         <button class="btn-primary" onclick="showAuth()">Get Started Free</button>
         <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:48px;opacity:.6;">
+        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Anki-compatible export
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          PDF upload supported
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Free to start
+        </div>
       </div>
 
       <!-- Demo -->
@@ -1641,7 +1688,7 @@ footer{
         <div class="step reveal reveal-delay-2">
           <div class="step-num">02</div>
           <div class="step-title">Generate your deck</div>
-          <div class="step-desc">Pick how many cards you want — up to 25 with Pro — and hit Generate. Your deck is ready in seconds.</div>
+          <div class="step-desc">Pick how many cards you want, up to 25 with Pro, and hit Generate. Your deck is ready in seconds.</div>
           <div class="step-connector"></div>
         </div>
         <div class="step reveal reveal-delay-3">
@@ -2206,7 +2253,7 @@ footer{
     Cardly started as a personal project. We were tired of spending hours turning lecture notes into flashcards by hand, so we built a tool that does it in seconds.
   </p>
   <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:24px;font-weight:300;">
-    We're a small team of engineering students who wanted a smarter way to study. Cardly handles the tedious part — turning dense notes into focused, testable cards — so you can spend your time actually learning.
+    We're a small team of engineering students who wanted a smarter way to study. Cardly handles the tedious part: turning dense notes into focused, testable cards. So you can spend your time actually learning.
   </p>
   <p style="font-size:16px;line-height:1.9;color:var(--text2);max-width:580px;margin-bottom:48px;font-weight:300;">
     From PDF uploads to Anki exports, difficulty tracking to shareable decks, we keep building the features that make a real difference the night before an exam.
@@ -2986,8 +3033,16 @@ function switchTab(mode) {
   document.querySelectorAll('.auth-tab').forEach((t, i) => {
     t.classList.toggle('active', (mode==='login'&&i===0)||(mode==='signup'&&i===1));
   });
-  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  const isLogin = mode === 'login';
+  document.getElementById('authSubmitBtn').textContent = isLogin ? 'Sign In' : 'Create Account';
   document.getElementById('authMessage').innerHTML = '';
+  // Show/hide extra fields
+  const usernameField = document.getElementById('usernameField');
+  const confirmField = document.getElementById('confirmField');
+  const forgotBtn = document.getElementById('forgotBtn');
+  if (usernameField) usernameField.style.display = isLogin ? 'none' : 'block';
+  if (confirmField) confirmField.style.display = isLogin ? 'none' : 'block';
+  if (forgotBtn) forgotBtn.style.display = isLogin ? 'inline' : 'none';
 }
 
 async function handleEmailAuth() {
@@ -2995,27 +3050,46 @@ async function handleEmailAuth() {
   const password = document.getElementById('authPassword').value;
   const btn = document.getElementById('authSubmitBtn');
   if (!email || !password) return showAuthMsg('Please fill in both fields.', 'error');
-  btn.disabled = true; btn.textContent = '...';
-  let error;
-  if (authMode === 'login') {
-    ({ error } = await sb.auth.signInWithPassword({ email, password }));
-    if (!error) {
-      signingIn = true;
-      // Transform auth overlay into a loader screen — no flash possible
-      const overlay = document.getElementById('authOverlay');
-      overlay.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
-        <svg width="44" height="32" viewBox="0 0 52 38" fill="none"><rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/><rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/><rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/><line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/><line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/><line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/></svg>
-        <div class="app-loader-spinner"></div>
-      </div>`;
-      return;
-    }
-  } else {
-    ({ error } = await sb.auth.signUp({ email, password }));
-    if (!error) return showAuthMsg('Check your email to confirm your account!', 'success');
+
+  if (authMode === 'signup') {
+    const username = document.getElementById('authUsername')?.value.trim();
+    const confirm = document.getElementById('authConfirm')?.value;
+    if (!username) return showAuthMsg('Please enter a username.', 'error');
+    if (password !== confirm) return showAuthMsg('Passwords do not match.', 'error');
+    if (password.length < 6) return showAuthMsg('Password must be at least 6 characters.', 'error');
+    btn.disabled = true; btn.textContent = '...';
+    const { error } = await sb.auth.signUp({
+      email, password,
+      options: { data: { username } }
+    });
+    btn.disabled = false; btn.textContent = 'Create Account';
+    if (error) return showAuthMsg(error.message, 'error');
+    return showAuthMsg('Check your email to confirm your account!', 'success');
   }
-  btn.disabled = false;
-  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
-  if (error) showAuthMsg(error.message, 'error');
+
+  btn.disabled = true; btn.textContent = '...';
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (!error) {
+    signingIn = true;
+    const overlay = document.getElementById('authOverlay');
+    overlay.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+      <svg width="44" height="32" viewBox="0 0 52 38" fill="none"><rect x="10" y="10" width="42" height="28" rx="7" fill="#7a2500"/><rect x="5" y="5" width="42" height="28" rx="7" fill="#b83a00"/><rect x="0" y="0" width="42" height="28" rx="7" fill="#ff4d00"/><line x1="9" y1="9" x2="33" y2="9" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/><line x1="9" y1="17" x2="33" y2="17" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/><line x1="9" y1="24" x2="22" y2="24" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div class="app-loader-spinner"></div>
+    </div>`;
+    return;
+  }
+  btn.disabled = false; btn.textContent = 'Sign In';
+  showAuthMsg(error.message, 'error');
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('authEmail').value.trim();
+  if (!email) return showAuthMsg('Enter your email above first.', 'error');
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+  if (error) return showAuthMsg(error.message, 'error');
+  showAuthMsg('Password reset email sent. Check your inbox.', 'success');
 }
 
 async function signOut() {
@@ -3509,7 +3583,7 @@ function checkSharedDeck() {
     const data = JSON.parse(decodeURIComponent(shared));
     if (!data?.cards?.length) return;
     // Show modal instead of confirm()
-    document.getElementById('importDeckInfo').textContent = `"${data.name || 'Shared Deck'}" — ${data.cards.length} cards`;
+    document.getElementById('importDeckInfo').textContent = `"${data.name || 'Shared Deck'}" (${data.cards.length} cards`;
     const btn = document.getElementById('importConfirmBtn');
     btn.onclick = () => {
       document.getElementById('importDeckModal').classList.remove('open');
