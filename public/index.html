@@ -1419,12 +1419,12 @@ footer{
   .step-connector{display:none;}
   .nav-links{display:none;}
   .legal-view{padding:40px 20px 80px;}
-  .footer-grid{grid-template-columns:1fr;gap:24px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px;}
   .site-footer{padding:32px 20px 28px;}
-  .footer-brand-col{padding-bottom:8px;border-bottom:1px solid var(--border);}
-  .app-footer{flex-direction:column;align-items:flex-start;gap:8px;padding:20px 0 32px;}
-  .app-footer-left{flex-wrap:wrap;gap:10px;}
-  .app-footer-links{gap:12px;}
+  .footer-brand-col{grid-column:1/-1;}
+  .app-footer{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px;padding:16px 0 24px;}
+  .app-footer-left{flex-wrap:wrap;gap:8px;}
+  .app-footer-links{gap:10px;}
   /* prevent zoom issues */
   input,textarea,select{font-size:16px !important;}
 }
