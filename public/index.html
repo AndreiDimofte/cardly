@@ -1657,7 +1657,7 @@ footer{
           <div class="feature-desc">Download as .txt or Anki-compatible format. Your cards work in any study app you already use.</div>
           <div style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;">
             <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#0093D0"/><polygon points="50,12 61,38 90,38 67,56 75,82 50,65 25,82 33,56 10,38 39,38" fill="white"/></svg>
-            <span style="font-size:11px;color:var(--text3);">Compatible with <strong style="color:var(--text);font-weight:700;">Anki</strong></span>
+            <span style="font-size:11px;color:var(--text3);">Compatible with&nbsp;<strong style="color:var(--text);font-weight:700;">Anki</strong></span>
           </div>
         </div>
       </div>
@@ -1728,7 +1728,7 @@ footer{
             <li>Shareable deck links</li>
             <li>Export to .txt &amp; Anki format</li>
           </ul>
-          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout()">Upgrade to Pro for $5/mo</button>
+          <button class="btn-pricing btn-pricing-pro" onclick="startCheckout(event)">Upgrade to Pro for $5/mo</button>
         </div>
       </div>
     </section>
@@ -1911,7 +1911,7 @@ footer{
               </div>
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">Text-based PDFs only · Max ~50 pages</div>
+              <div class="pdf-drop-hint">Text-based PDFs only · Up to ~150 pages</div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
               <div class="pdf-loaded-icon">
@@ -1979,7 +1979,7 @@ footer{
           <div class="pro-upsell-title">Unlock <span>Pro features</span></div>
           <div style="font-size:12px;color:var(--text3);margin-top:3px;">Everything you need to study smarter, for $5/month.</div>
         </div>
-        <button class="btn-header-cta" onclick="startCheckout()">Upgrade to Pro</button>
+        <button class="btn-header-cta" onclick="startCheckout(event)">Upgrade to Pro</button>
       </div>
       <div class="pro-upsell-grid">
         <div class="pro-upsell-item">
@@ -2446,15 +2446,17 @@ async function init() {
   try {
     document.getElementById('appLoader').style.display = 'flex';
 
-    // Detect OAuth return (hash token or code param) — keep loader up
-    const isOAuthReturn = window.location.hash.includes('access_token') ||
-                          window.location.search.includes('code=');
-    const isPasswordReset = window.location.search.includes('reset=true') ||
-                            window.location.hash.includes('type=recovery');
-    if (isPasswordReset) sessionStorage.setItem('cardly_reset', '1');
-    if (isOAuthReturn || isPasswordReset) {
-      signingIn = !isPasswordReset;
-      await new Promise(r => setTimeout(r, 800));
+    const search = window.location.search;
+    const hash = window.location.hash;
+    const isOAuthCode = search.includes('code=');
+    const isHashToken = hash.includes('access_token');
+    const isRecoveryHash = hash.includes('type=recovery');
+
+    // Mark this tab before URL is cleared
+    if (isOAuthCode) sessionStorage.setItem('cardly_reset_tab', '1');
+
+    if (isOAuthCode || isHashToken || isRecoveryHash) {
+      await new Promise(r => setTimeout(r, 900));
       window.history.replaceState(null, '', window.location.pathname);
     }
 
@@ -2466,27 +2468,26 @@ async function init() {
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
-    if (session) {
+    // Don't auto-sign-in if this looks like a password reset tab
+    const mightBeReset = sessionStorage.getItem('cardly_reset_tab') === '1';
+
+    if (session && !mightBeReset) {
+      signingIn = true;
       await onSignedIn(session.user);
-    } else {
-      signingIn = false;
+    } else if (!session) {
       showLanding();
     }
+    // If mightBeReset + session: wait for PASSWORD_RECOVERY event below
 
     initDone = true;
 
     let passwordRecovery = false;
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        // Only show reset modal in the tab that actually came from the email link
-        const isResetTab = window.location.search.includes('code=') ||
-                           window.location.hash.includes('type=recovery') ||
-                           sessionStorage.getItem('cardly_reset') === '1';
-        if (isResetTab) {
-          passwordRecovery = true;
-          sessionStorage.removeItem('cardly_reset');
-          showPasswordResetModal();
-        }
+        passwordRecovery = true;
+        sessionStorage.removeItem('cardly_reset_tab');
+        signingIn = false;
+        showPasswordResetModal();
         return;
       }
       if (event === 'SIGNED_IN' && session && !signingIn && !passwordRecovery) {
@@ -2494,6 +2495,17 @@ async function init() {
       }
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
+
+    // Fallback: if PASSWORD_RECOVERY never fires but we have a session in a reset tab
+    if (mightBeReset && session) {
+      setTimeout(() => {
+        if (!passwordRecovery) {
+          sessionStorage.removeItem('cardly_reset_tab');
+          showPasswordResetModal();
+        }
+      }, 1500);
+    }
+
   } catch(e) {
     console.warn('Auth init failed:', e.message);
     signingIn = false;
@@ -2585,8 +2597,8 @@ function updateUsageBar() {
     fill.style.opacity = '1';
     fill.className = 'usage-fill' + (used >= 3 ? ' full' : used === 2 ? ' warn' : '');
     right.innerHTML = used < 3
-      ? `<button class="btn-upgrade-inline" onclick="startCheckout()">Upgrade to Pro</button>`
-      : `<button class="btn-upgrade-inline" onclick="startCheckout()">Limit reached - Upgrade</button>`;
+      ? `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Upgrade to Pro</button>`
+      : `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Limit reached - Upgrade</button>`;
   }
   setTimeout(() => safeCreateIcons(), 100);
 }
@@ -2725,7 +2737,7 @@ function renderHeader(loggedIn) {
 
     hr.innerHTML = `
       <span class="${pillClass}">${pillText}</span>
-      ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout()" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
+      ${!isPro ? `<button class="btn-header-cta" onclick="startCheckout(event)" style="font-size:12px;padding:7px 14px;">Upgrade to Pro</button>` : ''}
       <button class="nav-link" onclick="openAccountModal()" style="font-size:12px;">Account</button>
       <button class="btn-signout" onclick="signOut()">Sign out</button>
     `;
@@ -2739,7 +2751,7 @@ function renderHeader(loggedIn) {
     hr.appendChild(ham);
 
     if (mc) mc.innerHTML = `
-      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout()">Upgrade to Pro</button>` : ''}
+      ${!isPro ? `<button class="mobile-menu-link" onclick="closeMobileMenu();startCheckout(event)">Upgrade to Pro</button>` : ''}
       <button class="mobile-menu-link" onclick="closeMobileMenu();openAccountModal()">Account</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('tos')">Terms of Service</button>
       <button class="mobile-menu-link" onclick="closeMobileMenu();showLegal('privacy')">Privacy Policy</button>
@@ -3694,16 +3706,21 @@ function calcStreak(sessions) {
   }
   return streak;
 }
-async function startCheckout() {
+async function startCheckout(e) {
   if (!currentUser) { showAuth(); return; }
   if (userProfile?.is_pro) { showToast('You are already on Pro!'); return; }
 
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'Redirecting...';
+  // Capture button reliably before any async work
+  const btn = (e && e.currentTarget) || (e && e.target) || null;
+  const originalText = btn?.textContent || '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;"><svg style="animation:spin .8s linear infinite;width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>Opening checkout...</span>';
+  }
 
   try {
     const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Session expired. Please sign in again.');
     const res = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: {
@@ -3711,16 +3728,12 @@ async function startCheckout() {
         'Authorization': `Bearer ${session.access_token}`
       }
     });
-
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Checkout failed');
-
-    // Redirect to Stripe
     window.location.href = data.url;
-  } catch(e) {
-    btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro for $5/mo';
-    showToast('Error: ' + e.message);
+  } catch(err) {
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
+    showToast('Could not open checkout: ' + err.message);
   }
 }
 
@@ -3948,8 +3961,8 @@ async function processPdf(file) {
     fullText = fullText.trim();
     if (!fullText || fullText.length < 50) throw new Error('No readable text. PDF may be scanned or image-based');
 
-    const trimmed = fullText.length > 12000;
-    if (trimmed) fullText = fullText.slice(0, 12000);
+    const trimmed = fullText.length > 30000;
+    if (trimmed) fullText = fullText.slice(0, 30000);
 
     // Store extracted text in the hidden textarea
     document.getElementById('notesInput').value = fullText;
