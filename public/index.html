@@ -1488,11 +1488,11 @@ footer{
         <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com" autocomplete="email"/>
       </div>
       <div class="auth-field">
-        <label class="auth-label" style="display:flex;justify-content:space-between;align-items:center;">
-          Password
-          <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()" style="display:none;">Forgot password?</button>
-        </label>
+        <label class="auth-label">Password</label>
         <input type="password" class="auth-input" id="authPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div id="forgotRow" style="text-align:right;margin-top:-6px;margin-bottom:4px;">
+        <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()">Forgot password?</button>
       </div>
       <div class="auth-field" id="confirmField" style="display:none;">
         <label class="auth-label">Confirm Password</label>
@@ -1541,11 +1541,11 @@ footer{
         <input type="email" class="auth-input" id="authEmail" placeholder="you@example.com" autocomplete="email"/>
       </div>
       <div class="auth-field">
-        <label class="auth-label" style="display:flex;justify-content:space-between;align-items:center;">
-          Password
-          <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()" style="display:none;">Forgot password?</button>
-        </label>
+        <label class="auth-label">Password</label>
         <input type="password" class="auth-input" id="authPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div id="forgotRow" style="text-align:right;margin-top:-6px;margin-bottom:4px;">
+        <button type="button" class="auth-forgot" id="forgotBtn" onclick="handleForgotPassword()">Forgot password?</button>
       </div>
       <div class="auth-field" id="confirmField" style="display:none;">
         <label class="auth-label">Confirm Password</label>
@@ -1601,18 +1601,28 @@ footer{
         <button class="btn-primary" onclick="showAuth()">Get Started Free</button>
         <button class="btn-secondary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:48px;opacity:.6;">
-        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Anki-compatible export
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:48px;">
+        <!-- Anki compatible badge -->
+        <div style="display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:7px 14px 7px 10px;">
+          <!-- Anki logo SVG approximation -->
+          <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="18" fill="#0093D0"/>
+            <path d="M50 15 L62 38 L87 42 L68 60 L73 85 L50 72 L27 85 L32 60 L13 42 L38 38 Z" fill="white" opacity="0.95"/>
+          </svg>
+          <span style="font-size:12px;font-weight:600;color:var(--text2);">Works with <span style="color:var(--text);font-weight:700;">Anki</span></span>
         </div>
-        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          PDF upload supported
+        <div style="width:1px;height:18px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          PDF upload
         </div>
-        <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           Free to start
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          No card required
         </div>
       </div>
 
@@ -2284,6 +2294,24 @@ footer{
 </div>
 </div>
 
+<!-- ── PASSWORD RESET MODAL ── -->
+<div class="modal-overlay" id="passwordResetModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title">Set new password</div>
+    <div class="modal-sub">Choose a new password for your account.</div>
+    <div class="auth-field" style="margin-bottom:10px;">
+      <label class="auth-label">New Password</label>
+      <input type="password" class="auth-input" id="newPasswordInput" placeholder="At least 6 characters" style="width:100%;box-sizing:border-box;"/>
+    </div>
+    <div class="auth-field" style="margin-bottom:16px;">
+      <label class="auth-label">Confirm Password</label>
+      <input type="password" class="auth-input" id="newPasswordConfirm" placeholder="Repeat password" style="width:100%;box-sizing:border-box;"/>
+    </div>
+    <div id="resetMsg"></div>
+    <button class="btn-save" onclick="submitPasswordReset()">Update Password</button>
+  </div>
+</div>
+
 <!-- ── CREATE FOLDER MODAL ── -->
 <div class="modal-overlay" id="createFolderModal">
   <div class="modal-box" style="max-width:380px;">
@@ -2442,8 +2470,10 @@ async function init() {
     // Detect OAuth return (hash token or code param) — keep loader up
     const isOAuthReturn = window.location.hash.includes('access_token') ||
                           window.location.search.includes('code=');
-    if (isOAuthReturn) {
-      signingIn = true;
+    const isPasswordReset = window.location.search.includes('reset=true') ||
+                            window.location.hash.includes('type=recovery');
+    if (isOAuthReturn || isPasswordReset) {
+      signingIn = !isPasswordReset;
       await new Promise(r => setTimeout(r, 800));
       window.history.replaceState(null, '', window.location.pathname);
     }
@@ -2466,7 +2496,8 @@ async function init() {
     initDone = true;
 
     sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) { await onSignedIn(session.user); initDone = true; }
+      if (event === 'SIGNED_IN' && session && !signingIn) { await onSignedIn(session.user); initDone = true; }
+      if (event === 'PASSWORD_RECOVERY') { showPasswordResetModal(); }
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
   } catch(e) {
@@ -3036,13 +3067,12 @@ function switchTab(mode) {
   const isLogin = mode === 'login';
   document.getElementById('authSubmitBtn').textContent = isLogin ? 'Sign In' : 'Create Account';
   document.getElementById('authMessage').innerHTML = '';
-  // Show/hide extra fields
   const usernameField = document.getElementById('usernameField');
   const confirmField = document.getElementById('confirmField');
-  const forgotBtn = document.getElementById('forgotBtn');
+  const forgotRow = document.getElementById('forgotRow');
   if (usernameField) usernameField.style.display = isLogin ? 'none' : 'block';
   if (confirmField) confirmField.style.display = isLogin ? 'none' : 'block';
-  if (forgotBtn) forgotBtn.style.display = isLogin ? 'inline' : 'none';
+  if (forgotRow) forgotRow.style.display = isLogin ? 'block' : 'none';
 }
 
 async function handleEmailAuth() {
@@ -3082,11 +3112,42 @@ async function handleEmailAuth() {
   showAuthMsg(error.message, 'error');
 }
 
+function showPasswordResetModal() {
+  // Close everything else and show reset modal
+  document.getElementById('authOverlay').style.display = 'none';
+  document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('studyView').style.display = 'none';
+  document.getElementById('landingView').classList.add('active');
+  const loader = document.getElementById('appLoader');
+  loader.classList.add('hidden');
+  setTimeout(() => { loader.style.display = 'none'; loader.classList.remove('hidden'); }, 300);
+  document.getElementById('passwordResetModal').classList.add('open');
+  renderHeader(false);
+  setTimeout(() => safeCreateIcons(), 200);
+}
+
+async function submitPasswordReset() {
+  const pw = document.getElementById('newPasswordInput').value;
+  const confirm = document.getElementById('newPasswordConfirm').value;
+  const msg = document.getElementById('resetMsg');
+  if (!pw || pw.length < 6) { msg.innerHTML = '<div class="auth-error">⚠ Password must be at least 6 characters.</div>'; return; }
+  if (pw !== confirm) { msg.innerHTML = '<div class="auth-error">⚠ Passwords do not match.</div>'; return; }
+  const { error } = await sb.auth.updateUser({ password: pw });
+  if (error) { msg.innerHTML = `<div class="auth-error">⚠ ${error.message}</div>`; return; }
+  document.getElementById('passwordResetModal').classList.remove('open');
+  showToast('Password updated! Please sign in.');
+  await sb.auth.signOut();
+  signingIn = false;
+  currentUser = null; userProfile = null;
+  showLanding();
+  setTimeout(() => showAuth(), 500);
+}
+
 async function handleForgotPassword() {
   const email = document.getElementById('authEmail').value.trim();
   if (!email) return showAuthMsg('Enter your email above first.', 'error');
   const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin
+    redirectTo: `${window.location.origin}/?reset=true`
   });
   if (error) return showAuthMsg(error.message, 'error');
   showAuthMsg('Password reset email sent. Check your inbox.', 'success');
