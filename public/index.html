@@ -1639,7 +1639,7 @@ footer{
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="file-text" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">PDF upload</div>
-          <div class="feature-desc">Drop in a PDF directly. Cardly extracts the text and generates cards from your lecture slides or textbook chapters.</div>
+          <div class="feature-desc">Drop in any PDF directly. Cardly reads text-based and scanned PDFs, extracting content from lecture slides, textbook chapters, and handwritten notes to build your deck.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1918,7 +1918,7 @@ footer{
               <div class="pdf-drop-sub">or click to browse</div>
               <div class="pdf-drop-hint" style="font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:var(--text3);text-align:center;line-height:1.8;letter-spacing:0;">
                 <span style="color:var(--text2);font-weight:600;">Text PDFs:</span> unlimited pages · up to 30,000 chars<br>
-                <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 100 pages · max 32MB
+                <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 70 pages · max 32MB
               </div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
@@ -3841,7 +3841,7 @@ function openStatsModal() {
     document.getElementById('statsGrid').innerHTML = `
       <div class="stat-card"><div class="stat-num">${totalCards}</div><div class="stat-label">Cards studied</div></div>
       <div class="stat-card"><div class="stat-num">${totalSessions}</div><div class="stat-label">Sessions</div></div>
-      <div class="stat-card"><div class="stat-num" style="display:flex;align-items:center;gap:6px;">${streak}<i data-lucide="flame" style="width:22px;height:22px;color:var(--accent);"></i></div><div class="stat-label">Day streak</div></div>
+      <div class="stat-card"><div class="stat-num" style="display:flex;align-items:center;justify-content:center;gap:6px;">${streak}<i data-lucide="flame" style="width:22px;height:22px;color:var(--accent);flex-shrink:0;"></i></div><div class="stat-label">Day streak</div></div>
     `;
     document.getElementById('studyHistory').innerHTML = sessions.slice(0, 7).map(s =>
       `<div class="study-history-item"><span class="study-history-date">${s.date}</span><span class="study-history-count">${s.cards} cards</span></div>`
@@ -4156,18 +4156,18 @@ async function processPdf(file) {
       }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
-      const MAX_SCANNED_PAGES = 100;
+      const MAX_SCANNED_PAGES = 70;
       const pagesTrimmed = totalPages > MAX_SCANNED_PAGES;
       const pagesToSend = Math.min(totalPages, MAX_SCANNED_PAGES);
 
       if (pagesTrimmed) {
-        showToast(`Scanned PDF has ${totalPages} pages. Only the first 20 pages will be processed. Split the PDF for full coverage.`, 'warning');
+        showToast(`Scanned PDF has ${totalPages} pages. Only the first 70 pages will be processed. Split the PDF for full coverage.`, 'warning');
       }
 
       if (pagesTrimmed) {
         // Render only first 20 pages as images to stay within request size limits
         document.getElementById('pdfLoadedMeta').textContent = `Rendering pages...`;
-        const SEND_LIMIT = 20;
+        const SEND_LIMIT = 70;
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         pdfPageImages = [];
@@ -4195,9 +4195,9 @@ async function processPdf(file) {
       }
 
       document.getElementById('notesInput').value = '';
-      document.getElementById('charCount').textContent = `${pagesTrimmed ? 20 : pagesToSend} pages · image mode`;
+      document.getElementById('charCount').textContent = `${pagesTrimmed ? 70 : pagesToSend} pages · image mode`;
       document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 20 sent)` : ''}`;
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 70 sent)` : ''}`;
     }
 
     const nameInput = document.getElementById('deckNameInput');
