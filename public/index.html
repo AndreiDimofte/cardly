@@ -544,7 +544,7 @@ header{
 .generator{
   display:grid;grid-template-columns:1fr 1fr;gap:2px;
   background:var(--border);border-radius:16px;overflow:hidden;
-  align-items:start;
+  align-items:stretch;
 }
 
 .panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;}
@@ -1656,7 +1656,7 @@ footer{
           <div class="feature-title">Export anywhere</div>
           <div class="feature-desc">Download as .txt or Anki-compatible format. Your cards work in any study app you already use.</div>
           <div style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;">
-            <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="18" fill="#0093D0"/><circle cx="50" cy="33" r="11" fill="white"/><circle cx="25" cy="65" r="9" fill="white"/><circle cx="75" cy="65" r="9" fill="white"/><line x1="50" y1="33" x2="25" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/><line x1="50" y1="33" x2="75" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/><line x1="25" y1="65" x2="75" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" version="1"><path fill="#0088d1" d="m13.118 2.0897a2.9557 2.8785 0 0 0 -2.168 2.2255l-1.2568 6.1428-5.9069 2.475a2.9557 2.8785 0 0 0 -0.2767 5.154l5.6088 3.0618 0.58994 6.2361a2.9557 2.8785 0 0 0 4.9483 1.8514l4.7253-4.25 6.272 1.3803a2.9557 2.8785 0 0 0 3.3348 -4.0129l-2.6908-5.6879 3.2876-5.3833a2.9557 2.8785 0 0 0 -2.886 -4.3281l-6.389 0.7336-4.24-4.7086a2.9557 2.8785 0 0 0 -2.953 -0.8892z"/><path fill="#e4e4e4" d="m13.703 2.0039a2.9557 2.8785 0 0 0 -0.586 0.0859 2.9557 2.8785 0 0 0 -2.166 2.2247l-1.2576 6.1445-5.9063 2.475a2.9557 2.8785 0 0 0 -0.2773 5.154l5.6093 3.06 0.5899 6.237a2.9557 2.8785 0 0 0 4.947 1.851l4.727-4.25 6.271 1.381a2.9557 2.8785 0 0 0 3.334 -4.013l-2.689-5.688 3.287-5.383a2.9557 2.8785 0 0 0 -2.887 -4.3299l-6.388 0.7344-4.241-4.709a2.9557 2.8785 0 0 0 -2.367 -0.9746zm0.141 2.9844l0.004 0.0039c0 0.0002-0.005 0.0059-0.004 0.0058 0.009 0.0007 0.017 0.009 0-0.0097zm0.025 0.0273l4.213 4.6797a3.0003 3.0003 0 0 0 2.572 0.9727l6.229-0.7168-3.145 5.1508a3.0003 3.0003 0 0 0 -0.152 2.847l2.584 5.459-6.143-1.351a3.0003 3.0003 0 0 0 -2.652 0.699l-4.691 4.221-0.579-6.11a3.0003 3.0003 0 0 0 -1.548 -2.351l-5.3558-2.924 5.6508-2.367a3.0003 3.0003 0 0 0 1.781 -2.164l1.236-6.0454z"/></svg>
             <span style="font-size:11px;color:var(--text3);">Compatible with&nbsp;<strong style="color:var(--text);font-weight:700;">Anki</strong></span>
           </div>
         </div>
@@ -1876,7 +1876,7 @@ footer{
         <span>You've used <strong id="limitUsed">2</strong> of 3 free generations this month. <strong>1 remaining.</strong></span>
       </div>
       <div class="generator">
-        <div class="panel">
+        <div class="panel" style="align-self:start;">
           <div class="panel-label">Your Notes</div>
 
           <!-- Input mode tabs -->
