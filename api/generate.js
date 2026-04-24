@@ -70,7 +70,7 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
     ];
   } else if (isImageMode) {
     // Fallback image mode (legacy)
-    model = 'claude-sonnet-4-6';
+    model = 'claude-haiku-4-5-20251001';
     messageContent = [
       { type: 'text', text: instruction + '\n\nThe following are pages from a PDF:' },
       ...images.map(base64 => ({
