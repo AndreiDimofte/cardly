@@ -2505,7 +2505,7 @@ async function init() {
         showPasswordResetModal();
         return;
       }
-      if (event === 'SIGNED_IN' && session && !signingIn && !passwordRecovery) {
+      if (event === 'SIGNED_IN' && session && !signingIn && !passwordRecovery && !sessionStorage.getItem('cardly_is_reset_tab')) {
         await onSignedIn(session.user); initDone = true;
       }
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
@@ -3169,6 +3169,9 @@ async function submitPasswordReset() {
   if (!s) { msg.innerHTML = '<div class="auth-error">Session expired. Please request a new reset link.</div>'; return; }
   const { error } = await sb.auth.updateUser({ password: pw });
   if (error) { msg.innerHTML = `<div class="auth-error">${error.message}</div>`; return; }
+  // Clear ALL reset flags immediately before anything else
+  sessionStorage.removeItem('cardly_is_reset_tab');
+  sessionStorage.removeItem('cardly_oauth_tab');
   document.getElementById('passwordResetModal').classList.remove('open');
   showToast('Password updated! Please sign in.');
   await sb.auth.signOut();
