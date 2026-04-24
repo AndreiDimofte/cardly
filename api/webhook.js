@@ -61,7 +61,15 @@ async function sendProWelcomeEmail(email) {
   }
 }
 
-async function sendCancellationEmail(email) {
+async function sendCancellationEmail(email, activeUntil) {
+  const dateLine = activeUntil
+    ? `<p style="color:#6b6760;font-size:14px;line-height:1.6;margin-bottom:24px;">
+        Your Pro access remains active until <strong style="color:#1a1916;">${activeUntil}</strong>. After that, you will be moved to the free plan. Your decks and data will stay safe and accessible.
+      </p>`
+    : `<p style="color:#6b6760;font-size:14px;line-height:1.6;margin-bottom:24px;">
+        Your Pro access will remain active until the end of your current billing period. After that, you will be moved to the free plan. Your decks and data will stay safe and accessible.
+      </p>`;
+
   try {
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -72,24 +80,26 @@ async function sendCancellationEmail(email) {
       body: JSON.stringify({
         from: 'Cardly <hello@studywithcardly.com>',
         to: email,
-        subject: 'Your Cardly Pro subscription has ended',
+        subject: 'Your Cardly Pro subscription has been cancelled',
         html: `<div style="max-width:480px;margin:0 auto;font-family:sans-serif;color:#1a1916;">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
     <img src="https://www.studywithcardly.com/logo.svg" alt="" width="36" height="30" style="display:block;">
     <span style="font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#1a1916;">Cardly</span>
   </div>
-  <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">Your Pro subscription has ended</h2>
-  <p style="color:#6b6760;font-size:14px;line-height:1.6;margin-bottom:24px;">
-    Your Cardly Pro subscription has been cancelled. You've been moved back to the free plan — your decks and data are still safe and accessible.
+  <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">You've cancelled your Pro subscription</h2>
+  <p style="color:#6b6760;font-size:14px;line-height:1.6;margin-bottom:16px;">
+    We're sorry to see you go. Your cancellation has been confirmed.
   </p>
+  ${dateLine}
   <p style="color:#6b6760;font-size:14px;line-height:1.6;margin-bottom:24px;">
-    On the free plan you have 7 generations per month and up to 10 cards per deck. You can resubscribe anytime to get Pro back instantly.
+    On the free plan you will have 7 generations per month and up to 10 cards per deck. If you change your mind, you can resubscribe anytime and Pro will be restored instantly.
   </p>
   <a href="https://www.studywithcardly.com" style="display:inline-block;background:#ff4d00;color:white;padding:12px 28px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">
-    Resubscribe to Pro
+    Go to Cardly
   </a>
   <p style="color:#a09d97;font-size:12px;margin-top:32px;line-height:1.6;">
-    If you cancelled by mistake, just resubscribe above — it takes seconds.<br>
+    If you cancelled by mistake, you can resubscribe from inside the app under Account settings.<br>
+    Questions? Reply to this email.<br>
     © 2026 Cardly
   </p>
 </div>`
@@ -161,8 +171,11 @@ export default async function handler(req, res) {
           .from('profiles').select('id').eq('stripe_customer_id', subscription.customer).single();
         if (profile) {
           const { data: { user } } = await supabase.auth.admin.getUserById(profile.id);
-          if (user?.email) await sendCancellationEmail(user.email);
-          console.log(`Cancellation scheduled for customer ${subscription.customer} — email sent`);
+          const cancelDate = subscription.cancel_at
+            ? new Date(subscription.cancel_at * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : null;
+          if (user?.email) await sendCancellationEmail(user.email, cancelDate);
+          console.log(`Cancellation scheduled for customer ${subscription.customer} - email sent`);
         }
       }
       break;
