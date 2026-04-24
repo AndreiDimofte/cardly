@@ -607,7 +607,7 @@ textarea::placeholder{color:var(--text3);}
 }
 
 /* Right panel */
-.cards-area{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto;padding-right:4px;}
+.cards-area{display:flex;flex-direction:column;gap:6px;}
 .empty-state{
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;min-height:360px;gap:10px;
@@ -632,7 +632,7 @@ textarea::placeholder{color:var(--text3);}
 .loading-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
 
 .mini-cards{
-  display:none;flex-direction:column;gap:6px;
+  display:none;flex-direction:column;flex:1;justify-content:space-evenly;gap:6px;
 }
 .mini-cards::-webkit-scrollbar{width:2px;}
 .mini-cards::-webkit-scrollbar-thumb{background:var(--border2);}
@@ -1939,9 +1939,9 @@ footer{
           <div class="error-msg" id="errorMsg"></div>
         </div>
 
-        <div class="panel">
+        <div class="panel" style="display:flex;flex-direction:column;">
           <div class="panel-label">Generated Cards</div>
-          <div class="cards-area">
+          <div class="cards-area" style="flex:1;overflow-y:auto;max-height:none;">
             <div class="empty-state" id="emptyState">
               <svg class="empty-state-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="8" y="20" width="48" height="36" rx="6" fill="#2a2a2a" stroke="#333" stroke-width="1.5"/>
