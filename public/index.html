@@ -543,11 +543,12 @@ header{
 
 .generator{
   display:grid;grid-template-columns:1fr 1fr;gap:2px;
-  background:var(--border);border-radius:16px;overflow:hidden;
+  background:var(--bg);border-radius:16px;
 }
 
 .panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;}
-.panel:first-child{align-self:start;}
+.panel:first-child{border-radius:16px 0 0 16px;align-self:start;}
+.panel:last-child{border-radius:0 16px 16px 0;border-left:2px solid var(--bg);}
 
 .panel-label{
   font-family:'JetBrains Mono',monospace;font-size:10px;
@@ -1415,6 +1416,8 @@ footer{
   .hero h1{letter-spacing:-2px;}
   .features-grid,.steps,.pricing-grid{grid-template-columns:1fr;}
   .generator{grid-template-columns:1fr;}
+  .panel:first-child{border-radius:16px 16px 0 0;}
+  .panel:last-child{border-radius:0 0 16px 16px;border-left:none;border-top:2px solid var(--bg);}
   .study-view{padding:32px 20px 60px;}
   .step-connector{display:none;}
   .nav-links{display:none;}
@@ -2468,17 +2471,17 @@ async function init() {
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
-    // Don't auto-sign-in if this looks like a password reset tab AND has the recovery token
-    const hasRecoveryToken = window.location.hash.includes('type=recovery') || window.location.hash.includes('access_token');
+    // Don't auto-sign-in if this is the password reset tab (has recovery token in original URL)
+    const hasRecoveryToken = isRecoveryHash || isHashToken;
     const mightBeReset = sessionStorage.getItem('cardly_reset_tab') === '1';
 
-    if (session && !(mightBeReset && hasRecoveryToken)) {
+    if (session && !hasRecoveryToken) {
       signingIn = true;
       await onSignedIn(session.user);
-    } else if (!session) {
+    } else if (!session && !hasRecoveryToken) {
       showLanding();
     }
-    // If this is the actual reset tab: wait for PASSWORD_RECOVERY event below
+    // If hasRecoveryToken: wait for PASSWORD_RECOVERY event, show reset modal only here
 
     initDone = true;
 
@@ -2499,8 +2502,8 @@ async function init() {
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
 
-    // Fallback: if PASSWORD_RECOVERY never fires but we have a session in a reset tab
-    if (mightBeReset && session && hasRecoveryToken) {
+    // Fallback: if PASSWORD_RECOVERY never fires but this IS the reset tab with a session
+    if (hasRecoveryToken && session) {
       setTimeout(() => {
         if (!passwordRecovery) {
           sessionStorage.removeItem('cardly_reset_tab');
