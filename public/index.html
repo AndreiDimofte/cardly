@@ -3012,7 +3012,7 @@ function deleteDeck(deckId) {
     await sb.from('decks').delete().eq('id', deleteDeckId).eq('user_id', currentUser.id);
     // Remove from folder mappings
     delete deckFolders[deleteDeckId];
-    saveFolders();
+    await saveFolders();
     await loadDecks();
     renderDecks();
     updateWelcome();
@@ -3597,17 +3597,26 @@ let deckFolders = {};
 let folderOrder = []; // tracks creation order
 
 function loadFolders() {
-  try { deckFolders = JSON.parse(localStorage.getItem('cardly_folders') || '{}'); } catch(e) { deckFolders = {}; }
-  try { folderOrder = JSON.parse(localStorage.getItem('cardly_folder_order') || '[]'); } catch(e) { folderOrder = []; }
-  // Sync: ensure all folders in deckFolders are in folderOrder
-  const known = new Set(Object.values(deckFolders).filter(v => !v.startsWith('__folder__') || true));
-  const allNames = [...new Set(Object.values(deckFolders))];
-  allNames.forEach(name => { if (!folderOrder.includes(name)) folderOrder.push(name); });
-  folderOrder = folderOrder.filter(name => allNames.includes(name));
+  // Load from userProfile.folder_data (synced from Supabase)
+  try {
+    const data = userProfile?.folder_data || {};
+    deckFolders = data.assignments || {};
+    folderOrder = data.order || [];
+    // Sync order with assignments
+    const allNames = [...new Set(Object.values(deckFolders))];
+    allNames.forEach(name => { if (!folderOrder.includes(name)) folderOrder.push(name); });
+    folderOrder = folderOrder.filter(name => allNames.includes(name));
+  } catch(e) { deckFolders = {}; folderOrder = []; }
 }
-function saveFolders() {
-  try { localStorage.setItem('cardly_folders', JSON.stringify(deckFolders)); } catch(e) {}
-  try { localStorage.setItem('cardly_folder_order', JSON.stringify(folderOrder)); } catch(e) {}
+
+async function saveFolders() {
+  const folder_data = { assignments: deckFolders, order: folderOrder };
+  // Update in-memory profile
+  if (userProfile) userProfile.folder_data = folder_data;
+  // Persist to Supabase
+  try {
+    await sb.from('profiles').update({ folder_data }).eq('id', currentUser.id);
+  } catch(e) { console.warn('Failed to save folders to Supabase:', e); }
 }
 function getAllFolderNames() {
   // Return in creation order, not alphabetical
@@ -3615,11 +3624,11 @@ function getAllFolderNames() {
   return folderOrder.filter(name => allNames.has(name));
 }
 
-function deleteFolder(name) {
+async function deleteFolder(name) {
   // Remove folder from all decks assigned to it
   Object.keys(deckFolders).forEach(id => { if (deckFolders[id] === name) delete deckFolders[id]; });
   folderOrder = folderOrder.filter(f => f !== name);
-  saveFolders();
+  await saveFolders();
   if (currentFolder === name) currentFolder = 'all';
   renderDecks();
   showToast(`Folder "${name}" deleted.`);
@@ -3696,14 +3705,14 @@ function setFolder(name) {
 let folderTargetDeckId = null;
 let selectedFolderName = null;
 
-function confirmCreateFolder() {
+async function confirmCreateFolder() {
   const name = document.getElementById('createFolderInput').value.trim();
   if (!name) return showToast('Enter a folder name.');
   document.getElementById('createFolderModal').classList.remove('open');
   const phantomKey = '__folder__' + name;
   deckFolders[phantomKey] = name;
   if (!folderOrder.includes(name)) folderOrder.push(name);
-  saveFolders();
+  await saveFolders();
   renderDecks();
   showToast(`Folder "${name}" created. Assign decks using the folder icon.`);
 }
@@ -3783,14 +3792,14 @@ function createFolderFromModal() {
   });
 }
 
-function applyFolderSelection() {
+async function applyFolderSelection() {
   if (!folderTargetDeckId) return;
   if (selectedFolderName === null) delete deckFolders[folderTargetDeckId];
   else {
     deckFolders[folderTargetDeckId] = selectedFolderName;
     if (!folderOrder.includes(selectedFolderName)) folderOrder.push(selectedFolderName);
   }
-  saveFolders();
+  await saveFolders();
   document.getElementById('folderModal').classList.remove('open');
   renderFolderTabs();
   renderDecksFiltered();
