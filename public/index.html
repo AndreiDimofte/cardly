@@ -1815,7 +1815,7 @@ footer{
       <div class="usage-bar-left">
         <div class="usage-bar-label">
           <span id="usageBarLabel">Generations this month</span>
-          <strong id="usageBarCount">0 / 3</strong>
+          <strong id="usageBarCount">0 / 7</strong>
         </div>
         <div class="usage-track">
           <div class="usage-fill" id="usageFill" style="width:0%"></div>
@@ -2659,9 +2659,9 @@ function updateUsageBar() {
     fill.style.opacity = '0.3';
     right.innerHTML = `<div class="usage-pro-badge"><i data-lucide="zap" style="width:13px;height:13px;"></i> Pro</div>`;
   } else {
-    const pct = Math.min((used / 3) * 100, 100);
+    const pct = Math.min((used / 7) * 100, 100);
     label.textContent = 'Free plan: generations this month';
-    count.textContent = `${used} / 3`;
+    count.textContent = `${used} / 7`;
     fill.style.width = pct + '%';
     fill.style.opacity = '1';
     fill.className = 'usage-fill' + (used >= 7 ? ' full' : used >= 5 ? ' warn' : '');
