@@ -2456,8 +2456,9 @@ async function init() {
     const isOAuthCode = search.includes('code=');
     const isHashToken = hash.includes('access_token');
     const isRecoveryHash = hash.includes('type=recovery');
-    // This tab received the reset link from email (Supabase redirects here with ?reset=true)
-    const isResetTab = search.includes('reset=true') || isRecoveryHash || isHashToken;
+    // This tab received the reset link from email (Supabase redirects here with ?reset=true or #type=recovery)
+    // Never treat a plain access_token hash as a reset — that's OAuth
+    const isResetTab = search.includes('reset=true') || isRecoveryHash;
 
     // Mark OAuth tab before URL is cleared
     if (isOAuthCode) sessionStorage.setItem('cardly_oauth_tab', '1');
