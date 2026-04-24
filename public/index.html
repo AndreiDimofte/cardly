@@ -2628,12 +2628,6 @@ function showApp() {
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
   checkSharedDeck();
-  // Handle ?legal= redirects from terms.html / privacy.html
-  const legalParam = new URLSearchParams(window.location.search).get('legal');
-  if (legalParam === 'tos' || legalParam === 'privacy') {
-    window.history.replaceState(null, '', window.location.pathname);
-    setTimeout(() => showLegal(legalParam), 300);
-  }
 }
 
 function updateUsageBar() {
@@ -4286,6 +4280,14 @@ window.addEventListener('load', () => safeCreateIcons());
 document.addEventListener('DOMContentLoaded', () => {
   init(); // fire and forget - landing shows immediately
   setTimeout(() => safeCreateIcons(), 200);
+
+  // Handle ?legal= from /terms and /privacy redirects — works logged in or out
+  const legalParam = new URLSearchParams(window.location.search).get('legal');
+  if (legalParam === 'tos' || legalParam === 'privacy') {
+    window.history.replaceState(null, '', window.location.pathname);
+    // Wait for app to fully render before showing legal
+    setTimeout(() => showLegal(legalParam), 800);
+  }
 });
 
 </script>
