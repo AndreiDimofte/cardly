@@ -12,6 +12,5 @@
       "path": "/api/cron/reset-usage",
       "schedule": "0 0 1 * *"
     }
-  ],
-  "pages404": "/public/404.html"
+  ]
 }
