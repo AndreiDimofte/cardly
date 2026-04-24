@@ -2409,6 +2409,17 @@ footer{
   </div>
 </div>
 
+<!-- ── FOLDER DELETE MODAL ── -->
+<div class="modal-overlay" id="deleteFolderModal">
+  <div class="modal-box" style="max-width:380px;">
+    <div class="modal-title">Delete folder?</div>
+    <div class="modal-sub" id="deleteFolderModalName"></div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">Your decks will not be deleted — they will just be unassigned from this folder.</p>
+    <button class="btn-save" id="deleteFolderConfirmBtn" style="background:var(--danger);box-shadow:none;">Delete folder</button>
+    <button class="btn-cancel" onclick="document.getElementById('deleteFolderModal').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
 <!-- ── DECK PREVIEW MODAL ── -->
 <div class="modal-overlay" id="deckPreviewModal">
   <div class="modal-box">
@@ -3614,6 +3625,16 @@ function deleteFolder(name) {
   showToast(`Folder "${name}" deleted.`);
 }
 
+function openDeleteFolderModal(name) {
+  document.getElementById('deleteFolderModalName').textContent = `"${name}"`;
+  const btn = document.getElementById('deleteFolderConfirmBtn');
+  btn.onclick = () => {
+    document.getElementById('deleteFolderModal').classList.remove('open');
+    deleteFolder(name);
+  };
+  document.getElementById('deleteFolderModal').classList.add('open');
+}
+
 function renderFolderTabs() {
   const container = document.getElementById('folderTabs');
   if (!container || !userProfile?.is_pro) return;
@@ -3644,7 +3665,7 @@ function renderFolderTabs() {
     del.title = 'Delete folder';
     del.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (confirm(`Delete folder "${f}"? Decks will not be deleted, just unassigned.`)) deleteFolder(f);
+      openDeleteFolderModal(f);
     });
 
     wrap.appendChild(btn);
