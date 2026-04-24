@@ -26,14 +26,12 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'Free limit reached. Upgrade to Cardly Pro for unlimited decks.' });
   }
 
-  const { notes, images, count = 10 } = req.body;
+  const { notes, pdf, images, count = 10 } = req.body;
+  const isPdfMode = !!pdf;
   const isImageMode = Array.isArray(images) && images.length > 0;
 
-  if (!isImageMode && (!notes || notes.trim().length < 50)) {
+  if (!isPdfMode && !isImageMode && (!notes || notes.trim().length < 50)) {
     return res.status(400).json({ error: 'Notes too short — paste at least a paragraph.' });
-  }
-  if (isImageMode && images.length > 20) {
-    return res.status(400).json({ error: 'Too many pages — maximum 20 for image PDFs.' });
   }
 
   const maxCards = profile?.is_pro ? 25 : 10;
@@ -51,9 +49,30 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
 [{"front": "question", "back": "answer"}]`;
 
   let messageContent;
-  if (isImageMode) {
+  let model;
+
+  if (isPdfMode) {
+    // Native PDF support — Claude handles text & scanned PDFs internally
+    model = 'claude-haiku-4-5-20251001';
     messageContent = [
-      { type: 'text', text: instruction + '\n\nThe following are pages from a PDF. Generate flashcards from the study material:' },
+      {
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: 'application/pdf',
+          data: pdf,
+        }
+      },
+      {
+        type: 'text',
+        text: instruction
+      }
+    ];
+  } else if (isImageMode) {
+    // Fallback image mode (legacy)
+    model = 'claude-sonnet-4-6';
+    messageContent = [
+      { type: 'text', text: instruction + '\n\nThe following are pages from a PDF:' },
       ...images.map(base64 => ({
         type: 'image',
         source: { type: 'base64', media_type: 'image/jpeg', data: base64 }
@@ -61,10 +80,10 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
       { type: 'text', text: `Generate exactly ${cardCount} flashcards as a raw JSON array.` }
     ];
   } else {
+    // Plain text mode
+    model = 'claude-haiku-4-5-20251001';
     messageContent = `${instruction}\n\nNotes:\n${notes.substring(0, 6000)}`;
   }
-
-  const model = isImageMode ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
 
   const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',

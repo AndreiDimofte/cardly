@@ -1916,7 +1916,7 @@ footer{
               </div>
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">Text & scanned PDFs · Up to ~20 pages</div>
+              <div class="pdf-drop-hint">Text & scanned PDFs · Up to 100 pages · 32MB</div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
               <div class="pdf-loaded-icon">
@@ -3253,8 +3253,9 @@ async function generateCards() {
   const count = parseInt(document.getElementById('cardCount').value) || 10;
   const deckName = document.getElementById('deckNameInput').value.trim();
   const isImageMode = pdfPageImages.length > 0;
+  const isPdfMode = !!pdfBase64;
 
-  if (!isImageMode && notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
+  if (!isPdfMode && !isImageMode && notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
   if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
     showError("You've used all 3 free generations this month. Upgrade to Pro for unlimited decks."); return;
   }
@@ -3272,9 +3273,11 @@ async function generateCards() {
     const controller = new AbortController();
     const abortTimeout = setTimeout(() => controller.abort(), 44000);
 
-    const body = isImageMode
-      ? { images: pdfPageImages, count }
-      : { notes, count };
+    const body = isPdfMode
+      ? { pdf: pdfBase64, count }
+      : isImageMode
+        ? { images: pdfPageImages, count }
+        : { notes, count };
 
     const res = await fetch('/api/generate', {
       method: 'POST',
@@ -4000,6 +4003,7 @@ function clearPdf() {
   document.getElementById('charCount').textContent = '0 chars';
   document.getElementById('deckNameInput').value = '';
   pdfPageImages = [];
+  pdfBase64 = null;
 }
 
 // Drag and drop support
@@ -4017,7 +4021,7 @@ function clearPdf() {
   });
 })();
 
-// ── PDF EXTRACTION - PDF.js loaded lazily on first use ──
+// ── PDF EXTRACTION - send raw PDF to backend for native processing ──
 async function loadPdfJs() {
   if (window.pdfjsLib) return true;
   return new Promise((resolve) => {
@@ -4037,8 +4041,9 @@ function handlePdfUpload(input) {
   if (file) processPdf(file);
 }
 
-// Store rendered page images globally for generate call
-let pdfPageImages = [];
+// Store raw PDF base64 for generate call
+let pdfBase64 = null;
+let pdfPageImages = []; // kept for compatibility
 
 async function processPdf(file) {
   const zone = document.getElementById('pdfDropZone');
@@ -4048,67 +4053,38 @@ async function processPdf(file) {
   loaded.style.display = 'flex';
   document.getElementById('pdfLoadedName').textContent = file.name;
   document.getElementById('pdfLoadedMeta').textContent = 'Reading...';
+  pdfBase64 = null;
   pdfPageImages = [];
 
   try {
+    // Check file size (32MB limit per Anthropic)
+    if (file.size > 32 * 1024 * 1024) throw new Error('PDF too large — maximum 32MB.');
+
+    // Get page count using PDF.js
     const ok = await loadPdfJs();
-    if (!ok) throw new Error('Could not load PDF reader. Check your connection.');
-
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const totalPages = pdf.numPages;
-    const MAX_PAGES = 20;
-    const pagesToRender = Math.min(totalPages, MAX_PAGES);
-
-    // Try text extraction first — if text is found, use it (cheaper)
-    let fullText = '';
-    for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      fullText += content.items.map(item => item.str).join(' ');
+    let totalPages = '?';
+    if (ok) {
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+        totalPages = pdf.numPages;
+        if (totalPages > 100) throw new Error('PDF too long — maximum 100 pages.');
+      } catch(e) {
+        if (e.message.includes('maximum')) throw e;
+      }
     }
 
-    const hasText = fullText.trim().length > 100;
+    // Encode full PDF as base64
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    pdfBase64 = btoa(binary);
 
-    if (hasText) {
-      // Text-based PDF: extract all text as before
-      let allText = fullText;
-      for (let i = 6; i <= totalPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        allText += content.items.map(item => item.str).join(' ') + '\n\n';
-      }
-      allText = allText.trim();
-      const trimmed = allText.length > 30000;
-      if (trimmed) allText = allText.slice(0, 30000);
-      document.getElementById('notesInput').value = allText;
-      document.getElementById('charCount').textContent = allText.length.toLocaleString() + ' chars';
-      document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${allText.length.toLocaleString()} chars${trimmed ? ' (trimmed)' : ''}`;
-    } else {
-      // Image-based PDF: render pages to canvas
-      document.getElementById('pdfLoadedMeta').textContent = `Rendering ${pagesToRender} pages...`;
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-
-      for (let i = 1; i <= pagesToRender; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 }); // good balance of quality vs size
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({ canvasContext: ctx, viewport }).promise;
-        const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-        pdfPageImages.push(base64);
-        document.getElementById('pdfLoadedMeta').textContent =
-          `Rendering page ${i}/${pagesToRender}...`;
-      }
-
-      // Clear text input so generateCards knows to use images
-      document.getElementById('notesInput').value = '';
-      document.getElementById('charCount').textContent = `${pagesToRender} pages (image mode)`;
-      document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · image mode${totalPages > MAX_PAGES ? ` (first ${MAX_PAGES})` : ''}`;
-    }
+    // Clear text input — using PDF mode
+    document.getElementById('notesInput').value = '';
+    document.getElementById('charCount').textContent = `${totalPages} pages · PDF mode`;
+    document.getElementById('pdfLoadedMeta').textContent =
+      `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB`;
 
     // Auto-fill deck name
     const nameInput = document.getElementById('deckNameInput');
@@ -4121,7 +4097,7 @@ async function processPdf(file) {
     zone.style.display = 'flex';
     loaded.style.display = 'none';
     document.getElementById('pdfFileInput').value = '';
-    pdfPageImages = [];
+    pdfBase64 = null;
     showToast('PDF error: ' + e.message);
   }
 }
