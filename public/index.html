@@ -2167,7 +2167,7 @@ footer{
 <div class="legal-view" id="tosView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Terms of Service</div>
-  <div class="legal-date">Last updated: January 2026</div>
+  <div class="legal-date">Last updated: April 2026</div>
 
   <h2>1. Acceptance of Terms</h2>
   <p>By accessing or using Cardly ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.</p>
@@ -2207,7 +2207,7 @@ footer{
 <div class="legal-view" id="privacyView">
   <button class="btn-back" onclick="hideLegal()" style="margin-bottom:32px;margin-left:0;">← Back</button>
   <div class="legal-title">Privacy Policy</div>
-  <div class="legal-date">Last updated: January 2026</div>
+  <div class="legal-date">Last updated: April 2026</div>
 
   <h2>1. What we collect</h2>
   <p>We collect your email address when you sign up. We store the flashcard decks you generate so you can access them later. We do not collect payment information directly; that is handled by Stripe.</p>
@@ -2291,7 +2291,7 @@ footer{
     <div class="modal-sub">Choose a new password for your account.</div>
     <div class="auth-field" style="margin-bottom:10px;">
       <label class="auth-label">New Password</label>
-      <input type="password" class="auth-input" id="newPasswordInput" placeholder="At least 6 characters" style="width:100%;box-sizing:border-box;"/>
+      <input type="password" class="auth-input" id="newPasswordInput" placeholder="Min 8 chars, 1 uppercase, 1 number" style="width:100%;box-sizing:border-box;"/>
     </div>
     <div class="auth-field" style="margin-bottom:16px;">
       <label class="auth-label">Confirm Password</label>
@@ -2562,10 +2562,10 @@ async function onSignedIn(user) {
   showApp();
   handleCheckoutReturn();
 
-  // Proactively refresh session every 10 minutes to prevent expiry
+  // Proactively refresh session every 4 minutes to prevent expiry
   setInterval(async () => {
     try { await sb.auth.refreshSession(); } catch(e) { /* silent */ }
-  }, 10 * 60 * 1000);
+  }, 4 * 60 * 1000);
 }
 
 function onSignedOut() {
@@ -3161,7 +3161,8 @@ async function handleEmailAuth() {
     const confirm = document.getElementById('authConfirm')?.value;
     if (!username) return showAuthMsg('Please enter a username.', 'error');
     if (password !== confirm) return showAuthMsg('Passwords do not match.', 'error');
-    if (password.length < 6) return showAuthMsg('Password must be at least 6 characters.', 'error');
+    const pwErr = validatePassword(password);
+    if (pwErr) return showAuthMsg(pwErr, 'error');
     btn.disabled = true; btn.textContent = '...';
     const { error } = await sb.auth.signUp({
       email, password,
@@ -3205,7 +3206,9 @@ async function submitPasswordReset() {
   const pw = document.getElementById('newPasswordInput').value;
   const confirm = document.getElementById('newPasswordConfirm').value;
   const msg = document.getElementById('resetMsg');
-  if (!pw || pw.length < 6) { msg.innerHTML = '<div class="auth-error">Password must be at least 6 characters.</div>'; return; }
+  if (!pw || pw.length < 8) { msg.innerHTML = '<div class="auth-error">Password must be at least 8 characters.</div>'; return; }
+  const pwErr = validatePassword(pw);
+  if (pwErr) { msg.innerHTML = `<div class="auth-error">${pwErr}</div>`; return; }
   if (pw !== confirm) { msg.innerHTML = '<div class="auth-error">Passwords do not match.</div>'; return; }
   const { data: { session: s } } = await sb.auth.getSession();
   if (!s) { msg.innerHTML = '<div class="auth-error">Session expired. Please request a new reset link.</div>'; return; }
@@ -3231,6 +3234,13 @@ async function handleForgotPassword() {
   });
   if (error) return showAuthMsg(error.message, 'error');
   showAuthMsg('Password reset email sent. Check your inbox.', 'success');
+}
+
+function validatePassword(pw) {
+  if (!pw || pw.length < 8) return 'Password must be at least 8 characters.';
+  if (!/[A-Z]/.test(pw)) return 'Password must contain at least one uppercase letter.';
+  if (!/[0-9]/.test(pw)) return 'Password must contain at least one number.';
+  return null; // valid
 }
 
 async function signOut() {
@@ -3265,7 +3275,7 @@ function showAuthMsg(msg, type) {
     'Invalid login credentials': 'Wrong email or password. Please try again.',
     'Email not confirmed': 'Please check your email and click the confirmation link first.',
     'User already registered': 'An account with this email already exists. Try signing in.',
-    'Password should be at least 6 characters': 'Password must be at least 6 characters.',
+    'Password should be at least 6 characters': 'Password must be at least 8 characters with 1 uppercase and 1 number.',
   };
   const display = friendly[msg] || msg;
   document.getElementById('authMessage').innerHTML = `<div class="auth-${type}">${display}</div>`;
@@ -4218,6 +4228,23 @@ async function processPdf(file) {
 function safeCreateIcons() {
   try { if (window.lucide) lucide.createIcons(); } catch(e) {}
 }
+
+// ── SESSION HEALTH: refresh when tab becomes visible again ──
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible' || !currentUser) return;
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error || !session) {
+      // Session gone — sign out cleanly
+      onSignedOut();
+      return;
+    }
+    // Proactively refresh if expiring within 5 minutes
+    if (session.expires_at * 1000 - Date.now() < 5 * 60 * 1000) {
+      await sb.auth.refreshSession();
+    }
+  } catch(e) { console.warn('Visibility session check failed:', e); }
+});
 
 window.addEventListener('load', () => safeCreateIcons());
 
