@@ -2651,24 +2651,19 @@ function updateUsageBar() {
   const right = document.getElementById('usageBarRight');
 
   if (isPro) {
-    label.textContent = 'Pro plan: unlimited generations';
-    count.textContent = `${used} used`;
-    fill.style.width = '100%';
-    fill.className = 'usage-fill';
-    fill.style.background = 'var(--accent)';
-    fill.style.opacity = '0.3';
-    right.innerHTML = `<div class="usage-pro-badge"><i data-lucide="zap" style="width:13px;height:13px;"></i> Pro</div>`;
-  } else {
-    const pct = Math.min((used / 7) * 100, 100);
-    label.textContent = 'Free plan: generations this month';
-    count.textContent = `${used} / 7`;
-    fill.style.width = pct + '%';
-    fill.style.opacity = '1';
-    fill.className = 'usage-fill' + (used >= 7 ? ' full' : used >= 5 ? ' warn' : '');
-    right.innerHTML = used < 3
-      ? `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Upgrade to Pro</button>`
-      : `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Limit reached - Upgrade</button>`;
+    document.getElementById('usageBarSection').style.display = 'none';
+    return;
   }
+  document.getElementById('usageBarSection').style.display = '';
+  const pct = Math.min((used / 7) * 100, 100);
+  label.textContent = 'Free plan: generations this month';
+  count.textContent = `${used} / 7`;
+  fill.style.width = pct + '%';
+  fill.style.opacity = '1';
+  fill.className = 'usage-fill' + (used >= 7 ? ' full' : used >= 5 ? ' warn' : '');
+  right.innerHTML = used < 3
+    ? `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Upgrade to Pro</button>`
+    : `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Limit reached - Upgrade</button>`;
   setTimeout(() => safeCreateIcons(), 100);
 }
 
@@ -3588,15 +3583,35 @@ flipCard = function() {
 // ── DECK FOLDERS (Pro) ──
 let currentFolder = 'all';
 let deckFolders = {};
+let folderOrder = []; // tracks creation order
 
 function loadFolders() {
   try { deckFolders = JSON.parse(localStorage.getItem('cardly_folders') || '{}'); } catch(e) { deckFolders = {}; }
+  try { folderOrder = JSON.parse(localStorage.getItem('cardly_folder_order') || '[]'); } catch(e) { folderOrder = []; }
+  // Sync: ensure all folders in deckFolders are in folderOrder
+  const known = new Set(Object.values(deckFolders).filter(v => !v.startsWith('__folder__') || true));
+  const allNames = [...new Set(Object.values(deckFolders))];
+  allNames.forEach(name => { if (!folderOrder.includes(name)) folderOrder.push(name); });
+  folderOrder = folderOrder.filter(name => allNames.includes(name));
 }
 function saveFolders() {
   try { localStorage.setItem('cardly_folders', JSON.stringify(deckFolders)); } catch(e) {}
+  try { localStorage.setItem('cardly_folder_order', JSON.stringify(folderOrder)); } catch(e) {}
 }
 function getAllFolderNames() {
-  return [...new Set(Object.values(deckFolders))].sort();
+  // Return in creation order, not alphabetical
+  const allNames = new Set(Object.values(deckFolders));
+  return folderOrder.filter(name => allNames.has(name));
+}
+
+function deleteFolder(name) {
+  // Remove folder from all decks assigned to it
+  Object.keys(deckFolders).forEach(id => { if (deckFolders[id] === name) delete deckFolders[id]; });
+  folderOrder = folderOrder.filter(f => f !== name);
+  saveFolders();
+  if (currentFolder === name) currentFolder = 'all';
+  renderDecks();
+  showToast(`Folder "${name}" deleted.`);
 }
 
 function renderFolderTabs() {
@@ -3614,11 +3629,27 @@ function renderFolderTabs() {
   container.appendChild(allBtn);
 
   folders.forEach(f => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;align-items:center;gap:0;position:relative;';
+
     const btn = document.createElement('button');
     btn.className = 'folder-tab' + (currentFolder === f ? ' active' : '');
+    btn.style.paddingRight = '26px';
     btn.textContent = f;
     btn.addEventListener('click', () => setFolder(f));
-    container.appendChild(btn);
+
+    const del = document.createElement('button');
+    del.style.cssText = 'position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:inherit;opacity:0.5;padding:0;display:flex;align-items:center;font-size:12px;line-height:1;';
+    del.innerHTML = '×';
+    del.title = 'Delete folder';
+    del.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm(`Delete folder "${f}"? Decks will not be deleted, just unassigned.`)) deleteFolder(f);
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(del);
+    container.appendChild(wrap);
   });
 
   // New folder button
@@ -3648,9 +3679,9 @@ function confirmCreateFolder() {
   const name = document.getElementById('createFolderInput').value.trim();
   if (!name) return showToast('Enter a folder name.');
   document.getElementById('createFolderModal').classList.remove('open');
-  // Store as a "known folder" — assign a placeholder key so it appears in tabs
   const phantomKey = '__folder__' + name;
   deckFolders[phantomKey] = name;
+  if (!folderOrder.includes(name)) folderOrder.push(name);
   saveFolders();
   renderDecks();
   showToast(`Folder "${name}" created. Assign decks using the folder icon.`);
@@ -3734,7 +3765,10 @@ function createFolderFromModal() {
 function applyFolderSelection() {
   if (!folderTargetDeckId) return;
   if (selectedFolderName === null) delete deckFolders[folderTargetDeckId];
-  else deckFolders[folderTargetDeckId] = selectedFolderName;
+  else {
+    deckFolders[folderTargetDeckId] = selectedFolderName;
+    if (!folderOrder.includes(selectedFolderName)) folderOrder.push(selectedFolderName);
+  }
   saveFolders();
   document.getElementById('folderModal').classList.remove('open');
   renderFolderTabs();
