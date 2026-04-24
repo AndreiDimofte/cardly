@@ -2136,24 +2136,18 @@ footer{
   <div class="modal-box">
     <button class="modal-close" onclick="closeAccountModal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     <div class="modal-title">Account</div>
-    <div class="modal-sub" id="accountEmail"></div>
+    <div class="modal-sub" id="accountEmail" style="margin-bottom:24px;"></div>
 
-    <div style="margin:20px 0;">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Username</div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="accountUsername" class="auth-input" style="flex:1;margin:0;" placeholder="Your username"/>
-        <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()" style="flex-shrink:0;padding:0 18px;height:44px;white-space:nowrap;">Save</button>
-      </div>
-    </div>
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Username</div>
+    <input type="text" id="accountUsername" class="auth-input" style="width:100%;box-sizing:border-box;margin-bottom:8px;" placeholder="Your username"/>
+    <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()" style="width:100%;margin-bottom:20px;">Save username</button>
 
     <div id="manageSubBtn" style="display:none;margin-bottom:10px;">
-      <button class="btn-save" onclick="openBillingPortal()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:none;">
+      <button class="btn-save" onclick="openBillingPortal()" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:none;">
         Manage Subscription
       </button>
     </div>
-    <button class="btn-danger" onclick="confirmDeleteAccount()">
-      Delete my account & all data
-    </button>
+    <button class="btn-danger" onclick="confirmDeleteAccount()">Delete my account & all data</button>
     <button class="btn-cancel" onclick="closeAccountModal()">Cancel</button>
   </div>
 </div>
@@ -2314,8 +2308,8 @@ footer{
     <button class="modal-close" onclick="document.getElementById('createFolderModal').classList.remove('open')"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     <div class="modal-title">New Folder</div>
     <div class="modal-sub">Give your folder a name.</div>
-    <input type="text" class="folder-new-input" id="createFolderInput" placeholder="e.g. Biology, Semester 2..." maxlength="40" style="margin-bottom:14px;"/>
-    <button class="btn-save" onclick="confirmCreateFolder()">Create Folder</button>
+    <input type="text" class="auth-input" id="createFolderInput" placeholder="e.g. Biology, Semester 2..." maxlength="40" style="width:100%;box-sizing:border-box;margin-bottom:8px;"/>
+    <button class="btn-save" onclick="confirmCreateFolder()" style="width:100%;margin-bottom:8px;">Create Folder</button>
     <button class="btn-cancel" onclick="document.getElementById('createFolderModal').classList.remove('open')">Cancel</button>
   </div>
 </div>
@@ -3605,11 +3599,14 @@ let selectedFolderName = null;
 
 function confirmCreateFolder() {
   const name = document.getElementById('createFolderInput').value.trim();
-  if (!name) return;
+  if (!name) return showToast('Enter a folder name.');
   document.getElementById('createFolderModal').classList.remove('open');
-  showToast(`Folder "${name}" created. Use the folder icon on a deck to assign it.`);
-  // Pre-select in folder modal for next assignment
-  renderFolderTabs();
+  // Store as a "known folder" — assign a placeholder key so it appears in tabs
+  const phantomKey = '__folder__' + name;
+  deckFolders[phantomKey] = name;
+  saveFolders();
+  renderDecks();
+  showToast(`Folder "${name}" created. Assign decks using the folder icon.`);
 }
 
 function openFolderModal(deckId, deckName) {
@@ -4160,19 +4157,40 @@ async function processPdf(file) {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
       const MAX_SCANNED_PAGES = 100;
       const pagesTrimmed = totalPages > MAX_SCANNED_PAGES;
+      const pagesToSend = Math.min(totalPages, MAX_SCANNED_PAGES);
 
       if (pagesTrimmed) {
         showToast(`Scanned PDF has ${totalPages} pages — only the first 100 will be processed. Split the PDF for full coverage.`, 'warning');
       }
 
-      document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
-      const bytes = new Uint8Array(arrayBuffer);
-      let binary = '';
-      const chunkSize = 8192;
-      for (let i = 0; i < bytes.byteLength; i += chunkSize) {
-        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+      if (pagesTrimmed) {
+        // Render only first 100 pages as images and send as image array
+        document.getElementById('pdfLoadedMeta').textContent = `Rendering ${pagesToSend} pages...`;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        pdfPageImages = [];
+        for (let i = 1; i <= pagesToSend; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1.2 });
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          pdfPageImages.push(canvas.toDataURL('image/jpeg', 0.75).split(',')[1]);
+          if (i % 10 === 0) document.getElementById('pdfLoadedMeta').textContent = `Rendering page ${i}/${pagesToSend}...`;
+        }
+        pdfBase64 = null; // use image mode
+      } else {
+        // Under 100 pages — send full PDF natively
+        document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = '';
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+          binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        }
+        pdfBase64 = btoa(binary);
+        pdfPageImages = [];
       }
-      pdfBase64 = btoa(binary);
 
       document.getElementById('notesInput').value = '';
       document.getElementById('charCount').textContent = `${Math.min(totalPages, MAX_SCANNED_PAGES)} pages · image mode`;
