@@ -542,12 +542,14 @@ header{
 .gen-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:16px;}
 
 .generator{
-  display:grid;grid-template-columns:1fr 1fr;gap:2px;
-  background:var(--border);border-radius:16px;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  background:var(--bg);border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);
   align-items:stretch;
 }
 
 .panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;}
+.panel:first-child{border-right:1px solid var(--border);}
 
 .panel-label{
   font-family:'JetBrains Mono',monospace;font-size:10px;
