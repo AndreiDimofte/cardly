@@ -1,9 +1,4 @@
 // api/generate.js — Cardly serverless function
-// Vercel env vars required:
-//   ANTHROPIC_API_KEY    — your Anthropic key
-//   SUPABASE_URL         — from Supabase project settings
-//   SUPABASE_SERVICE_KEY — service_role key (not anon key)
-
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
@@ -13,52 +8,38 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // 1. Verify Supabase session
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
-  // 1b. Check if this email previously deleted an account (abuse prevention)
   const { data: deleted } = await supabase
-    .from('deleted_accounts')
-    .select('email')
-    .eq('email', user.email.toLowerCase())
-    .single();
+    .from('deleted_accounts').select('email').eq('email', user.email.toLowerCase()).single();
+  if (deleted) return res.status(403).json({ error: 'This account is not eligible for free generations. Please upgrade to Pro.' });
 
-  if (deleted) {
-    return res.status(403).json({ error: 'This account is not eligible for free generations. Please upgrade to Pro.' });
-  }
-
-  // 2. Check usage limit for free users
   const { data: profile } = await supabase
-    .from('profiles')
-    .select('is_pro, sets_this_month')
-    .eq('id', user.id)
-    .single();
-
+    .from('profiles').select('is_pro, sets_this_month').eq('id', user.id).single();
   if (!profile?.is_pro && (profile?.sets_this_month || 0) >= 3) {
     return res.status(403).json({ error: 'Free limit reached. Upgrade to Cardly Pro for unlimited decks.' });
   }
 
-  // 3. Validate input
-  const { notes, count = 10 } = req.body;
-  if (!notes || notes.trim().length < 50) {
+  const { notes, images, count = 10 } = req.body;
+  const isImageMode = Array.isArray(images) && images.length > 0;
+
+  if (!isImageMode && (!notes || notes.trim().length < 50)) {
     return res.status(400).json({ error: 'Notes too short — paste at least a paragraph.' });
   }
+  if (isImageMode && images.length > 20) {
+    return res.status(400).json({ error: 'Too many pages — maximum 20 for image PDFs.' });
+  }
 
-  // Enforce card count limits (free = max 10, pro = max 25)
   const maxCards = profile?.is_pro ? 25 : 10;
   const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
 
-  // 4. Call Anthropic
-  const prompt = `You are a study assistant. Given the following notes, generate exactly ${cardCount} flashcards.
+  const instruction = `You are a study assistant. Generate exactly ${cardCount} flashcards from the provided study material.
 
 Rules:
 - Questions must be specific and testable
@@ -67,10 +48,23 @@ Rules:
 - Do NOT number the cards
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
-[{"front": "question", "back": "answer"}]
+[{"front": "question", "back": "answer"}]`;
 
-Notes:
-${notes.substring(0, 6000)}`;
+  let messageContent;
+  if (isImageMode) {
+    messageContent = [
+      { type: 'text', text: instruction + '\n\nThe following are pages from a PDF. Generate flashcards from the study material:' },
+      ...images.map(base64 => ({
+        type: 'image',
+        source: { type: 'base64', media_type: 'image/jpeg', data: base64 }
+      })),
+      { type: 'text', text: `Generate exactly ${cardCount} flashcards as a raw JSON array.` }
+    ];
+  } else {
+    messageContent = `${instruction}\n\nNotes:\n${notes.substring(0, 6000)}`;
+  }
+
+  const model = isImageMode ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001';
 
   const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -80,9 +74,9 @@ ${notes.substring(0, 6000)}`;
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model,
       max_tokens: 2000,
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: 'user', content: messageContent }],
     }),
   });
 
@@ -100,9 +94,7 @@ ${notes.substring(0, 6000)}`;
   try { cards = JSON.parse(match[0]); }
   catch { return res.status(500).json({ error: 'Invalid JSON from model.' }); }
 
-  // 5. Increment usage counter
-  await supabase
-    .from('profiles')
+  await supabase.from('profiles')
     .update({ sets_this_month: (profile?.sets_this_month || 0) + 1 })
     .eq('id', user.id);
 

@@ -1916,7 +1916,7 @@ footer{
               </div>
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">Text-based PDFs only · Up to ~150 pages</div>
+              <div class="pdf-drop-hint">Text & scanned PDFs · Up to ~20 pages</div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
               <div class="pdf-loaded-icon">
@@ -3252,15 +3252,15 @@ async function generateCards() {
   const notes = document.getElementById('notesInput').value.trim();
   const count = parseInt(document.getElementById('cardCount').value) || 10;
   const deckName = document.getElementById('deckNameInput').value.trim();
+  const isImageMode = pdfPageImages.length > 0;
 
-  if (notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
+  if (!isImageMode && notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
   if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
     showError("You've used all 3 free generations this month. Upgrade to Pro for unlimited decks."); return;
   }
 
   setLoading(true); hideError();
 
-  // Timeout after 45 seconds — prevents infinite loading state
   const timeout = setTimeout(() => {
     setLoading(false);
     showError('Request timed out. Please try again.');
@@ -3272,11 +3272,15 @@ async function generateCards() {
     const controller = new AbortController();
     const abortTimeout = setTimeout(() => controller.abort(), 44000);
 
+    const body = isImageMode
+      ? { images: pdfPageImages, count }
+      : { notes, count };
+
     const res = await fetch('/api/generate', {
       method: 'POST',
       signal: controller.signal,
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ notes, count })
+      body: JSON.stringify(body)
     });
 
     clearTimeout(abortTimeout);
@@ -3995,6 +3999,7 @@ function clearPdf() {
   document.getElementById('notesInput').value = '';
   document.getElementById('charCount').textContent = '0 chars';
   document.getElementById('deckNameInput').value = '';
+  pdfPageImages = [];
 }
 
 // Drag and drop support
@@ -4032,6 +4037,9 @@ function handlePdfUpload(input) {
   if (file) processPdf(file);
 }
 
+// Store rendered page images globally for generate call
+let pdfPageImages = [];
+
 async function processPdf(file) {
   const zone = document.getElementById('pdfDropZone');
   const loaded = document.getElementById('pdfLoaded');
@@ -4040,6 +4048,7 @@ async function processPdf(file) {
   loaded.style.display = 'flex';
   document.getElementById('pdfLoadedName').textContent = file.name;
   document.getElementById('pdfLoadedMeta').textContent = 'Reading...';
+  pdfPageImages = [];
 
   try {
     const ok = await loadPdfJs();
@@ -4048,40 +4057,71 @@ async function processPdf(file) {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const totalPages = pdf.numPages;
-    let fullText = '';
+    const MAX_PAGES = 20;
+    const pagesToRender = Math.min(totalPages, MAX_PAGES);
 
-    for (let i = 1; i <= totalPages; i++) {
+    // Try text extraction first — if text is found, use it (cheaper)
+    let fullText = '';
+    for (let i = 1; i <= Math.min(totalPages, 5); i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      fullText += content.items.map(item => item.str).join(' ') + '\n\n';
+      fullText += content.items.map(item => item.str).join(' ');
     }
 
-    fullText = fullText.trim();
-    if (!fullText || fullText.length < 50) throw new Error('No readable text. PDF may be scanned or image-based');
+    const hasText = fullText.trim().length > 100;
 
-    const trimmed = fullText.length > 30000;
-    if (trimmed) fullText = fullText.slice(0, 30000);
+    if (hasText) {
+      // Text-based PDF: extract all text as before
+      let allText = fullText;
+      for (let i = 6; i <= totalPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        allText += content.items.map(item => item.str).join(' ') + '\n\n';
+      }
+      allText = allText.trim();
+      const trimmed = allText.length > 30000;
+      if (trimmed) allText = allText.slice(0, 30000);
+      document.getElementById('notesInput').value = allText;
+      document.getElementById('charCount').textContent = allText.length.toLocaleString() + ' chars';
+      document.getElementById('pdfLoadedMeta').textContent =
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${allText.length.toLocaleString()} chars${trimmed ? ' (trimmed)' : ''}`;
+    } else {
+      // Image-based PDF: render pages to canvas
+      document.getElementById('pdfLoadedMeta').textContent = `Rendering ${pagesToRender} pages...`;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
 
-    // Store extracted text in the hidden textarea
-    document.getElementById('notesInput').value = fullText;
-    document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
-    dismissTooltip();
+      for (let i = 1; i <= pagesToRender; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 }); // good balance of quality vs size
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+        pdfPageImages.push(base64);
+        document.getElementById('pdfLoadedMeta').textContent =
+          `Rendering page ${i}/${pagesToRender}...`;
+      }
+
+      // Clear text input so generateCards knows to use images
+      document.getElementById('notesInput').value = '';
+      document.getElementById('charCount').textContent = `${pagesToRender} pages (image mode)`;
+      document.getElementById('pdfLoadedMeta').textContent =
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · image mode${totalPages > MAX_PAGES ? ` (first ${MAX_PAGES})` : ''}`;
+    }
 
     // Auto-fill deck name
     const nameInput = document.getElementById('deckNameInput');
     if (!nameInput.value.trim()) {
       nameInput.value = file.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
     }
-
-    document.getElementById('pdfLoadedMeta').textContent =
-      `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars${trimmed ? ' (trimmed)' : ''}`;
-
+    dismissTooltip();
     setTimeout(() => safeCreateIcons(), 100);
   } catch(e) {
-    // Show error and reset to drop zone
     zone.style.display = 'flex';
     loaded.style.display = 'none';
     document.getElementById('pdfFileInput').value = '';
+    pdfPageImages = [];
     showToast('PDF error: ' + e.message);
   }
 }
