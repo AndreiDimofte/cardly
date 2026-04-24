@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   const { data: deleted } = await supabase
     .from('deleted_accounts').select('email').eq('email', user.email.toLowerCase()).single();
-  if (deleted) return res.status(403).json({ error: 'This account is not eligible for free generations. Please upgrade to Pro.' });
+  if (deleted) return res.status(403).json({ error: 'Your previous account was deleted. Free generations are not available on new accounts created after deletion. Please upgrade to Pro to continue.' });
 
   const { data: profile } = await supabase
     .from('profiles').select('is_pro, sets_this_month').eq('id', user.id).single();

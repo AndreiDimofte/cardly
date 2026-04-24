@@ -3848,6 +3848,7 @@ function openStatsModal() {
     ).join('') || '<div style="font-size:13px;color:var(--text3);">No sessions recorded yet. Start studying!</div>';
   } catch(e) {}
   document.getElementById('statsModal').classList.add('open');
+  setTimeout(() => safeCreateIcons(), 50);
 }
 
 function calcStreak(sessions) {
@@ -4112,7 +4113,7 @@ async function processPdf(file) {
   pdfPageImages = [];
 
   try {
-    if (file.size > 32 * 1024 * 1024) throw new Error('PDF too large — maximum 32MB.');
+    if (file.size > 32 * 1024 * 1024) throw new Error('PDF too large. Maximum size is 32MB.');
 
     const ok = await loadPdfJs();
     if (!ok) throw new Error('Could not load PDF reader. Check your connection.');
@@ -4151,7 +4152,7 @@ async function processPdf(file) {
         `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars · text mode${trimmed ? ' (trimmed)' : ''}`;
 
       if (trimmed) {
-        showToast('PDF trimmed to 30,000 chars — only the first ~150 pages were used. Split the PDF for full coverage.', 'warning');
+        showToast('PDF trimmed to 30,000 chars. Only the first ~150 pages were used. Split the PDF for full coverage.', 'warning');
       }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
@@ -4160,25 +4161,26 @@ async function processPdf(file) {
       const pagesToSend = Math.min(totalPages, MAX_SCANNED_PAGES);
 
       if (pagesTrimmed) {
-        showToast(`Scanned PDF has ${totalPages} pages — only the first 100 will be processed. Split the PDF for full coverage.`, 'warning');
+        showToast(`Scanned PDF has ${totalPages} pages. Only the first 20 pages will be processed. Split the PDF for full coverage.`, 'warning');
       }
 
       if (pagesTrimmed) {
-        // Render only first 100 pages as images and send as image array
-        document.getElementById('pdfLoadedMeta').textContent = `Rendering ${pagesToSend} pages...`;
+        // Render only first 20 pages as images to stay within request size limits
+        document.getElementById('pdfLoadedMeta').textContent = `Rendering pages...`;
+        const SEND_LIMIT = 20;
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         pdfPageImages = [];
-        for (let i = 1; i <= pagesToSend; i++) {
+        for (let i = 1; i <= Math.min(pagesToSend, SEND_LIMIT); i++) {
           const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 1.2 });
+          const viewport = page.getViewport({ scale: 1.0 });
           canvas.width = viewport.width;
           canvas.height = viewport.height;
           await page.render({ canvasContext: ctx, viewport }).promise;
-          pdfPageImages.push(canvas.toDataURL('image/jpeg', 0.75).split(',')[1]);
-          if (i % 10 === 0) document.getElementById('pdfLoadedMeta').textContent = `Rendering page ${i}/${pagesToSend}...`;
+          pdfPageImages.push(canvas.toDataURL('image/jpeg', 0.65).split(',')[1]);
+          document.getElementById('pdfLoadedMeta').textContent = `Rendering page ${i}/${Math.min(pagesToSend, SEND_LIMIT)}...`;
         }
-        pdfBase64 = null; // use image mode
+        pdfBase64 = null;
       } else {
         // Under 100 pages — send full PDF natively
         document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
@@ -4193,9 +4195,9 @@ async function processPdf(file) {
       }
 
       document.getElementById('notesInput').value = '';
-      document.getElementById('charCount').textContent = `${Math.min(totalPages, MAX_SCANNED_PAGES)} pages · image mode`;
+      document.getElementById('charCount').textContent = `${pagesTrimmed ? 20 : pagesToSend} pages · image mode`;
       document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 100 sent)` : ''}`;
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 20 sent)` : ''}`;
     }
 
     const nameInput = document.getElementById('deckNameInput');
