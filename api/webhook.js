@@ -152,6 +152,22 @@ export default async function handler(req, res) {
       break;
     }
 
+    case 'customer.subscription.updated': {
+      const subscription = event.data.object;
+      const prevAttr = event.data.previous_attributes;
+      // Only act when cancel_at_period_end just switched to true (user just cancelled)
+      if (subscription.cancel_at_period_end === true && prevAttr?.cancel_at_period_end === false) {
+        const { data: profile } = await supabase
+          .from('profiles').select('id').eq('stripe_customer_id', subscription.customer).single();
+        if (profile) {
+          const { data: { user } } = await supabase.auth.admin.getUserById(profile.id);
+          if (user?.email) await sendCancellationEmail(user.email);
+          console.log(`Cancellation scheduled for customer ${subscription.customer} — email sent`);
+        }
+      }
+      break;
+    }
+
     case 'customer.subscription.deleted': {
       const subscription = event.data.object;
       const { data: profile } = await supabase
