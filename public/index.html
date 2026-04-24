@@ -546,7 +546,6 @@ header{
   background:var(--surface);border-radius:16px;
   border:1px solid var(--border);
   overflow:hidden;
-  align-items:stretch;
 }
 
 .panel{background:var(--surface);padding:28px;min-width:0;}
@@ -2501,6 +2500,8 @@ async function init() {
         passwordRecovery = true;
         sessionStorage.removeItem('cardly_is_reset_tab');
         signingIn = false;
+        // Explicitly set session so updateUser works
+        if (session) await sb.auth.setSession({ access_token: session.access_token, refresh_token: session.refresh_token });
         showPasswordResetModal();
         return;
       }
@@ -3164,6 +3165,8 @@ async function submitPasswordReset() {
   const msg = document.getElementById('resetMsg');
   if (!pw || pw.length < 6) { msg.innerHTML = '<div class="auth-error">Password must be at least 6 characters.</div>'; return; }
   if (pw !== confirm) { msg.innerHTML = '<div class="auth-error">Passwords do not match.</div>'; return; }
+  const { data: { session: s } } = await sb.auth.getSession();
+  if (!s) { msg.innerHTML = '<div class="auth-error">Session expired. Please request a new reset link.</div>'; return; }
   const { error } = await sb.auth.updateUser({ password: pw });
   if (error) { msg.innerHTML = `<div class="auth-error">${error.message}</div>`; return; }
   document.getElementById('passwordResetModal').classList.remove('open');
@@ -3326,6 +3329,21 @@ function displayMiniCards() {
   document.getElementById('loadingState').style.display = 'none';
   mini.style.display = 'flex';
   document.getElementById('panelActions').style.display = 'flex';
+
+  // Lock right panel cards-area height to match left panel exactly
+  const leftPanel = document.querySelector('.panel:first-child');
+  const cardsArea = document.getElementById('miniCards').closest('.cards-area');
+  if (leftPanel && cardsArea) {
+    const leftH = leftPanel.getBoundingClientRect().height;
+    const rightPanel = leftPanel.nextElementSibling;
+    const panelPadding = 28 * 2; // top + bottom padding
+    const labelH = rightPanel.querySelector('.panel-label')?.getBoundingClientRect().height || 0;
+    const actionsH = rightPanel.querySelector('.panel-actions')?.getBoundingClientRect().height || 0;
+    const available = leftH - panelPadding - labelH - actionsH - 12; // 12 = gaps
+    cardsArea.style.maxHeight = available + 'px';
+    cardsArea.style.overflowY = 'auto';
+  }
+
   mini.innerHTML = '';
   cards.forEach((card, i) => {
     const el = document.createElement('div');
