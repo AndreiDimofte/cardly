@@ -1916,7 +1916,11 @@ footer{
               </div>
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">Text PDFs: unlimited pages · ~150 pages / 30k chars&nbsp;&nbsp;|&nbsp;&nbsp;Scanned PDFs: up to 100 pages · 32MB</div>
+              <div class="pdf-drop-hint">
+                <span style="color:var(--text2);">Text PDFs:</span> unlimited pages, up to 30,000 chars
+                &nbsp;·&nbsp;
+                <span style="color:var(--text2);">Scanned PDFs:</span> up to 100 pages &amp; 32MB
+              </div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
               <div class="pdf-loaded-icon">
@@ -2134,6 +2138,13 @@ footer{
     <button class="modal-close" onclick="closeAccountModal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     <div class="modal-title">Account</div>
     <div class="modal-sub" id="accountEmail"></div>
+
+    <div style="margin:18px 0 6px;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Username</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:18px;">
+      <input type="text" id="accountUsername" class="auth-input" style="flex:1;margin:0;" placeholder="Your username"/>
+      <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()" style="white-space:nowrap;padding:0 16px;">Save</button>
+    </div>
+
     <div id="manageSubBtn" style="display:none;margin-bottom:10px;">
       <button class="btn-save" onclick="openBillingPortal()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:none;">
         Manage Subscription
@@ -2544,6 +2555,14 @@ async function onSignedIn(user) {
   overlay.style.display = 'none';
   document.getElementById('appLoader').style.display = 'flex';
   await Promise.all([loadProfile(), loadDecks()]);
+
+  // Sync username from user_metadata to profiles if not yet stored
+  const metaUsername = user?.user_metadata?.username;
+  if (metaUsername && !userProfile?.username) {
+    await sb.from('profiles').update({ username: metaUsername }).eq('id', user.id);
+    if (userProfile) userProfile.username = metaUsername;
+  }
+
   signingIn = false;
   showApp();
   handleCheckoutReturn();
@@ -2821,10 +2840,37 @@ function renderHeader(loggedIn) {
 // ── ACCOUNT MODAL ──
 function openAccountModal() {
   document.getElementById('accountEmail').textContent = currentUser?.email || '';
-  // Show manage subscription button only for Pro users
+  const username = userProfile?.username || currentUser?.user_metadata?.username || '';
+  document.getElementById('accountUsername').value = username;
   document.getElementById('manageSubBtn').style.display = userProfile?.is_pro ? 'block' : 'none';
   document.getElementById('accountModal').classList.add('open');
   setTimeout(() => safeCreateIcons(), 200);
+}
+
+async function saveUsername() {
+  const newUsername = document.getElementById('accountUsername').value.trim();
+  const btn = document.getElementById('saveUsernameBtn');
+  if (!newUsername) return showToast('Username cannot be empty.');
+  if (newUsername.length < 2) return showToast('Username must be at least 2 characters.');
+  if (newUsername.length > 30) return showToast('Username must be 30 characters or less.');
+  if (!/^[a-zA-Z0-9_\- ]+$/.test(newUsername)) return showToast('Username can only contain letters, numbers, spaces, - and _');
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  try {
+    const { error } = await sb.from('profiles').update({ username: newUsername }).eq('id', currentUser.id);
+    if (error) throw error;
+    if (userProfile) userProfile.username = newUsername;
+    updateWelcome();
+    renderHeader(true);
+    showToast('Username updated!');
+    btn.textContent = 'Saved ✓';
+    setTimeout(() => { btn.textContent = 'Save'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    showToast('Failed to save username.');
+    btn.textContent = 'Save';
+    btn.disabled = false;
+  }
 }
 
 async function openBillingPortal() {
@@ -3084,7 +3130,7 @@ async function saveDeck(deckName, deckCards) {
 }
 
 function updateWelcome() {
-  const name = currentUser?.email?.split('@')[0] || 'there';
+  const name = userProfile?.username || currentUser?.user_metadata?.username || currentUser?.email?.split('@')[0] || 'there';
   const isNew = savedDecks.length === 0;
   document.getElementById('welcomeMsg').textContent = isNew ? `Welcome to Cardly` : `Welcome back, ${name}`;
   document.getElementById('welcomeSub').textContent = isNew
@@ -4097,15 +4143,23 @@ async function processPdf(file) {
       document.getElementById('notesInput').value = fullText;
       document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
       document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars${trimmed ? ' (trimmed to 30k)' : ''} · text mode`;
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars · text mode${trimmed ? ' (trimmed)' : ''}`;
+
+      if (trimmed) {
+        showToast('⚠️ PDF trimmed to 30,000 chars — only the first ~150 pages were used. Split the PDF for full coverage.');
+      }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
-      if (totalPages > 100) throw new Error('Scanned PDF too long — maximum 100 pages for image-based PDFs.');
+      const MAX_SCANNED_PAGES = 100;
+      const pagesTrimmed = totalPages > MAX_SCANNED_PAGES;
+
+      if (pagesTrimmed) {
+        showToast(`⚠️ Scanned PDF has ${totalPages} pages — only the first 100 will be processed. Split the PDF for full coverage.`);
+      }
 
       document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
       const bytes = new Uint8Array(arrayBuffer);
       let binary = '';
-      // Use chunked approach to avoid call stack overflow on large files
       const chunkSize = 8192;
       for (let i = 0; i < bytes.byteLength; i += chunkSize) {
         binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
@@ -4113,9 +4167,9 @@ async function processPdf(file) {
       pdfBase64 = btoa(binary);
 
       document.getElementById('notesInput').value = '';
-      document.getElementById('charCount').textContent = `${totalPages} pages · image mode`;
+      document.getElementById('charCount').textContent = `${Math.min(totalPages, MAX_SCANNED_PAGES)} pages · image mode`;
       document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode`;
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 100 sent)` : ''}`;
     }
 
     const nameInput = document.getElementById('deckNameInput');
