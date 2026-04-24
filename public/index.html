@@ -1728,7 +1728,7 @@ footer{
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
         <div class="pricing-card featured reveal reveal-delay-3">
-          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-badge">Recommended</div>
           <div class="pricing-plan">Pro</div>
           <div class="pricing-price">$5<span>/month</span></div>
           <div class="pricing-desc">For serious students</div>
@@ -2414,7 +2414,7 @@ footer{
   <div class="modal-box" style="max-width:380px;">
     <div class="modal-title">Delete folder?</div>
     <div class="modal-sub" id="deleteFolderModalName"></div>
-    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">Your decks will not be deleted — they will just be unassigned from this folder.</p>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;">Your decks will not be deleted - they will just be unassigned from this folder.</p>
     <button class="btn-save" id="deleteFolderConfirmBtn" style="background:var(--danger);box-shadow:none;">Delete folder</button>
     <button class="btn-cancel" onclick="document.getElementById('deleteFolderModal').classList.remove('open')">Cancel</button>
   </div>
@@ -2453,7 +2453,7 @@ const FREE_DECK_LIMIT = 10; // max saved decks for free users
 const { createClient } = supabase;
 let sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Wrap any promise with a timeout — prevents UI from freezing on hung Supabase calls
+// Wrap any promise with a timeout - prevents UI from freezing on hung Supabase calls
 function withTimeout(promise, ms = 10000, label = 'operation') {
   return Promise.race([
     promise,
@@ -2461,7 +2461,7 @@ function withTimeout(promise, ms = 10000, label = 'operation') {
   ]);
 }
 
-// Reinitialize Supabase client — fixes hung client state without full page reload
+// Reinitialize Supabase client - fixes hung client state without full page reload
 function reinitSupabase() {
   try {
     sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -2501,7 +2501,7 @@ async function init() {
     const isHashToken = hash.includes('access_token');
     const isRecoveryHash = hash.includes('type=recovery');
     // This tab received the reset link from email (Supabase redirects here with ?reset=true or #type=recovery)
-    // Never treat a plain access_token hash as a reset — that's OAuth
+    // Never treat a plain access_token hash as a reset - that's OAuth
     const isResetTab = search.includes('reset=true') || isRecoveryHash;
 
     // Mark OAuth tab before URL is cleared
@@ -2565,7 +2565,7 @@ async function init() {
         }
       }, 1500);
     } else if (isThisResetTab && !session) {
-      // No session yet — wait a bit longer then show modal or landing
+      // No session yet - wait a bit longer then show modal or landing
       setTimeout(() => {
         if (!passwordRecovery) {
           sessionStorage.removeItem('cardly_is_reset_tab');
@@ -2817,7 +2817,7 @@ function renderHeader(loggedIn) {
       <button class="btn-signout" onclick="signOut()">Sign out</button>
     `;
 
-    // Hamburger — built with createElement so onclick survives safeCreateIcons
+    // Hamburger - built with createElement so onclick survives safeCreateIcons
     const ham = document.createElement('button');
     ham.className = 'btn-mobile-menu';
     ham.id = 'mobileMenuBtn';
@@ -2946,7 +2946,7 @@ async function deleteAccount() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to delete account');
     await sb.auth.signOut();
-    // Force landing — bypass all guards
+    // Force landing - bypass all guards
     signingIn = false;
     currentUser = null; userProfile = null; savedDecks = [];
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
@@ -3289,7 +3289,7 @@ async function signOut() {
   currentUser = null; userProfile = null; savedDecks = [];
   document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
   document.getElementById('mobileMenu').classList.remove('open');
-  // Force show landing — bypass all guards
+  // Force show landing - bypass all guards
   document.querySelectorAll('.view,.legal-view').forEach(v => v.classList.remove('active'));
   document.getElementById('studyView').style.display = 'none';
   document.getElementById('landingView').classList.add('active');
@@ -3327,7 +3327,7 @@ document.getElementById('notesInput').addEventListener('input', () => {
 });
 
 // ── GENERATE ──
-// Always returns a fresh, valid access token — refreshes if expired or close to expiry
+// Always returns a fresh, valid access token - refreshes if expired or close to expiry
 async function getValidSession() {
   let { data: { session } } = await withTimeout(sb.auth.getSession(), 8000, 'getSession');
   if (!session) throw new Error('You have been signed out. Please sign in again.');
@@ -4293,7 +4293,7 @@ async function processPdf(file) {
         }
         pdfBase64 = null;
       } else {
-        // Under 100 pages — send full PDF natively
+        // Under 100 pages - send full PDF natively
         document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
         const bytes = new Uint8Array(arrayBuffer);
         let binary = '';
@@ -4356,7 +4356,7 @@ document.addEventListener('DOMContentLoaded', () => {
   init(); // fire and forget - landing shows immediately
   setTimeout(() => safeCreateIcons(), 200);
 
-  // Handle ?legal= from /terms and /privacy redirects — works logged in or out
+  // Handle ?legal= from /terms and /privacy redirects - works logged in or out
   const legalParam = new URLSearchParams(window.location.search).get('legal');
   if (legalParam === 'tos' || legalParam === 'privacy') {
     window.history.replaceState(null, '', window.location.pathname);

@@ -4,7 +4,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  // On Vercel Hobby, cron auth header isn't sent — check CRON_SECRET if present, otherwise allow Vercel cron user-agent
+  // On Vercel Hobby, cron auth header isn't sent - check CRON_SECRET if present, otherwise allow Vercel cron user-agent
   const authHeader = req.headers.authorization;
   const userAgent = req.headers['user-agent'] || '';
   const cronSecret = process.env.CRON_SECRET;

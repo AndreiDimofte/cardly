@@ -1,4 +1,4 @@
-// api/generate.js — Cardly serverless function
+// api/generate.js - Cardly serverless function
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   const isImageMode = Array.isArray(images) && images.length > 0;
 
   if (!isPdfMode && !isImageMode && (!notes || notes.trim().length < 50)) {
-    return res.status(400).json({ error: 'Notes too short — paste at least a paragraph.' });
+    return res.status(400).json({ error: 'Notes too short - paste at least a paragraph.' });
   }
 
   const maxCards = profile?.is_pro ? 30 : 10;
@@ -52,7 +52,7 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
   let model;
 
   if (isPdfMode) {
-    // Native PDF support — Claude handles text & scanned PDFs internally
+    // Native PDF support - Claude handles text & scanned PDFs internally
     model = 'claude-haiku-4-5-20251001';
     messageContent = [
       {

@@ -1,8 +1,8 @@
 // api/create-portal.js
 // Creates a Stripe Customer Portal session so users can manage/cancel their subscription
 // Vercel env vars required:
-//   STRIPE_SECRET_KEY      — Stripe secret key
-//   NEXT_PUBLIC_APP_URL    — your live URL
+//   STRIPE_SECRET_KEY      - Stripe secret key
+//   NEXT_PUBLIC_APP_URL    - your live URL
 
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';

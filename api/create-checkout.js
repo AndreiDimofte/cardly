@@ -1,9 +1,9 @@
 // api/create-checkout.js
 // Creates a Stripe Checkout session for Cardly Pro
 // Vercel env vars required:
-//   STRIPE_SECRET_KEY      — from Stripe Dashboard → Developers → API Keys
-//   STRIPE_PRICE_ID        — from Stripe Dashboard → Products → Cardly Pro → Price ID
-//   NEXT_PUBLIC_APP_URL    — your live URL e.g. https://cardly.app
+//   STRIPE_SECRET_KEY      - from Stripe Dashboard → Developers → API Keys
+//   STRIPE_PRICE_ID        - from Stripe Dashboard → Products → Cardly Pro → Price ID
+//   NEXT_PUBLIC_APP_URL    - your live URL e.g. https://cardly.app
 
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
