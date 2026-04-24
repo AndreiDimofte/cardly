@@ -2672,7 +2672,7 @@ function updateUsageBar() {
   fill.style.width = pct + '%';
   fill.style.opacity = '1';
   fill.className = 'usage-fill' + (used >= 7 ? ' full' : used >= 5 ? ' warn' : '');
-  right.innerHTML = used < 3
+  right.innerHTML = used < 7
     ? `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Upgrade to Pro</button>`
     : `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Limit reached - Upgrade</button>`;
   setTimeout(() => safeCreateIcons(), 100);
