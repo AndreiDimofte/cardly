@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   const { data: profile } = await supabase
     .from('profiles').select('is_pro, sets_this_month').eq('id', user.id).single();
-  if (!profile?.is_pro && (profile?.sets_this_month || 0) >= 3) {
+  if (!profile?.is_pro && (profile?.sets_this_month || 0) >= 7) {
     return res.status(403).json({ error: 'Free limit reached. Upgrade to Cardly Pro for unlimited decks.' });
   }
 
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Notes too short — paste at least a paragraph.' });
   }
 
-  const maxCards = profile?.is_pro ? 25 : 10;
+  const maxCards = profile?.is_pro ? 30 : 10;
   const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
 
   const instruction = `You are a study assistant. Generate exactly ${cardCount} flashcards from the provided study material.

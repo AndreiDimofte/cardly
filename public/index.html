@@ -1714,14 +1714,14 @@ footer{
           <div class="pricing-price">$0<span>/month</span></div>
           <div class="pricing-desc">Perfect for trying it out</div>
           <ul class="pricing-features">
-            <li>3 deck generations per month</li>
+            <li>7 deck generations per month</li>
             <li>Up to 10 saved decks</li>
             <li>Up to 10 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Export to .txt &amp; Anki format</li>
             <li class="muted">Unlimited generations</li>
-            <li class="muted">Up to 25 cards per deck</li>
+            <li class="muted">Up to 30 cards per deck</li>
             <li class="muted">Difficulty rating & folders</li>
             <li class="muted">Stats, streaks & sharing</li>
           </ul>
@@ -1735,7 +1735,7 @@ footer{
           <ul class="pricing-features">
             <li>Unlimited deck generations</li>
             <li>Unlimited saved decks</li>
-            <li>Up to 25 cards per deck</li>
+            <li>Up to 30 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Card difficulty rating</li>
@@ -1889,7 +1889,7 @@ footer{
       <!-- Limit warning -->
       <div class="limit-warning" id="limitWarning">
         <i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--accent);flex-shrink:0;"></i>
-        <span>You've used <strong id="limitUsed">2</strong> of 3 free generations this month. <strong>1 remaining.</strong></span>
+        <span>You've used <strong id="limitUsed">2</strong> of 7 free generations this month. <strong>1 remaining.</strong></span>
       </div>
       <div class="generator">
         <div class="panel">
@@ -1949,7 +1949,7 @@ footer{
           <div class="controls">
             <div class="count-control">
               <span>Generate</span>
-              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="25">
+              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="30">
               <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 10)</span></span>
             </div>
             <span class="char-count" id="charCount">0 chars</span>
@@ -2039,7 +2039,7 @@ footer{
         <div class="pro-upsell-item">
           <div class="pro-upsell-lock"><i data-lucide="layers" style="width:15px;height:15px;"></i></div>
           <div>
-            <div class="pro-upsell-item-title">25 cards per deck</div>
+            <div class="pro-upsell-item-title">30 cards per deck</div>
             <div class="pro-upsell-item-desc">Free plan is limited to 10. Pro doubles your depth.</div>
           </div>
         </div>
@@ -2193,7 +2193,7 @@ footer{
   <p>You agree not to use the Service to upload content that is illegal, harmful, or violates the rights of others. You agree not to attempt to reverse-engineer, scrape, or abuse the Service.</p>
 
   <h2>5. Free Tier Limits</h2>
-  <p>Free accounts are limited to 3 deck generations per calendar month. These limits may change at any time with reasonable notice.</p>
+  <p>Free accounts are limited to 7 deck generations per calendar month. These limits may change at any time with reasonable notice.</p>
 
   <h2>6. Intellectual Property</h2>
   <p>The flashcards generated from your notes are yours. Cardly does not claim ownership over your content. The Cardly application, branding, and underlying technology remain our property.</p>
@@ -2664,7 +2664,7 @@ function updateUsageBar() {
     count.textContent = `${used} / 3`;
     fill.style.width = pct + '%';
     fill.style.opacity = '1';
-    fill.className = 'usage-fill' + (used >= 3 ? ' full' : used === 2 ? ' warn' : '');
+    fill.className = 'usage-fill' + (used >= 7 ? ' full' : used >= 5 ? ' warn' : '');
     right.innerHTML = used < 3
       ? `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Upgrade to Pro</button>`
       : `<button class="btn-upgrade-inline" onclick="startCheckout(event)">Limit reached - Upgrade</button>`;
@@ -2801,8 +2801,8 @@ function renderHeader(loggedIn) {
     hn.innerHTML = '';
     const used = userProfile?.sets_this_month || 0;
     const isPro = userProfile?.is_pro;
-    const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
-    const pillText = isPro ? '★ Pro' : `${used} / 3 free`;
+    const pillClass = isPro ? 'usage-pill pro' : used >= 7 ? 'usage-pill limit' : 'usage-pill';
+    const pillText = isPro ? '★ Pro' : `${used} / 7 free`;
 
     hr.innerHTML = `
       <span class="${pillClass}">${pillText}</span>
@@ -3348,8 +3348,8 @@ async function generateCards() {
   const isPdfMode = !!pdfBase64;
 
   if (!isPdfMode && !isImageMode && notes.length < 50) { showError('Please paste at least a paragraph of notes.'); return; }
-  if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 3) {
-    showError("You've used all 3 free generations this month. Upgrade to Pro for unlimited decks."); return;
+  if (!userProfile?.is_pro && (userProfile?.sets_this_month || 0) >= 7) {
+    showError("You've used all 7 free generations this month. Upgrade to Pro for unlimited decks."); return;
   }
 
   setLoading(true); hideError();
@@ -4058,10 +4058,10 @@ function dismissTooltip() {
   try { localStorage.setItem('cardly_tooltip_seen', '1'); } catch(e) {}
 }
 
-// ── CARD COUNT ENFORCEMENT (free = max 10, pro = max 25) ──
+// ── CARD COUNT ENFORCEMENT (free = max 10, pro = max 30) ──
 function enforceCardCountLimit() {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 25 : 10;
+  const max = userProfile?.is_pro ? 30 : 10;
   input.max = max;
   let val = parseInt(input.value) || 10;
   if (val > max) { val = max; input.value = val; }
@@ -4072,7 +4072,7 @@ function enforceCardCountLimit() {
 
 document.getElementById('cardCount').addEventListener('change', () => {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 25 : 10;
+  const max = userProfile?.is_pro ? 30 : 10;
   let val = parseInt(input.value) || 10;
   if (val < 3) val = 3;
   if (val > max) val = max;
