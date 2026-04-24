@@ -1918,7 +1918,7 @@ footer{
               <div class="pdf-drop-sub">or click to browse</div>
               <div class="pdf-drop-hint" style="font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:var(--text3);text-align:center;line-height:1.8;letter-spacing:0;">
                 <span style="color:var(--text2);font-weight:600;">Text PDFs:</span> unlimited pages · up to 30,000 chars<br>
-                <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 70 pages · max 32MB
+                <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 20 pages · max 32MB
               </div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
@@ -4156,18 +4156,18 @@ async function processPdf(file) {
       }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
-      const MAX_SCANNED_PAGES = 70;
+      const MAX_SCANNED_PAGES = 20;
       const pagesTrimmed = totalPages > MAX_SCANNED_PAGES;
       const pagesToSend = Math.min(totalPages, MAX_SCANNED_PAGES);
 
       if (pagesTrimmed) {
-        showToast(`Scanned PDF has ${totalPages} pages. Only the first 70 pages will be processed. Split the PDF for full coverage.`, 'warning');
+        showToast(`Scanned PDF has ${totalPages} pages. Only the first 20 pages will be processed. Split the PDF for full coverage.`, 'warning');
       }
 
       if (pagesTrimmed) {
         // Render only first 20 pages as images to stay within request size limits
         document.getElementById('pdfLoadedMeta').textContent = `Rendering pages...`;
-        const SEND_LIMIT = 70;
+        const SEND_LIMIT = 20;
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         pdfPageImages = [];
@@ -4195,9 +4195,9 @@ async function processPdf(file) {
       }
 
       document.getElementById('notesInput').value = '';
-      document.getElementById('charCount').textContent = `${pagesTrimmed ? 70 : pagesToSend} pages · image mode`;
+      document.getElementById('charCount').textContent = `${pagesTrimmed ? 20 : pagesToSend} pages · image mode`;
       document.getElementById('pdfLoadedMeta').textContent =
-        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 70 sent)` : ''}`;
+        `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${(file.size / 1024).toFixed(0)} KB · image mode${pagesTrimmed ? ` (first 20 sent)` : ''}`;
     }
 
     const nameInput = document.getElementById('deckNameInput');

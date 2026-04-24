@@ -101,7 +101,10 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
 
   if (!anthropicRes.ok) {
     const err = await anthropicRes.json();
-    return res.status(500).json({ error: err.error?.message || 'Anthropic error' });
+    const status = anthropicRes.status;
+    if (status === 429) return res.status(503).json({ error: 'Too many requests right now. Please wait a moment and try again.' });
+    if (status === 529) return res.status(503).json({ error: 'Cardly is experiencing high traffic. Please try again in a few seconds.' });
+    return res.status(500).json({ error: 'Generation failed. Please try again.' });
   }
 
   const data = await anthropicRes.json();
