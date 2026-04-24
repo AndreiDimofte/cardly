@@ -1,8 +1,10 @@
 {
+  "redirects": [
+    { "source": "/terms", "destination": "/?legal=tos", "permanent": false },
+    { "source": "/privacy", "destination": "/?legal=privacy", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/terms", "destination": "/public/terms.html" },
-    { "source": "/privacy", "destination": "/public/privacy.html" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ],
   "crons": [
@@ -10,5 +12,6 @@
       "path": "/api/cron/reset-usage",
       "schedule": "0 0 1 * *"
     }
-  ]
+  ],
+  "pages404": "/public/404.html"
 }
