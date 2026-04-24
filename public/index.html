@@ -544,10 +544,10 @@ header{
 .generator{
   display:grid;grid-template-columns:1fr 1fr;gap:2px;
   background:var(--border);border-radius:16px;overflow:hidden;
-  align-items:stretch;
+  align-items:start;
 }
 
-.panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;display:flex;flex-direction:column;}
+.panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;}
 
 .panel-label{
   font-family:'JetBrains Mono',monospace;font-size:10px;
@@ -607,10 +607,10 @@ textarea::placeholder{color:var(--text3);}
 }
 
 /* Right panel */
-.cards-area{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;}
+.cards-area{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto;padding-right:4px;}
 .empty-state{
   display:flex;flex-direction:column;align-items:center;
-  justify-content:center;flex:1;gap:10px;
+  justify-content:center;min-height:360px;gap:10px;
   text-align:center;color:var(--text3);width:100%;
 }
 .empty-icon{font-size:32px;opacity:0.4;margin-bottom:4px;}
@@ -619,7 +619,7 @@ textarea::placeholder{color:var(--text3);}
 .loading-state{
   display:none;flex-direction:column;
   align-items:center;justify-content:center;
-  flex:1;gap:16px;
+  min-height:360px;gap:16px;
 }
 .loader{display:flex;gap:5px;}
 .loader-dot{
@@ -632,7 +632,7 @@ textarea::placeholder{color:var(--text3);}
 .loading-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
 
 .mini-cards{
-  display:none;flex-direction:column;gap:6px;padding-right:4px;
+  display:none;flex-direction:column;gap:6px;
 }
 .mini-cards::-webkit-scrollbar{width:2px;}
 .mini-cards::-webkit-scrollbar-thumb{background:var(--border2);}
@@ -1656,7 +1656,7 @@ footer{
           <div class="feature-title">Export anywhere</div>
           <div class="feature-desc">Download as .txt or Anki-compatible format. Your cards work in any study app you already use.</div>
           <div style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;">
-            <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#0093D0"/><polygon points="50,12 61,38 90,38 67,56 75,82 50,65 25,82 33,56 10,38 39,38" fill="white"/></svg>
+            <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="18" fill="#0093D0"/><circle cx="50" cy="33" r="11" fill="white"/><circle cx="25" cy="65" r="9" fill="white"/><circle cx="75" cy="65" r="9" fill="white"/><line x1="50" y1="33" x2="25" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/><line x1="50" y1="33" x2="75" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/><line x1="25" y1="65" x2="75" y2="65" stroke="white" stroke-width="7" stroke-linecap="round"/></svg>
             <span style="font-size:11px;color:var(--text3);">Compatible with&nbsp;<strong style="color:var(--text);font-weight:700;">Anki</strong></span>
           </div>
         </div>
