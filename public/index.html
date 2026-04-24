@@ -1917,7 +1917,7 @@ footer{
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
               <div class="pdf-drop-hint" style="font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:var(--text3);text-align:center;line-height:1.8;letter-spacing:0;">
-                <span style="color:var(--text2);font-weight:600;">Text PDFs:</span> unlimited pages · up to 30,000 chars<br>
+                <span style="color:var(--text2);font-weight:600;">Text PDFs:</span> unlimited pages · unlimited size · up to 60,000 chars<br>
                 <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 20 pages · max 32MB
               </div>
             </div>
@@ -4133,18 +4133,18 @@ async function processPdf(file) {
     const isTextBased = sampleText.trim().length > 100;
 
     if (isTextBased) {
-      // ── TEXT MODE: extract all text, trim at 30,000 chars ──
+      // ── TEXT MODE: extract all text, trim at 60,000 chars ──
       document.getElementById('pdfLoadedMeta').textContent = 'Extracting text...';
       let fullText = sampleText;
       for (let i = 6; i <= totalPages; i++) {
-        if (fullText.length >= 30000) break;
+        if (fullText.length >= 60000) break;
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
         fullText += ' ' + content.items.map(item => item.str).join(' ');
       }
       fullText = fullText.trim();
-      const trimmed = fullText.length > 30000;
-      if (trimmed) fullText = fullText.slice(0, 30000);
+      const trimmed = fullText.length > 60000;
+      if (trimmed) fullText = fullText.slice(0, 60000);
 
       document.getElementById('notesInput').value = fullText;
       document.getElementById('charCount').textContent = fullText.length.toLocaleString() + ' chars';
@@ -4152,7 +4152,7 @@ async function processPdf(file) {
         `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars · text mode${trimmed ? ' (trimmed)' : ''}`;
 
       if (trimmed) {
-        showToast('PDF trimmed to 30,000 chars. Only the first ~150 pages were used. Split the PDF for full coverage.', 'warning');
+        showToast('PDF trimmed to 60,000 chars. Only the first ~150 pages were used. Split the PDF for full coverage.', 'warning');
       }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──

@@ -82,7 +82,7 @@ Return ONLY a raw JSON array, no markdown fences, no explanation:
   } else {
     // Plain text mode
     model = 'claude-haiku-4-5-20251001';
-    messageContent = `${instruction}\n\nNotes:\n${notes.substring(0, 30000)}`;
+    messageContent = `${instruction}\n\nNotes:\n${notes.substring(0, 60000)}`;
   }
 
   const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
