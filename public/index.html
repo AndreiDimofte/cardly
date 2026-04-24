@@ -2628,6 +2628,12 @@ function showApp() {
   hideLoader();
   setTimeout(() => { safeCreateIcons(); showOnboardingTooltip(); }, 200);
   checkSharedDeck();
+  // Handle ?legal= redirects from terms.html / privacy.html
+  const legalParam = new URLSearchParams(window.location.search).get('legal');
+  if (legalParam === 'tos' || legalParam === 'privacy') {
+    window.history.replaceState(null, '', window.location.pathname);
+    setTimeout(() => showLegal(legalParam), 300);
+  }
 }
 
 function updateUsageBar() {
