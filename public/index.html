@@ -1068,7 +1068,7 @@ footer{
 .pdf-drop-icon{margin-bottom:4px;}
 .pdf-drop-title{font-size:14px;font-weight:700;color:var(--text);}
 .pdf-drop-sub{font-size:12px;color:var(--text2);}
-.pdf-drop-hint{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:4px;}
+.pdf-drop-hint{font-size:11px;color:var(--text3);margin-top:4px;text-align:center;}
 
 /* ── PDF LOADED STATE ── */
 .pdf-loaded{
@@ -1916,10 +1916,9 @@ footer{
               </div>
               <div class="pdf-drop-title">Drop your PDF here</div>
               <div class="pdf-drop-sub">or click to browse</div>
-              <div class="pdf-drop-hint">
-                <span style="color:var(--text2);">Text PDFs:</span> unlimited pages, up to 30,000 chars
-                &nbsp;·&nbsp;
-                <span style="color:var(--text2);">Scanned PDFs:</span> up to 100 pages &amp; 32MB
+              <div class="pdf-drop-hint" style="font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:var(--text3);text-align:center;line-height:1.8;letter-spacing:0;">
+                <span style="color:var(--text2);font-weight:600;">Text PDFs:</span> unlimited pages · up to 30,000 chars<br>
+                <span style="color:var(--text2);font-weight:600;">Scanned PDFs:</span> up to 100 pages · max 32MB
               </div>
             </div>
             <div class="pdf-loaded" id="pdfLoaded" style="display:none;">
@@ -1944,7 +1943,7 @@ footer{
             </div>
             <span class="char-count" id="charCount">0 chars</span>
           </div>
-          <button class="btn-generate" id="generateBtn" onclick="generateCards()">✦ Generate Flashcards</button>
+          <button class="btn-generate" id="generateBtn" onclick="generateCards()"><i data-lucide="sparkles" style="width:15px;height:15px;"></i> Generate Flashcards</button>
           <div class="error-msg" id="errorMsg"></div>
         </div>
 
@@ -2139,10 +2138,12 @@ footer{
     <div class="modal-title">Account</div>
     <div class="modal-sub" id="accountEmail"></div>
 
-    <div style="margin:18px 0 6px;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Username</div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:18px;">
-      <input type="text" id="accountUsername" class="auth-input" style="flex:1;margin:0;" placeholder="Your username"/>
-      <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()" style="white-space:nowrap;padding:0 16px;">Save</button>
+    <div style="margin:20px 0;">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px;">Username</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="accountUsername" class="auth-input" style="flex:1;margin:0;" placeholder="Your username"/>
+        <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()" style="flex-shrink:0;padding:0 18px;height:44px;white-space:nowrap;">Save</button>
+      </div>
     </div>
 
     <div id="manageSubBtn" style="display:none;margin-bottom:10px;">
@@ -2780,7 +2781,7 @@ function renderHeader(loggedIn) {
     const used = userProfile?.sets_this_month || 0;
     const isPro = userProfile?.is_pro;
     const pillClass = isPro ? 'usage-pill pro' : used >= 3 ? 'usage-pill limit' : 'usage-pill';
-    const pillText = isPro ? '✦ Pro' : `${used} / 3 free`;
+    const pillText = isPro ? '★ Pro' : `${used} / 3 free`;
 
     hr.innerHTML = `
       <span class="${pillClass}">${pillText}</span>
@@ -3372,7 +3373,8 @@ async function generateCards() {
 function setLoading(state) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = state;
-  btn.textContent = state ? 'Generating...' : '✦ Generate Flashcards';
+  btn.innerHTML = state ? 'Generating...' : '<i data-lucide="sparkles" style="width:15px;height:15px;vertical-align:-2px;"></i> Generate Flashcards';
+  if (!state) safeCreateIcons();
   document.getElementById('emptyState').style.display = (!state && cards.length === 0) ? 'flex' : 'none';
   document.getElementById('loadingState').style.display = state ? 'flex' : 'none';
   if (state) {
@@ -3842,7 +3844,7 @@ function openStatsModal() {
     document.getElementById('statsGrid').innerHTML = `
       <div class="stat-card"><div class="stat-num">${totalCards}</div><div class="stat-label">Cards studied</div></div>
       <div class="stat-card"><div class="stat-num">${totalSessions}</div><div class="stat-label">Sessions</div></div>
-      <div class="stat-card"><div class="stat-num">${streak}🔥</div><div class="stat-label">Day streak</div></div>
+      <div class="stat-card"><div class="stat-num" style="display:flex;align-items:center;gap:6px;">${streak}<i data-lucide="flame" style="width:22px;height:22px;color:var(--accent);"></i></div><div class="stat-label">Day streak</div></div>
     `;
     document.getElementById('studyHistory').innerHTML = sessions.slice(0, 7).map(s =>
       `<div class="study-history-item"><span class="study-history-date">${s.date}</span><span class="study-history-count">${s.cards} cards</span></div>`
@@ -3911,10 +3913,16 @@ function handleCheckoutReturn() {
 }
 function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; }
 function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
-function showToast(msg) {
+function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  if (type === 'warning') {
+    t.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;"><i data-lucide="alert-triangle" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;"></i>${msg}</span>`;
+    safeCreateIcons();
+  } else {
+    t.textContent = msg;
+  }
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -4146,7 +4154,7 @@ async function processPdf(file) {
         `${totalPages} page${totalPages !== 1 ? 's' : ''} · ${fullText.length.toLocaleString()} chars · text mode${trimmed ? ' (trimmed)' : ''}`;
 
       if (trimmed) {
-        showToast('⚠️ PDF trimmed to 30,000 chars — only the first ~150 pages were used. Split the PDF for full coverage.');
+        showToast('PDF trimmed to 30,000 chars — only the first ~150 pages were used. Split the PDF for full coverage.', 'warning');
       }
     } else {
       // ── IMAGE MODE: send raw PDF via native Anthropic PDF support ──
@@ -4154,7 +4162,7 @@ async function processPdf(file) {
       const pagesTrimmed = totalPages > MAX_SCANNED_PAGES;
 
       if (pagesTrimmed) {
-        showToast(`⚠️ Scanned PDF has ${totalPages} pages — only the first 100 will be processed. Split the PDF for full coverage.`);
+        showToast(`Scanned PDF has ${totalPages} pages — only the first 100 will be processed. Split the PDF for full coverage.`, 'warning');
       }
 
       document.getElementById('pdfLoadedMeta').textContent = 'Processing scanned PDF...';
