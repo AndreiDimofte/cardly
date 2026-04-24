@@ -542,13 +542,14 @@ header{
 .gen-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:16px;}
 
 .generator{
-  display:grid;grid-template-columns:1fr 1fr;gap:2px;
-  background:var(--bg);border-radius:16px;
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--surface);border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden;
 }
 
-.panel{background:var(--surface);padding:28px;overflow:hidden;min-width:0;}
-.panel:first-child{border-radius:16px 0 0 16px;align-self:start;}
-.panel:last-child{border-radius:0 16px 16px 0;border-left:2px solid var(--bg);}
+.panel{background:var(--surface);padding:28px;min-width:0;}
+.panel:first-child{border-right:1px solid var(--border);align-self:start;}
 
 .panel-label{
   font-family:'JetBrains Mono',monospace;font-size:10px;
@@ -1416,8 +1417,8 @@ footer{
   .hero h1{letter-spacing:-2px;}
   .features-grid,.steps,.pricing-grid{grid-template-columns:1fr;}
   .generator{grid-template-columns:1fr;}
-  .panel:first-child{border-radius:16px 16px 0 0;}
-  .panel:last-child{border-radius:0 0 16px 16px;border-left:none;border-top:2px solid var(--bg);}
+  .panel:first-child{border-right:none;border-bottom:1px solid var(--border);}
+  .panel:last-child{border-top:none;}
   .study-view{padding:32px 20px 60px;}
   .step-connector{display:none;}
   .nav-links{display:none;}
@@ -2454,11 +2455,17 @@ async function init() {
     const isOAuthCode = search.includes('code=');
     const isHashToken = hash.includes('access_token');
     const isRecoveryHash = hash.includes('type=recovery');
+    // This tab received the reset link from email (Supabase redirects here with ?reset=true)
+    const isResetTab = search.includes('reset=true') || isRecoveryHash || isHashToken;
 
-    // Mark this tab before URL is cleared
-    if (isOAuthCode) sessionStorage.setItem('cardly_reset_tab', '1');
+    // Mark OAuth tab before URL is cleared
+    if (isOAuthCode) sessionStorage.setItem('cardly_oauth_tab', '1');
 
-    if (isOAuthCode || isHashToken || isRecoveryHash) {
+    // If this is the reset tab, mark it and clean URL
+    if (isResetTab) sessionStorage.setItem('cardly_is_reset_tab', '1');
+    else sessionStorage.removeItem('cardly_is_reset_tab');
+
+    if (isOAuthCode || isHashToken || isRecoveryHash || search.includes('reset=true')) {
       await new Promise(r => setTimeout(r, 900));
       window.history.replaceState(null, '', window.location.pathname);
     }
@@ -2471,27 +2478,26 @@ async function init() {
     const { data: { session }, error } = sessionResult;
     if (error) throw error;
 
-    // Don't auto-sign-in if this is the password reset tab (has recovery token in original URL)
-    const hasRecoveryToken = isRecoveryHash || isHashToken;
-    const mightBeReset = sessionStorage.getItem('cardly_reset_tab') === '1';
+    // isResetTab = this browser tab opened the reset link from email
+    const isThisResetTab = sessionStorage.getItem('cardly_is_reset_tab') === '1';
 
-    if (session && !hasRecoveryToken) {
+    if (session && !isThisResetTab) {
       signingIn = true;
       await onSignedIn(session.user);
-    } else if (!session && !hasRecoveryToken) {
+    } else if (!session && !isThisResetTab) {
       showLanding();
     }
-    // If hasRecoveryToken: wait for PASSWORD_RECOVERY event, show reset modal only here
+    // If isThisResetTab: never show dashboard, always show password reset modal
 
     initDone = true;
 
     let passwordRecovery = false;
-    // Only handle PASSWORD_RECOVERY in the tab that has the token in the URL
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        if (!hasRecoveryToken) return; // ignore in other tabs
+        // Only act in the tab that has the reset flag
+        if (!isThisResetTab) return;
         passwordRecovery = true;
-        sessionStorage.removeItem('cardly_reset_tab');
+        sessionStorage.removeItem('cardly_is_reset_tab');
         signingIn = false;
         showPasswordResetModal();
         return;
@@ -2502,14 +2508,22 @@ async function init() {
       if (event === 'SIGNED_OUT' && initDone) onSignedOut();
     });
 
-    // Fallback: if PASSWORD_RECOVERY never fires but this IS the reset tab with a session
-    if (hasRecoveryToken && session) {
+    // Fallback: if PASSWORD_RECOVERY never fires in the reset tab, show modal directly
+    if (isThisResetTab && session) {
       setTimeout(() => {
         if (!passwordRecovery) {
-          sessionStorage.removeItem('cardly_reset_tab');
+          sessionStorage.removeItem('cardly_is_reset_tab');
           showPasswordResetModal();
         }
       }, 1500);
+    } else if (isThisResetTab && !session) {
+      // No session yet — wait a bit longer then show modal or landing
+      setTimeout(() => {
+        if (!passwordRecovery) {
+          sessionStorage.removeItem('cardly_is_reset_tab');
+          showPasswordResetModal();
+        }
+      }, 2500);
     }
 
   } catch(e) {
