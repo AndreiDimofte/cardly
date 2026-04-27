@@ -1889,7 +1889,7 @@ footer{
       <!-- Limit warning -->
       <div class="limit-warning" id="limitWarning">
         <i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--accent);flex-shrink:0;"></i>
-        <span>You've used <strong id="limitUsed">2</strong> of 7 free generations this month. <strong>1 remaining.</strong></span>
+        <span>You've used <strong id="limitUsed">6</strong> of 7 free generations this month. <strong id="limitRemaining">1</strong> remaining.</span>
       </div>
       <div class="generator">
         <div class="panel">
@@ -2734,8 +2734,9 @@ function updateLimitWarning() {
   const used = userProfile.sets_this_month || 0;
   const isPro = userProfile.is_pro;
   const warning = document.getElementById('limitWarning');
-  if (!isPro && used === 2) {
+  if (!isPro && used >= 6 && used < 7) {
     document.getElementById('limitUsed').textContent = used;
+    document.getElementById('limitRemaining').textContent = 7 - used;
     warning.classList.add('show');
   } else {
     warning.classList.remove('show');
