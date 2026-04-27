@@ -2143,6 +2143,17 @@ footer{
 </div>
 
 <!-- ── ACCOUNT MODAL ── -->
+<div class="modal-overlay" id="usernamePromptModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title">Choose a username</div>
+    <div class="modal-sub">This is how you'll appear in Cardly. You can change it anytime in Account settings.</div>
+    <input type="text" id="usernamePromptInput" class="auth-input" style="width:100%;box-sizing:border-box;margin-bottom:8px;" placeholder="e.g. Alex, StudyBuddy..." maxlength="30" onkeydown="if(event.key==='Enter') submitUsernamePrompt()"/>
+    <div id="usernamePromptMsg"></div>
+    <button class="btn-save" id="usernamePromptBtn" onclick="submitUsernamePrompt()" style="width:100%;margin-bottom:8px;margin-top:8px;">Save username</button>
+    <button class="btn-cancel" onclick="skipUsernamePrompt()">Skip for now</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="accountModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeAccountModal()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
@@ -2596,6 +2607,12 @@ async function onSignedIn(user) {
     if (userProfile) userProfile.username = metaUsername;
   }
 
+  // Prompt Google OAuth users who have no username yet
+  const isOAuthUser = user?.app_metadata?.provider === 'google' || user?.app_metadata?.providers?.includes('google');
+  if (isOAuthUser && !userProfile?.username && !metaUsername) {
+    setTimeout(() => showUsernamePrompt(), 600);
+  }
+
   signingIn = false;
   showApp();
   handleCheckoutReturn();
@@ -2863,6 +2880,42 @@ function renderHeader(loggedIn) {
     `;
   }
   setTimeout(() => safeCreateIcons(), 150);
+}
+
+function showUsernamePrompt() {
+  document.getElementById('usernamePromptInput').value = '';
+  document.getElementById('usernamePromptMsg').innerHTML = '';
+  document.getElementById('usernamePromptModal').classList.add('open');
+  setTimeout(() => document.getElementById('usernamePromptInput').focus(), 150);
+}
+
+function skipUsernamePrompt() {
+  document.getElementById('usernamePromptModal').classList.remove('open');
+}
+
+async function submitUsernamePrompt() {
+  const val = document.getElementById('usernamePromptInput').value.trim();
+  const msg = document.getElementById('usernamePromptMsg');
+  const btn = document.getElementById('usernamePromptBtn');
+  const pwErr = !val ? 'Please enter a username.' :
+    val.length < 2 ? 'Username must be at least 2 characters.' :
+    val.length > 30 ? 'Username must be 30 characters or less.' :
+    !/^[a-zA-Z0-9_\- ]+$/.test(val) ? 'Letters, numbers, spaces, - and _ only.' : null;
+  if (pwErr) { msg.innerHTML = `<div class="auth-error" style="margin-bottom:8px;">${pwErr}</div>`; return; }
+  btn.disabled = true; btn.textContent = 'Saving...';
+  try {
+    const { error } = await sb.from('profiles').update({ username: val }).eq('id', currentUser.id);
+    if (error) throw error;
+    if (userProfile) userProfile.username = val;
+    updateWelcome();
+    renderHeader(true);
+    document.getElementById('usernamePromptModal').classList.remove('open');
+    showToast('Username saved!');
+  } catch(e) {
+    msg.innerHTML = `<div class="auth-error" style="margin-bottom:8px;">Failed to save. Please try again.</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save username';
+  }
 }
 
 // ── ACCOUNT MODAL ──
