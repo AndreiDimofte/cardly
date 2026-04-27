@@ -46,7 +46,7 @@ Rules:
 - Do NOT number the cards
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
-[{"front": "question", "back": "answer"}]`;
+[{"front": "question", "back": "answer", "source": "brief verbatim excerpt from the source material this card is based on, max 1-2 sentences"}]`;
 
   let messageContent;
   let model;
