@@ -723,13 +723,6 @@ textarea::placeholder{color:var(--text3);}
   font-size:clamp(14px,2vw,18px);font-weight:400;line-height:1.65;
   color:rgba(255,255,255,0.95);
 }
-.card-source{
-  position:absolute;bottom:44px;left:44px;right:44px;
-  font-size:11px;font-style:italic;line-height:1.5;
-  color:rgba(255,255,255,0.45);
-  border-top:1px solid rgba(255,255,255,0.15);
-  padding-top:10px;text-align:left;
-}
 .card-hint{
   position:absolute;bottom:16px;font-family:'JetBrains Mono',monospace;
   font-size:9px;color:var(--text3);letter-spacing:1px;
@@ -2099,7 +2092,6 @@ footer{
       <div class="card-face card-back">
         <div class="card-badge">Answer</div>
         <div class="card-a-text" id="cardAnswer">—</div>
-        <div class="card-source" id="cardSource" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -3546,13 +3538,6 @@ function renderCard() {
   const card = cards[currentIndex], total = cards.length;
   document.getElementById('cardQuestion').textContent = card.front;
   document.getElementById('cardAnswer').textContent = card.back;
-  const sourceEl = document.getElementById('cardSource');
-  if (card.source) {
-    sourceEl.textContent = card.source;
-    sourceEl.style.display = 'block';
-  } else {
-    sourceEl.style.display = 'none';
-  }
   document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${total}`;
   document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
   document.getElementById('progressFill').style.width = ((currentIndex + 1) / total * 100) + '%';
