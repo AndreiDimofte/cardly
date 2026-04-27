@@ -2149,8 +2149,7 @@ footer{
     <div class="modal-sub">This is how you'll appear in Cardly. You can change it anytime in Account settings.</div>
     <input type="text" id="usernamePromptInput" class="auth-input" style="width:100%;box-sizing:border-box;margin-bottom:8px;" placeholder="e.g. Alex, StudyBuddy..." maxlength="30" onkeydown="if(event.key==='Enter') submitUsernamePrompt()"/>
     <div id="usernamePromptMsg"></div>
-    <button class="btn-save" id="usernamePromptBtn" onclick="submitUsernamePrompt()" style="width:100%;margin-bottom:8px;margin-top:8px;">Save username</button>
-    <button class="btn-cancel" onclick="skipUsernamePrompt()">Skip for now</button>
+    <button class="btn-save" id="usernamePromptBtn" onclick="submitUsernamePrompt()" style="width:100%;margin-top:8px;">Save username</button>
   </div>
 </div>
 
@@ -2885,12 +2884,11 @@ function renderHeader(loggedIn) {
 function showUsernamePrompt() {
   document.getElementById('usernamePromptInput').value = '';
   document.getElementById('usernamePromptMsg').innerHTML = '';
-  document.getElementById('usernamePromptModal').classList.add('open');
+  const modal = document.getElementById('usernamePromptModal');
+  modal.classList.add('open');
+  // Prevent closing by clicking overlay
+  modal.onclick = (e) => { if (e.target === modal) e.stopPropagation(); };
   setTimeout(() => document.getElementById('usernamePromptInput').focus(), 150);
-}
-
-function skipUsernamePrompt() {
-  document.getElementById('usernamePromptModal').classList.remove('open');
 }
 
 async function submitUsernamePrompt() {
