@@ -51,7 +51,7 @@ Rules:
 - Do NOT number the cards${languageInstruction}
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
-[{"front": "question", "back": "answer", "source": "one short phrase (max 8 words) naming the topic/section this card is from, e.g. 'Chapter 3, Cell Structure'", "explanation": "one sentence (max 25 words) explaining WHY the answer is correct or what makes it easy to confuse with a related concept. Omit if the answer is already fully self-explanatory."}]`;
+[{"front": "question", "back": "answer", "source": "the specific location in the source material this card is from, as detailed as possible from what's identifiable (e.g. 'Slide 12, Lecture 3: Cell Structure' or 'Page 45, Chapter 3, Section 3.2' or 'Page 8, paragraph on mitochondria'). If no page/slide numbers exist, name the specific heading or topic covered, not a vague generality.", "explanation": "one sentence (max 25 words) explaining WHY the answer is correct or what makes it easy to confuse with a related concept. Omit if the answer is already fully self-explanatory."}]`;
 
   let messageContent;
   let model;
