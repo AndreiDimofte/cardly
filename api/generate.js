@@ -26,16 +26,20 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'Free limit reached. Upgrade to Cardly Pro for unlimited decks.' });
   }
 
-  const { notes, pdf, images, count = 10 } = req.body;
+  const { notes, pdf, images, count = 10, language = 'auto' } = req.body;
   const isPdfMode = !!pdf;
   const isImageMode = Array.isArray(images) && images.length > 0;
 
   if (!isPdfMode && !isImageMode && (!notes || notes.trim().length < 50)) {
-    return res.status(400).json({ error: 'Notes too short - paste at least a paragraph.' });
+    return res.status(400).json({ error: 'Notes too short. Please paste at least a paragraph.' });
   }
 
   const maxCards = profile?.is_pro ? 30 : 10;
   const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
+
+  const languageInstruction = language && language !== 'auto'
+    ? `\n- Write ALL flashcard content in ${language}, regardless of the language of the source material`
+    : '\n- Write flashcards in the same language as the source material';
 
   const instruction = `You are a study assistant. Generate exactly ${cardCount} flashcards from the provided study material.
 
@@ -43,7 +47,7 @@ Rules:
 - Questions must be specific and testable
 - Answers: 1-3 sentences max
 - Cover key concepts, definitions, comparisons
-- Do NOT number the cards
+- Do NOT number the cards${languageInstruction}
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
 [{"front": "question", "back": "answer"}]`;
