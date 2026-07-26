@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Notes too short. Please paste at least a paragraph.' });
   }
 
-  const maxCards = profile?.is_pro ? 30 : 10;
+  const maxCards = profile?.is_pro ? 50 : 15;
   const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
 
   const languageInstruction = language && language !== 'auto'
@@ -50,7 +50,7 @@ Rules:
 - Do NOT number the cards${languageInstruction}
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
-[{"front": "question", "back": "answer"}]`;
+[{"front": "question", "back": "answer", "source": "one short phrase (max 8 words) naming the topic/section this card is from, e.g. 'Chapter 3, Cell Structure'"}]`;
 
   let messageContent;
   let model;

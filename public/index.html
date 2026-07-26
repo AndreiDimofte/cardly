@@ -580,9 +580,10 @@ textarea{
 textarea:focus{outline:none;border-color:var(--accent);}
 textarea::placeholder{color:var(--text3);}
 
-.controls{margin-top:14px;display:flex;align-items:center;justify-content:space-between;}
+.controls{margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;}
+.controls .char-count{margin-left:auto;}
 
-.count-control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.count-control{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);flex-wrap:wrap;}
 
 .count-input{
   background:var(--surface2);border:1px solid var(--border);color:var(--text);
@@ -722,6 +723,12 @@ textarea::placeholder{color:var(--text3);}
 .card-a-text{
   font-size:clamp(14px,2vw,18px);font-weight:400;line-height:1.65;
   color:rgba(255,255,255,0.95);
+}
+.card-source-tag{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,0.35);letter-spacing:.5px;
+  max-width:80%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .card-hint{
   position:absolute;bottom:16px;font-family:'JetBrains Mono',monospace;
@@ -1653,6 +1660,11 @@ footer{
           <div class="feature-desc">Drop in any PDF directly. Cardly reads text-based and scanned PDFs, extracting content from lecture slides, textbook chapters, and handwritten notes to build your deck.</div>
         </div>
         <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon"><i data-lucide="languages" style="width:22px;height:22px;color:var(--accent);"></i></div>
+          <div class="feature-title">Any language</div>
+          <div class="feature-desc">Generate cards in your source language automatically, or pick from 15+ languages including English, Spanish, Romanian, Arabic, and more.</div>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Study mode</div>
           <div class="feature-desc">Flip cards, track progress, shuffle decks, and rate each card by difficulty to focus your revision where it counts.</div>
@@ -1693,7 +1705,7 @@ footer{
         <div class="step reveal reveal-delay-2">
           <div class="step-num">02</div>
           <div class="step-title">Generate your deck</div>
-          <div class="step-desc">Pick how many cards you want, up to 30 with Pro, and hit Generate. Your deck is ready in seconds.</div>
+          <div class="step-desc">Pick how many cards you want, up to 50 with Pro, and hit Generate. Your deck is ready in seconds.</div>
           <div class="step-connector"></div>
         </div>
         <div class="step reveal reveal-delay-3">
@@ -1716,12 +1728,12 @@ footer{
           <ul class="pricing-features">
             <li>7 deck generations per month</li>
             <li>Up to 10 saved decks</li>
-            <li>Up to 10 cards per deck</li>
+            <li>Up to 15 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Export to .txt &amp; Anki format</li>
             <li class="muted">Unlimited generations</li>
-            <li class="muted">Up to 30 cards per deck</li>
+            <li class="muted">Up to 50 cards per deck</li>
             <li class="muted">Difficulty rating & folders</li>
             <li class="muted">Stats, streaks & sharing</li>
           </ul>
@@ -1735,7 +1747,7 @@ footer{
           <ul class="pricing-features">
             <li>Unlimited deck generations</li>
             <li>Unlimited saved decks</li>
-            <li>Up to 30 cards per deck</li>
+            <li>Up to 50 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Card difficulty rating</li>
@@ -1949,11 +1961,12 @@ footer{
           <div class="controls">
             <div class="count-control">
               <span>Generate</span>
-              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="30">
-              <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 10)</span></span>
+              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="15">
+              <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 15)</span></span>
             </div>
             <div class="count-control" style="gap:6px;">
               <span style="font-size:12px;color:var(--text2);">Language</span>
+              <span style="font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:.3px;">NEW</span>
               <select id="cardLanguage" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;outline:none;">
                 <option value="auto">Auto-detect</option>
                 <option value="English">English</option>
@@ -2060,7 +2073,7 @@ footer{
         <div class="pro-upsell-item">
           <div class="pro-upsell-lock"><i data-lucide="layers" style="width:15px;height:15px;"></i></div>
           <div>
-            <div class="pro-upsell-item-title">30 cards per deck</div>
+            <div class="pro-upsell-item-title">50 cards per deck</div>
             <div class="pro-upsell-item-desc">Free plan is limited to 10. Pro triples your depth.</div>
           </div>
         </div>
@@ -2113,6 +2126,7 @@ footer{
       <div class="card-face card-back">
         <div class="card-badge">Answer</div>
         <div class="card-a-text" id="cardAnswer">—</div>
+        <div class="card-source-tag" id="cardSourceTag" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -3561,6 +3575,13 @@ function renderCard() {
   const card = cards[currentIndex], total = cards.length;
   document.getElementById('cardQuestion').textContent = card.front;
   document.getElementById('cardAnswer').textContent = card.back;
+  const sourceTag = document.getElementById('cardSourceTag');
+  if (card.source) {
+    sourceTag.textContent = card.source;
+    sourceTag.style.display = 'block';
+  } else {
+    sourceTag.style.display = 'none';
+  }
   document.getElementById('cardCounter').textContent = `${currentIndex + 1} / ${total}`;
   document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
   document.getElementById('progressFill').style.width = ((currentIndex + 1) / total * 100) + '%';
@@ -4196,10 +4217,10 @@ function dismissTooltip() {
   try { localStorage.setItem('cardly_tooltip_seen', '1'); } catch(e) {}
 }
 
-// ── CARD COUNT ENFORCEMENT (free = max 10, pro = max 30) ──
+// ── CARD COUNT ENFORCEMENT (free = max 15, pro = max 50) ──
 function enforceCardCountLimit() {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 30 : 10;
+  const max = userProfile?.is_pro ? 50 : 15;
   input.max = max;
   let val = parseInt(input.value) || 10;
   if (val > max) { val = max; input.value = val; }
@@ -4210,7 +4231,7 @@ function enforceCardCountLimit() {
 
 document.getElementById('cardCount').addEventListener('change', () => {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 30 : 10;
+  const max = userProfile?.is_pro ? 50 : 15;
   let val = parseInt(input.value) || 10;
   if (val < 3) val = 3;
   if (val > max) val = max;
