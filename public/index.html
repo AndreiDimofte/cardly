@@ -381,9 +381,6 @@ header{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:2px;background:var(--border);border-radius:20px;overflow:hidden;
 }
-.features-grid .feature-card:nth-child(7){grid-column:1/-1;display:flex;align-items:center;gap:28px;text-align:left;padding:28px 32px;}
-.features-grid .feature-card:nth-child(7) .feature-icon{margin-bottom:0;flex-shrink:0;}
-.features-grid .feature-card:nth-child(7) .feature-title{margin-bottom:4px;}
 
 .feature-card{
   background:var(--surface);padding:32px;
@@ -1443,7 +1440,6 @@ footer{
 /* RESPONSIVE */
 @media(max-width:1024px) and (min-width:769px){
   .features-grid{grid-template-columns:repeat(2,1fr);}
-  .features-grid .feature-card:nth-child(7){grid-column:1/-1;}
 }
 
 @media(max-width:768px){
@@ -1461,7 +1457,6 @@ footer{
   .hero{padding:60px 0 50px;}
   .hero h1{letter-spacing:-2px;}
   .features-grid,.steps,.pricing-grid{grid-template-columns:1fr;}
-  .features-grid .feature-card:nth-child(7){flex-direction:column;text-align:center;gap:0;}
   .generator{grid-template-columns:1fr;}
   .panel:first-child{border-right:none;border-bottom:1px solid var(--border);}
   .panel:last-child{border-top:none;}
@@ -1679,17 +1674,12 @@ footer{
         <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="zap" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Instant generation</div>
-          <div class="feature-desc">Paste your notes and get a full deck of flashcards fast. Works with any subject, any format.</div>
+          <div class="feature-desc">Paste your notes and get a full deck of flashcards fast, in your notes' language automatically or in any of 15+ languages with Pro.</div>
         </div>
         <div class="feature-card reveal reveal-delay-2">
           <div class="feature-icon"><i data-lucide="file-text" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">PDF upload</div>
           <div class="feature-desc">Drop in any PDF directly. Cardly reads text-based and scanned PDFs, extracting content from lecture slides, textbook chapters, and handwritten notes to build your deck.</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-3">
-          <div class="feature-icon"><i data-lucide="languages" style="width:22px;height:22px;color:var(--accent);"></i></div>
-          <div class="feature-title">Any language</div>
-          <div class="feature-desc">Cards are generated in your notes' language automatically. Pro unlocks a full language switcher with 15+ languages including English, Spanish, Romanian, Arabic, and more.</div>
         </div>
         <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
