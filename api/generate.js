@@ -34,11 +34,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Notes too short. Please paste at least a paragraph.' });
   }
 
-  const maxCards = profile?.is_pro ? 50 : 15;
+  const maxCards = profile?.is_pro ? 75 : 20;
   const cardCount = Math.min(Math.max(parseInt(count) || 10, 3), maxCards);
 
-  const languageInstruction = language && language !== 'auto'
-    ? `\n- Write ALL flashcard content in ${language}, regardless of the language of the source material`
+  const effectiveLanguage = profile?.is_pro ? language : 'auto';
+  const languageInstruction = effectiveLanguage && effectiveLanguage !== 'auto'
+    ? `\n- Write ALL flashcard content in ${effectiveLanguage}, regardless of the language of the source material`
     : '\n- Write flashcards in the same language as the source material';
 
   const instruction = `You are a study assistant. Generate exactly ${cardCount} flashcards from the provided study material.
@@ -50,7 +51,7 @@ Rules:
 - Do NOT number the cards${languageInstruction}
 
 Return ONLY a raw JSON array, no markdown fences, no explanation:
-[{"front": "question", "back": "answer", "source": "one short phrase (max 8 words) naming the topic/section this card is from, e.g. 'Chapter 3, Cell Structure'"}]`;
+[{"front": "question", "back": "answer", "source": "one short phrase (max 8 words) naming the topic/section this card is from, e.g. 'Chapter 3, Cell Structure'", "explanation": "one sentence (max 25 words) explaining WHY the answer is correct or what makes it easy to confuse with a related concept. Omit if the answer is already fully self-explanatory."}]`;
 
   let messageContent;
   let model;

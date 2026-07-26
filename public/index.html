@@ -378,9 +378,10 @@ header{
 }
 
 .features-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
+  display:grid;grid-template-columns:repeat(4,1fr);
   gap:2px;background:var(--border);border-radius:20px;overflow:hidden;
 }
+.features-grid .feature-card:nth-child(7){grid-column:2/4;}
 
 .feature-card{
   background:var(--surface);padding:32px;
@@ -706,7 +707,10 @@ textarea::placeholder{color:var(--text3);}
   background:var(--accent);border:1px solid var(--accent);
   transform:rotateY(180deg);
   box-shadow:0 8px 40px rgba(255,77,0,0.25);
+  overflow-y:auto;justify-content:flex-start;padding-top:36px;
 }
+.card-back::-webkit-scrollbar{width:4px;}
+.card-back::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.25);border-radius:4px;}
 
 .card-badge{
   font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
@@ -725,11 +729,25 @@ textarea::placeholder{color:var(--text3);}
   color:rgba(255,255,255,0.95);
 }
 .card-source-tag{
-  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(255,255,255,0.35);letter-spacing:.5px;
-  max-width:80%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  color:rgba(255,255,255,0.85);letter-spacing:.2px;
+  background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.18);
+  border-radius:20px;padding:6px 14px 6px 10px;
+  max-width:85%;white-space:nowrap;overflow:hidden;
+  margin-top:14px;flex-shrink:0;
 }
+.card-source-tag svg{flex-shrink:0;opacity:0.75;}
+.card-source-tag span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-explanation{
+  display:flex;align-items:flex-start;gap:8px;
+  margin-top:18px;padding:12px 14px;
+  background:rgba(255,255,255,0.08);border-left:2px solid rgba(255,255,255,0.4);
+  border-radius:8px;max-width:90%;
+  font-size:12.5px;line-height:1.55;color:rgba(255,255,255,0.85);
+  text-align:left;
+}
+.card-explanation svg{flex-shrink:0;margin-top:2px;opacity:0.7;}
 .card-hint{
   position:absolute;bottom:16px;font-family:'JetBrains Mono',monospace;
   font-size:9px;color:var(--text3);letter-spacing:1px;
@@ -1420,6 +1438,11 @@ footer{
 .tooltip-close:hover { color: white; }
 
 /* RESPONSIVE */
+@media(max-width:1024px) and (min-width:769px){
+  .features-grid{grid-template-columns:repeat(2,1fr);}
+  .features-grid .feature-card:nth-child(7){grid-column:1/3;}
+}
+
 @media(max-width:768px){
   header{
     display:flex;padding:12px 20px;gap:0;
@@ -1662,7 +1685,7 @@ footer{
         <div class="feature-card reveal reveal-delay-3">
           <div class="feature-icon"><i data-lucide="languages" style="width:22px;height:22px;color:var(--accent);"></i></div>
           <div class="feature-title">Any language</div>
-          <div class="feature-desc">Generate cards in your source language automatically, or pick from 15+ languages including English, Spanish, Romanian, Arabic, and more.</div>
+          <div class="feature-desc">Cards are generated in your notes' language automatically. Pro unlocks a full language switcher with 15+ languages including English, Spanish, Romanian, Arabic, and more.</div>
         </div>
         <div class="feature-card reveal reveal-delay-1">
           <div class="feature-icon"><i data-lucide="layers" style="width:22px;height:22px;color:var(--accent);"></i></div>
@@ -1705,7 +1728,7 @@ footer{
         <div class="step reveal reveal-delay-2">
           <div class="step-num">02</div>
           <div class="step-title">Generate your deck</div>
-          <div class="step-desc">Pick how many cards you want, up to 50 with Pro, and hit Generate. Your deck is ready in seconds.</div>
+          <div class="step-desc">Pick how many cards you want, up to 75 with Pro, and hit Generate. Your deck is ready in seconds.</div>
           <div class="step-connector"></div>
         </div>
         <div class="step reveal reveal-delay-3">
@@ -1728,14 +1751,16 @@ footer{
           <ul class="pricing-features">
             <li>7 deck generations per month</li>
             <li>Up to 10 saved decks</li>
-            <li>Up to 15 cards per deck</li>
+            <li>Up to 20 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Export to .txt &amp; Anki format</li>
+            <li>Cards in your notes' language</li>
             <li class="muted">Unlimited generations</li>
-            <li class="muted">Up to 50 cards per deck</li>
+            <li class="muted">Up to 75 cards per deck</li>
             <li class="muted">Difficulty rating & folders</li>
             <li class="muted">Stats, streaks & sharing</li>
+            <li class="muted">Choose from 15+ languages</li>
           </ul>
           <button class="btn-pricing btn-pricing-free" onclick="showAuth()">Get started free</button>
         </div>
@@ -1747,7 +1772,7 @@ footer{
           <ul class="pricing-features">
             <li>Unlimited deck generations</li>
             <li>Unlimited saved decks</li>
-            <li>Up to 50 cards per deck</li>
+            <li>Up to 75 cards per deck</li>
             <li>PDF upload support</li>
             <li>Study mode with flip cards</li>
             <li>Card difficulty rating</li>
@@ -1755,6 +1780,7 @@ footer{
             <li>Study statistics & streaks</li>
             <li>Shareable deck links</li>
             <li>Export to .txt &amp; Anki format</li>
+            <li>Choose from 15+ languages</li>
           </ul>
           <button class="btn-pricing btn-pricing-pro" onclick="startCheckout(event)">Upgrade to Pro for $5/mo</button>
         </div>
@@ -1961,12 +1987,12 @@ footer{
           <div class="controls">
             <div class="count-control">
               <span>Generate</span>
-              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="15">
-              <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 15)</span></span>
+              <input type="number" class="count-input" id="cardCount" value="10" min="3" max="20">
+              <span>cards <span class="count-max-label" style="font-size:10px;color:var(--text3);">(max 20)</span></span>
             </div>
-            <div class="count-control" style="gap:6px;">
+            <div class="count-control" id="languageControlWrap" style="gap:6px;">
               <span style="font-size:12px;color:var(--text2);">Language</span>
-              <span style="font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:.3px;">NEW</span>
+              <span id="languageNewBadge" style="font-size:9px;font-weight:700;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:.3px;">NEW</span>
               <select id="cardLanguage" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Bricolage Grotesque',sans-serif;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;outline:none;">
                 <option value="auto">Auto-detect</option>
                 <option value="English">English</option>
@@ -2073,7 +2099,7 @@ footer{
         <div class="pro-upsell-item">
           <div class="pro-upsell-lock"><i data-lucide="layers" style="width:15px;height:15px;"></i></div>
           <div>
-            <div class="pro-upsell-item-title">50 cards per deck</div>
+            <div class="pro-upsell-item-title">75 cards per deck</div>
             <div class="pro-upsell-item-desc">Free plan is limited to 10. Pro triples your depth.</div>
           </div>
         </div>
@@ -2126,7 +2152,14 @@ footer{
       <div class="card-face card-back">
         <div class="card-badge">Answer</div>
         <div class="card-a-text" id="cardAnswer">—</div>
-        <div class="card-source-tag" id="cardSourceTag" style="display:none;"></div>
+        <div class="card-explanation" id="cardExplanation" style="display:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          <span id="cardExplanationText"></span>
+        </div>
+        <div class="card-source-tag" id="cardSourceTag" style="display:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span id="cardSourceTagText"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -2687,6 +2720,7 @@ function showApp() {
   updateQuickActions();
   updateEmptyState();
   enforceCardCountLimit();
+  enforceLanguageGate();
   if (userProfile?.is_pro) {
     const statsBtn = document.getElementById('statsBtn');
     if (statsBtn) statsBtn.style.display = 'flex';
@@ -3437,7 +3471,7 @@ async function generateCards() {
   const notes = document.getElementById('notesInput').value.trim();
   const count = parseInt(document.getElementById('cardCount').value) || 10;
   const deckName = document.getElementById('deckNameInput').value.trim();
-  const language = document.getElementById('cardLanguage').value;
+  const language = userProfile?.is_pro ? document.getElementById('cardLanguage').value : 'auto';
   const isImageMode = pdfPageImages.length > 0;
   const isPdfMode = !!pdfBase64;
 
@@ -3575,10 +3609,17 @@ function renderCard() {
   const card = cards[currentIndex], total = cards.length;
   document.getElementById('cardQuestion').textContent = card.front;
   document.getElementById('cardAnswer').textContent = card.back;
+  const explEl = document.getElementById('cardExplanation');
+  if (card.explanation) {
+    document.getElementById('cardExplanationText').textContent = card.explanation;
+    explEl.style.display = 'flex';
+  } else {
+    explEl.style.display = 'none';
+  }
   const sourceTag = document.getElementById('cardSourceTag');
   if (card.source) {
-    sourceTag.textContent = card.source;
-    sourceTag.style.display = 'block';
+    document.getElementById('cardSourceTagText').textContent = card.source;
+    sourceTag.style.display = 'inline-flex';
   } else {
     sourceTag.style.display = 'none';
   }
@@ -4217,10 +4258,10 @@ function dismissTooltip() {
   try { localStorage.setItem('cardly_tooltip_seen', '1'); } catch(e) {}
 }
 
-// ── CARD COUNT ENFORCEMENT (free = max 15, pro = max 50) ──
+// ── CARD COUNT ENFORCEMENT (free = max 20, pro = max 75) ──
 function enforceCardCountLimit() {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 50 : 15;
+  const max = userProfile?.is_pro ? 75 : 20;
   input.max = max;
   let val = parseInt(input.value) || 10;
   if (val > max) { val = max; input.value = val; }
@@ -4231,12 +4272,41 @@ function enforceCardCountLimit() {
 
 document.getElementById('cardCount').addEventListener('change', () => {
   const input = document.getElementById('cardCount');
-  const max = userProfile?.is_pro ? 50 : 15;
+  const max = userProfile?.is_pro ? 75 : 20;
   let val = parseInt(input.value) || 10;
   if (val < 3) val = 3;
   if (val > max) val = max;
   input.value = val;
 });
+
+// ── LANGUAGE SELECTOR: Auto-detect only for free, full selection for Pro ──
+function enforceLanguageGate() {
+  const select = document.getElementById('cardLanguage');
+  const badge = document.getElementById('languageNewBadge');
+  const isPro = userProfile?.is_pro;
+  if (!select) return;
+  if (isPro) {
+    select.disabled = false;
+    select.style.opacity = '1';
+    select.style.cursor = 'pointer';
+    select.title = '';
+    if (badge) { badge.textContent = 'NEW'; badge.style.color = 'var(--accent)'; badge.style.background = 'var(--accent-dim)'; badge.style.cursor = 'default'; badge.onclick = null; }
+  } else {
+    select.value = 'auto';
+    select.disabled = true;
+    select.style.opacity = '0.5';
+    select.style.cursor = 'not-allowed';
+    select.title = 'Language selection is a Pro feature';
+    if (badge) {
+      badge.innerHTML = '<i data-lucide="lock" style="width:9px;height:9px;vertical-align:-1px;"></i> PRO';
+      badge.style.color = 'var(--accent)';
+      badge.style.background = 'var(--accent-dim)';
+      badge.style.cursor = 'pointer';
+      badge.onclick = () => startCheckout();
+      setTimeout(() => safeCreateIcons(), 50);
+    }
+  }
+}
 
 // ── INPUT MODE SWITCHER ──
 let currentInputMode = 'text';
